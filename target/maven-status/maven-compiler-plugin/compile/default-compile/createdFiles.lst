@@ -1,0 +1,3 @@
+com\fashionplace\FashionPlaceApplication.class
+com\fashionplace\config\SecurityConfig.class
+com\fashionplace\controller\HomeController.class

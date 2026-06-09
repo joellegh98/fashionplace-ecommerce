@@ -32,10 +32,10 @@ testable before moving on.
   - In `src/main/resources/application.properties`: change URL to `jdbc:mariadb://localhost:3306/ex4` and set real username/password matching docker-compose.
   > 📖 **Materials:** `07-SpringMVC.pdf` – `application.properties` definitions (slide 4); define custom global params with `@Value` (slide 23); session store JDBC config (slide 24). `08-JPA.pdf` – full `application.properties` config for MySQL: `spring.datasource.url`, `username`, `password`, `driver-class-name`, `spring.jpa.hibernate.ddl-auto=create/update`, `spring.jpa.show-sql=true` (slide 28).
 
-- [ ] **0.4 - Temporarily open all pages.** Add a `SecurityConfig` that **permits all requests** (so we can build UI without logging in). This file gets rewritten in Phase 9. Leave a `// TODO: lock down in Phase 9` comment.
+- [x] **0.4 - Temporarily open all pages.** Add a `SecurityConfig` that **permits all requests** (so we can build UI without logging in). This file gets rewritten in Phase 9. Leave a `// TODO: lock down in Phase 9` comment.
   > 📖 **Materials:** `07-SpringBeans.pdf` – `@Configuration` class and `@Bean` annotation for explicit bean declaration (slides 12, 14); `@SpringBootApplication` / `@EnableAutoConfiguration` must be present for injection to work (slide 13).
 
-- [ ] **0.5 - First controller + page.** `HomeController` returns a `home` Thymeleaf view that just says "FashionPlace". Confirm it loads with no login.
+- [x] **0.5 - First controller + page.** `HomeController` returns a `home` Thymeleaf view that just says "FashionPlace". Confirm it loads with no login.
   > 📖 **Materials:** `07-SpringMVC.pdf` – `@Controller` returning a view / Thymeleaf (slides 9, 11, 12, 13); `@GetMapping` (slide 6); project structure – controllers folder (slides 5, 18); `07-SpringBeans.pdf` – `@Component` / Spring-managed beans, single controller instance shared across threads (slides 5, 6); `07-LongPolling.pdf` – web-server thread pool & single controller instance (slide 2, background awareness). `08-thymeleaf.pdf` – add Thymeleaf dependency in `pom.xml`; add `xmlns:th="http://www.thymeleaf.org"` to every HTML file (slide 2); use `th:text="${variable}"` to display model values (slide 3); standard dialect expressions overview (slide 4).
 
 - [ ] **0.6 - Base layout fragment.** Create `templates/fragments/layout.html` (header with logo + nav placeholder, footer). Home page uses it.
