@@ -7,7 +7,7 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: password # Change this to a strong password
-      MYSQL_DATABASE: mydb # Optional: Create an initial database
+      MYSQL_DATABASE: ex4 # Required database name for the exercise
       MYSQL_USER: internet # Optional: Create an initial user
       MYSQL_PASSWORD: internet # Optional: Set password for the user
     volumes:
