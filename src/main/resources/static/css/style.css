@@ -1,0 +1,62 @@
+/* FashionPlace theme: brown + black + light pink shades */
+:root {
+    --brown: #6b4226;
+    --brown-dark: #4a2c18;
+    --pink: #f7d9e3;
+    --pink-light: #fdf1f5;
+    --ink: #1a1a1a;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: var(--ink);
+    background-color: var(--pink-light);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Top bar: themed Bootstrap navbar */
+header .navbar {
+    background-color: var(--brown);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+/* Logo + brand name grouped on the left */
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--pink-light);
+    font-weight: 700;
+    font-size: 1.4rem;
+    letter-spacing: 0.5px;
+}
+
+.brand:hover {
+    color: #fff;
+}
+
+.brand img {
+    height: 64px;
+    width: 64px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 2px solid var(--pink);
+}
+
+main h1 {
+    color: var(--brown-dark);
+}
+
+footer {
+    padding: 1rem 1.5rem;
+    background-color: var(--ink);
+    color: var(--pink);
+    text-align: center;
+}

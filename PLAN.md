@@ -41,7 +41,7 @@ testable before moving on.
 - [x] **0.6 - Base layout fragment.** Create `templates/fragments/layout.html` (header with logo + nav placeholder, footer). Home page uses it.
   > 📖 **Materials:** `07-SpringMVC.pdf` – templates folder is for Thymeleaf views (slides 5, 18, 29); Thymeleaf as a server-side template engine (slide 13); "no static HTML in /static" rule (slide 18). `08-thymeleaf.pdf` – Thymeleaf fragments to avoid HTML duplication: create fragment files, include with `th:insert` or `th:replace` (slide 11); define a shared `maintemplate.html` and use `th:replace="~{maintemplate :: maintemplate('Page Title')}"` in each view (slide 12).
 
-- [ ] **0.7 - Static styling.** Add `static/css/style.css` and link it in the layout. Make Home look clean.
+- [x] **0.7 - Static styling.** Add `static/css/style.css` and link it in the layout. Make Home look clean.
   > 📖 **Materials:** `07-SpringMVC.pdf` – static files served from `/static/` (slides 19, 20); define static folder in `application.properties` (slide 20).
 
 ---
