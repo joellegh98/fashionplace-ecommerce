@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<!--
+  Shared page shell for every view. Pages call:
+    th:replace="~{fragments/layout :: layout(~{::title}, ~{::main})}"
+  passing their own <title> and <main> so the header/footer stay in one place.
+-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(title, content)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:replace="${title}">FashionPlace</title>
+</head>
+<body>
+    <header>
+        <a th:href="@{/}">FashionPlace</a>
+        <!-- Nav links (Browse, Cart, etc.) are added in later steps; placeholder for now -->
+        <nav></nav>
+    </header>
+
+    <!-- The calling page's <main> block is injected here -->
+    <main th:replace="${content}">Page content goes here.</main>
+
+    <footer>
+        <small>&copy; FashionPlace</small>
+    </footer>
+</body>
+</html>

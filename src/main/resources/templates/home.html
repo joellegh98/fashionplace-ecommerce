@@ -1,10 +1,16 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!--
+  Home page. The layout fragment supplies the header/footer; this file only
+  provides its own <title> and <main>, which the fragment slots into place.
+-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::main})}">
 <head>
-    <meta charset="UTF-8">
-    <title>FashionPlace</title>
+    <title>FashionPlace - Home</title>
 </head>
 <body>
-    <h1 th:text="'FashionPlace'">FashionPlace</h1>
+    <main>
+        <h1>FashionPlace</h1>
+    </main>
 </body>
 </html>

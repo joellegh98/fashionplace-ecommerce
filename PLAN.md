@@ -38,7 +38,7 @@ testable before moving on.
 - [x] **0.5 - First controller + page.** `HomeController` returns a `home` Thymeleaf view that just says "FashionPlace". Confirm it loads with no login.
   > 📖 **Materials:** `07-SpringMVC.pdf` – `@Controller` returning a view / Thymeleaf (slides 9, 11, 12, 13); `@GetMapping` (slide 6); project structure – controllers folder (slides 5, 18); `07-SpringBeans.pdf` – `@Component` / Spring-managed beans, single controller instance shared across threads (slides 5, 6); `07-LongPolling.pdf` – web-server thread pool & single controller instance (slide 2, background awareness). `08-thymeleaf.pdf` – add Thymeleaf dependency in `pom.xml`; add `xmlns:th="http://www.thymeleaf.org"` to every HTML file (slide 2); use `th:text="${variable}"` to display model values (slide 3); standard dialect expressions overview (slide 4).
 
-- [ ] **0.6 - Base layout fragment.** Create `templates/fragments/layout.html` (header with logo + nav placeholder, footer). Home page uses it.
+- [x] **0.6 - Base layout fragment.** Create `templates/fragments/layout.html` (header with logo + nav placeholder, footer). Home page uses it.
   > 📖 **Materials:** `07-SpringMVC.pdf` – templates folder is for Thymeleaf views (slides 5, 18, 29); Thymeleaf as a server-side template engine (slide 13); "no static HTML in /static" rule (slide 18). `08-thymeleaf.pdf` – Thymeleaf fragments to avoid HTML duplication: create fragment files, include with `th:insert` or `th:replace` (slide 11); define a shared `maintemplate.html` and use `th:replace="~{maintemplate :: maintemplate('Page Title')}"` in each view (slide 12).
 
 - [ ] **0.7 - Static styling.** Add `static/css/style.css` and link it in the layout. Make Home look clean.
