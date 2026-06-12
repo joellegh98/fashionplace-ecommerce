@@ -11,6 +11,7 @@ testable before moving on.
 ---
 
 ## Legend
+
 - Each **Level** = one small change/adjustment. Do them in order.
 - `[ ]` = todo. Tick it when the app still runs after the change.
 - After every level: run `./mvnw spring-boot:run` and click the affected page.
@@ -30,7 +31,7 @@ testable before moving on.
 - [x] **0.3 - Align the DB name to `ex4` (required by the exercise).**
   - In `docker-compose.yml`: `MYSQL_DATABASE: ex4`.
   - In `src/main/resources/application.properties`: change URL to `jdbc:mariadb://localhost:3306/ex4` and set real username/password matching docker-compose.
-  > 📖 **Materials:** `07-SpringMVC.pdf` – `application.properties` definitions (slide 4); define custom global params with `@Value` (slide 23); session store JDBC config (slide 24). `08-JPA.pdf` – full `application.properties` config for MySQL: `spring.datasource.url`, `username`, `password`, `driver-class-name`, `spring.jpa.hibernate.ddl-auto=create/update`, `spring.jpa.show-sql=true` (slide 28).
+    > 📖 **Materials:** `07-SpringMVC.pdf` – `application.properties` definitions (slide 4); define custom global params with `@Value` (slide 23); session store JDBC config (slide 24). `08-JPA.pdf` – full `application.properties` config for MySQL: `spring.datasource.url`, `username`, `password`, `driver-class-name`, `spring.jpa.hibernate.ddl-auto=create/update`, `spring.jpa.show-sql=true` (slide 28).
 
 - [x] **0.4 - Temporarily open all pages.** Add a `SecurityConfig` that **permits all requests** (so we can build UI without logging in). This file gets rewritten in Phase 9. Leave a `// TODO: lock down in Phase 9` comment.
   > 📖 **Materials:** `07-SpringBeans.pdf` – `@Configuration` class and `@Bean` annotation for explicit bean declaration (slides 12, 14); `@SpringBootApplication` / `@EnableAutoConfiguration` must be present for injection to work (slide 13).
@@ -50,13 +51,13 @@ testable before moving on.
 
 **Goal:** Show real products from the database. One entity, one repo, one service, two pages.
 
-- [ ] **1.1 - Product entity (minimal).** Fields: `id`, `title`, `description`, `price`. JPA `@Entity`. Let Hibernate create the table (`ddl-auto=update`).
+- [x] **1.1 - Product entity (minimal).** Fields: `id`, `title`, `description`, `price`. JPA `@Entity`. Let Hibernate create the table (`ddl-auto=update`).
   > 📖 **Materials:** `07-SpringBeans.pdf` – Spring Bean requirements (zero-args constructor, getters/setters, naming convention) (slide 7); `@Component` / managed class (slide 6); `@ElementCollection` note for future list fields (slide 29). `08-JPA.pdf` – `@Entity` creates a DB table; `@Id` + `@GeneratedValue` for auto-generated primary key; all fields become columns automatically; use `@Transient` to exclude a field; `@CreationTimestamp` / `@UpdateTimestamp` for audit fields (slide 3); avoid naming entities `Order` or `User` (SQL reserved words) (slide 3); Roadmap step 1/6: define entity with fields, setters/getters, and validations (slide 25).
 
-- [ ] **1.2 - ProductRepository.** `extends JpaRepository<Product, Long>`.
+- [x] **1.2 - ProductRepository.** `extends JpaRepository<Product, Long>`.
   > 📖 **Materials:** `07-SpringBeans.pdf` – `@Repository` is a specialization of `@Component` for database operations (slide 6); typical app structure with a `repo` package (slide 24, 27); beans are used for database access (slide 25). `08-JPA.pdf` – `JpaRepository` provides CRUD + JPA flush/batch operations; inherits `CrudRepository` (save, findById, findAll, count, delete, exists) and `PagingAndSortingRepository` (slides 8, 9); Roadmap step 2/6: define interface `extends JpaRepository<Entity, Long>` (slide 26).
 
-- [ ] **1.3 - Seed data at startup.** A `DataSeeder` (`CommandLineRunner` bean) inserts ~6 products **only if the table is empty** (so it works on an empty DB).
+- [x] **1.3 - Seed data at startup.** A `DataSeeder` (`CommandLineRunner` bean) inserts ~6 products **only if the table is empty** (so it works on an empty DB).
   > 📖 **Materials:** `07-SpringBeans.pdf` – Bean lifecycle: `@PostConstruct` for init logic (slide 28); `@Component` bean auto-detected by classpath scan (slide 6). `08-JPA.pdf` – initialize application data with `CommandLineRunner`: annotate class with `@Component`, inject repository with `@Autowired`, override `run()` to insert data; `run()` is called after context loads (slide 35).
 
 - [ ] **1.4 - Browse page.** `/browse` lists all products as cards. (Controller talks to repo directly for now.)
@@ -242,7 +243,7 @@ testable before moving on.
 - [ ] **9.5 - Swap the fake current user.** `CurrentUserProvider` now reads the authenticated principal everywhere (reviews, orders, products).
   > 📖 **Materials:** `07-SpringMVC.pdf` – `Principal` as a controller method parameter (slide 17, "Other params"); `07-SpringBeans.pdf` – the `CurrentUserProvider` bean is `@Component` / `@Service` injected by constructor (slides 6, 9).
 
-- [ ] **9.6 - Role-based access.** `/admin/**` -> ADMIN only; `/sell`, `/orders`, `/my-products`, checkout -> authenticated. Home/Browse/Detail stay public.
+- [ ] **9.6 - Role-based access.** `/admin/`** -> ADMIN only; `/sell`, `/orders`, `/my-products`, checkout -> authenticated. Home/Browse/Detail stay public.
   > 📖 **Materials:** `07-SpringMVC.pdf` – catching multiple URL patterns in one mapping (slide 6: `@GetMapping(value = {"/login","/logout"})`); `07-SpringBeans.pdf` – `@Configuration` SecurityConfig with role rules (slide 12, 14).
 
 - [ ] **9.7 - Ownership rules.** Users can only edit/delete **their own** products.
@@ -287,10 +288,13 @@ testable before moving on.
 
 ## Material Index
 
-| Material File | Key Topics Covered | Steps That Use It |
-|---|---|---|
-| `07-SpringMVC.pdf` | `@Controller`, `@GetMapping`/`@PostMapping`/`@PutMapping`/`@DeleteMapping`, `@RequestParam`, `@PathVariable`, `@RequestBody`, Model/ModelMap/ModelAndView, Thymeleaf, static files, error pages, file upload, redirect/forward, `application.properties` | 0.1–0.7, 1.4–1.7, 2.1–2.4, 2.6, 3.2–3.5, 4.5–4.6, 5.2–5.5, 6.1–6.5, 7.1–7.3, 8.1–8.4, 9.3–9.7, 10.1–10.2 |
-| `07-SpringBeans.pdf` | `@Component`/`@Service`/`@Repository`, `@Bean`/`@Configuration`, `@Autowired`/`@Resource`, constructor/setter/field injection, `@SessionScope`/`@ApplicationScope`/`@RequestScope`, `@PostConstruct`/`@PreDestroy`, Validation (`@Valid`, `@NotBlank`, `@Email`, `@Pattern`), Spring sessions | 0.4–0.5, 1.1–1.3, 1.6, 2.5–2.6, 3.1, 4.1–4.2, 4.4, 5.1, 5.3–5.4, 6.1–6.2, 7.4, 7.5, 8.2–8.4, 9.1–9.2, 9.5, 9.8–9.9 |
-| `07-LongPolling.pdf` | Web-server thread pool, single controller instance, race conditions, non-blocking design (DeferredResult), WebSockets, SSE — **background architecture awareness** | 0.5 (thread model), 2.5 (session + threads), 3.1 (session + threads), 5.3 (non-blocking service), 7.5 (interceptor threading), 9.8 (cart merge thread) |
-| `08-thymeleaf.pdf` | Template engine setup (pom.xml dep + `xmlns:th`), `th:text`, `th:href`/`@{...}`, `th:each`, `th:if`/`th:unless`, `th:switch`/`th:case`, `th:object`/`th:field`/`th:action` (forms), `th:insert`/`th:replace` (fragments), `#fields.hasErrors`/`th:errors` (validation display), variable expressions `${...}` / `*{...}` | 0.5–0.6, 1.4–1.5, 1.7, 2.3, 2.6, 3.2–3.5, 4.3, 4.5–4.6, 5.2, 5.5, 6.1–6.2, 6.4–6.5, 7.1, 8.1, 8.3–8.4, 9.4 |
-| `08-JPA.pdf` | `@Entity`/`@Id`/`@GeneratedValue`, `@ManyToOne`/`@OneToMany`/`@ManyToMany`, `JpaRepository`/`CrudRepository`, query method naming, `@Query`/`@Modifying`, validation annotations (`@NotNull`, `@NotBlank`, `@Email`, `@Min`/`@Max`), `@Valid`/`BindingResult`, `@Transactional`, `CommandLineRunner`, `application.properties` DB config | 0.2–0.3, 1.1–1.3, 1.4–1.6, 2.1–2.4, 4.1, 4.3–4.4, 4.6, 5.1, 5.3–5.5, 6.1–6.2, 6.4–6.5, 7.1–7.4, 8.2, 8.4, 9.2, 9.4, 9.9, 10.1, 10.3 |
+
+| Material File        | Key Topics Covered                                                                                                                                                                                                                                                                                                                       | Steps That Use It                                                                                                                                      |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `07-SpringMVC.pdf`   | `@Controller`, `@GetMapping`/`@PostMapping`/`@PutMapping`/`@DeleteMapping`, `@RequestParam`, `@PathVariable`, `@RequestBody`, Model/ModelMap/ModelAndView, Thymeleaf, static files, error pages, file upload, redirect/forward, `application.properties`                                                                                 | 0.1–0.7, 1.4–1.7, 2.1–2.4, 2.6, 3.2–3.5, 4.5–4.6, 5.2–5.5, 6.1–6.5, 7.1–7.3, 8.1–8.4, 9.3–9.7, 10.1–10.2                                               |
+| `07-SpringBeans.pdf` | `@Component`/`@Service`/`@Repository`, `@Bean`/`@Configuration`, `@Autowired`/`@Resource`, constructor/setter/field injection, `@SessionScope`/`@ApplicationScope`/`@RequestScope`, `@PostConstruct`/`@PreDestroy`, Validation (`@Valid`, `@NotBlank`, `@Email`, `@Pattern`), Spring sessions                                            | 0.4–0.5, 1.1–1.3, 1.6, 2.5–2.6, 3.1, 4.1–4.2, 4.4, 5.1, 5.3–5.4, 6.1–6.2, 7.4, 7.5, 8.2–8.4, 9.1–9.2, 9.5, 9.8–9.9                                     |
+| `07-LongPolling.pdf` | Web-server thread pool, single controller instance, race conditions, non-blocking design (DeferredResult), WebSockets, SSE — **background architecture awareness**                                                                                                                                                                       | 0.5 (thread model), 2.5 (session + threads), 3.1 (session + threads), 5.3 (non-blocking service), 7.5 (interceptor threading), 9.8 (cart merge thread) |
+| `08-thymeleaf.pdf`   | Template engine setup (pom.xml dep + `xmlns:th`), `th:text`, `th:href`/`@{...}`, `th:each`, `th:if`/`th:unless`, `th:switch`/`th:case`, `th:object`/`th:field`/`th:action` (forms), `th:insert`/`th:replace` (fragments), `#fields.hasErrors`/`th:errors` (validation display), variable expressions `${...}` / `*{...}`                 | 0.5–0.6, 1.4–1.5, 1.7, 2.3, 2.6, 3.2–3.5, 4.3, 4.5–4.6, 5.2, 5.5, 6.1–6.2, 6.4–6.5, 7.1, 8.1, 8.3–8.4, 9.4                                             |
+| `08-JPA.pdf`         | `@Entity`/`@Id`/`@GeneratedValue`, `@ManyToOne`/`@OneToMany`/`@ManyToMany`, `JpaRepository`/`CrudRepository`, query method naming, `@Query`/`@Modifying`, validation annotations (`@NotNull`, `@NotBlank`, `@Email`, `@Min`/`@Max`), `@Valid`/`BindingResult`, `@Transactional`, `CommandLineRunner`, `application.properties` DB config | 0.2–0.3, 1.1–1.3, 1.4–1.6, 2.1–2.4, 4.1, 4.3–4.4, 4.6, 5.1, 5.3–5.5, 6.1–6.2, 6.4–6.5, 7.1–7.4, 8.2, 8.4, 9.2, 9.4, 9.9, 10.1, 10.3                    |
+
+
