@@ -102,19 +102,19 @@ testable before moving on.
 
 **Goal:** A working cart that lives in the session - no account needed yet.
 
-- [ ] **3.1 - CartBean (`@SessionScope`).** Holds a map/list of `{productId, quantity}`.
+- [x] **3.1 - CartBean (`@SessionScope`).** Holds a map/list of `{productId, quantity}`.
   > 📖 **Materials:** `07-SpringBeans.pdf` – `@Bean @SessionScope` in `@Configuration` class (slide 21); session scope definition (slide 17); bean must implement `Serializable` (slide 7); Spring sessions (slide 23); the shopping-cart session problem and why DI solves it (slide 20); `07-LongPolling.pdf` – thread pool: one thread per request, session bean is per-user (slide 2).
 
-- [ ] **3.2 - Add to cart.** Button on Product Detail posts to `/cart/add`.
+- [x] **3.2 - Add to cart.** Button on Product Detail posts to `/cart/add`.
   > 📖 **Materials:** `07-SpringMVC.pdf` – `@PostMapping` (slide 6); `@RequestParam` or `@RequestBody` to receive product id + quantity (slides 7, 8); controller redirects after POST to avoid double-submission (slide 9, redirect solves the "double submission" problem). `08-thymeleaf.pdf` – build the "Add to Cart" form with `th:action="@{/cart/add}"`, `th:object`, and hidden `th:field="*{productId}"` inputs (slides 13, 14).
 
-- [ ] **3.3 - Cart page.** `/cart` shows items, quantities, line totals, grand total.
+- [x] **3.3 - Cart page.** `/cart` shows items, quantities, line totals, grand total.
   > 📖 **Materials:** `07-SpringMVC.pdf` – controller returning a view with `Model` (slides 9, 11); passing the CartBean's data as model attributes (slide 14); Thymeleaf rendering (slide 13). `08-thymeleaf.pdf` – iterate cart items with `th:each="item : ${cartItems}"` (slide 10); display price, quantity, totals with `th:text="${item.price}"` (slide 3); use `th:switch` / `th:case` for status labels if needed (slide 9).
 
-- [ ] **3.4 - Update / remove.** Change quantity and remove items from the cart page.
+- [x] **3.4 - Update / remove.** Change quantity and remove items from the cart page.
   > 📖 **Materials:** `07-SpringMVC.pdf` – `@PostMapping` / `@DeleteMapping` (slide 6); `@PathVariable` or `@RequestParam` for item id (slides 7, 8); redirect after POST (slide 9). `08-thymeleaf.pdf` – build update/remove forms with `th:action="@{/cart/remove/{id}(id=${item.id})}"` using URL parameter expressions (slide 7); use `th:field` for quantity input (slide 13).
 
-- [ ] **3.5 - Cart badge.** Show item count in the header (reads CartBean).
+- [x] **3.5 - Cart badge.** Show item count in the header (reads CartBean).
   > 📖 **Materials:** `07-SpringBeans.pdf` – `@Resource` injection of the session bean into the controller (slide 21); `07-SpringMVC.pdf` – add count attribute to `Model` so Thymeleaf can render it in the layout fragment (slide 14). `08-thymeleaf.pdf` – display count in the layout fragment with `th:text="${cartCount}"` (slide 3); conditionally show/hide the badge with `th:if="${cartCount > 0}"` (slide 8).
 
 ---

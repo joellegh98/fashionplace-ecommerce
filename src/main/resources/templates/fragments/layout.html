@@ -39,6 +39,13 @@
                         <li class="nav-item">
                             <a class="nav-link" th:href="@{/browse}">Browse</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/cart}">
+                                Cart
+                                <span th:if="${cartCount > 0}" class="badge bg-primary rounded-pill ms-1"
+                                      th:text="${cartCount}">0</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
