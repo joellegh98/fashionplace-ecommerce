@@ -60,13 +60,13 @@ testable before moving on.
 - [x] **1.3 - Seed data at startup.** A `DataSeeder` (`CommandLineRunner` bean) inserts ~6 products **only if the table is empty** (so it works on an empty DB).
   > 📖 **Materials:** `07-SpringBeans.pdf` – Bean lifecycle: `@PostConstruct` for init logic (slide 28); `@Component` bean auto-detected by classpath scan (slide 6). `08-JPA.pdf` – initialize application data with `CommandLineRunner`: annotate class with `@Component`, inject repository with `@Autowired`, override `run()` to insert data; `run()` is called after context loads (slide 35).
 
-- [ ] **1.4 - Browse page.** `/browse` lists all products as cards. (Controller talks to repo directly for now.)
+- [x] **1.4 - Browse page.** `/browse` lists all products as cards. (Controller talks to repo directly for now.)
   > 📖 **Materials:** `07-SpringMVC.pdf` – `@GetMapping` (slide 6); `Model` / `model.addAttribute()` to pass list to view (slides 11, 14); Thymeleaf iterating a list in the template (slide 13); controller returns view name (slide 9). `08-thymeleaf.pdf` – iterate a collection with `th:each="product: ${products}"` and display fields with `th:text="${product.title}"` (slide 10); use `th:text` to render individual attributes (slide 3). `08-JPA.pdf` – `findAll()` returns all rows from the table (slide 9); call `repository.findAll()` in the controller and pass to model (slide 29).
 
-- [ ] **1.5 - Product detail page.** `/product/{id}` shows one product's full info.
+- [x] **1.5 - Product detail page.** `/product/{id}` shows one product's full info.
   > 📖 **Materials:** `07-SpringMVC.pdf` – `@PathVariable` for REST-style URL parsing (slide 8); `@GetMapping` with URL pattern `/product/{id}` (slide 6); passing the object to the view via `Model` (slide 11). `08-thymeleaf.pdf` – use `${product.field}` variable expressions to display all object properties (slide 5); use `th:text="${product.price}"` etc. (slide 3). `08-JPA.pdf` – `findById(id)` returns `Optional<Entity>`; call `.get()` or `.orElseThrow()` (slide 9).
 
-- [ ] **1.6 - Introduce ProductService.** Move data access out of the controller into `ProductService` (constructor injection). Controller calls the service. (Demonstrates Beans + DI.)
+- [x] **1.6 - Introduce ProductService.** Move data access out of the controller into `ProductService` (constructor injection). Controller calls the service. (Demonstrates Beans + DI.)
   > 📖 **Materials:** `07-SpringBeans.pdf` – `@Service` for business logic beans (slide 6); **constructor injection** (recommended default) (slides 9, 10, 11); `@Autowired` (slide 8); dependency injection concept / Inversion of Control (slides 2, 3, 4); controller → service → repository dependency graph (slide 8 diagram). `08-JPA.pdf` – Roadmap step 2/6: define a `@Service` class to encapsulate operations and separate the controller from the DB interface (slide 26); Roadmap step 3/6: let Spring inject the repository with `@Autowired` (slide 27).
 
 - [ ] **1.7 - Nav links.** Add Home / Browse links to the layout header.

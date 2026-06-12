@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<!--
+  Product detail page. Shows full info for a single product. The layout fragment
+  supplies the header/footer; this file provides its own <title> and <main>.
+-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title th:text="'FashionPlace - ' + ${product.title}">FashionPlace - Product</title>
+</head>
+<body>
+    <main>
+        <p class="mb-3">
+            <a th:href="@{/browse}">&larr; Back to Browse</a>
+        </p>
+
+        <h1 class="mb-3" th:text="${product.title}">Product title</h1>
+
+        <dl class="row">
+            <dt class="col-sm-2">Description</dt>
+            <dd class="col-sm-10" th:text="${product.description}">Description</dd>
+
+            <dt class="col-sm-2">Price</dt>
+            <dd class="col-sm-10 fw-bold" th:text="'$' + ${product.price}">$0.00</dd>
+        </dl>
+    </main>
+</body>
+</html>

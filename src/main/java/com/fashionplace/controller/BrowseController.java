@@ -1,23 +1,20 @@
 package com.fashionplace.controller;
 
-import com.fashionplace.repository.ProductRepository;
+import com.fashionplace.service.ProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 /**
  * Serves the public Browse page that lists every product.
- *
- * <p>For now the controller talks to {@link ProductRepository} directly; a service layer
- * is introduced in a later phase.</p>
  */
 @Controller
 public class BrowseController {
 
-    private final ProductRepository productRepository;
+    private final ProductService productService;
 
-    public BrowseController(ProductRepository productRepository) {
-        this.productRepository = productRepository;
+    public BrowseController(ProductService productService) {
+        this.productService = productService;
     }
 
     /**
@@ -28,7 +25,7 @@ public class BrowseController {
      */
     @GetMapping("/browse")
     public String browse(Model model) {
-        model.addAttribute("products", productRepository.findAll());
+        model.addAttribute("products", productService.findAll());
         return "browse";
     }
 }
