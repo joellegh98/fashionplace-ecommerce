@@ -69,7 +69,7 @@ testable before moving on.
 - [x] **1.6 - Introduce ProductService.** Move data access out of the controller into `ProductService` (constructor injection). Controller calls the service. (Demonstrates Beans + DI.)
   > 📖 **Materials:** `07-SpringBeans.pdf` – `@Service` for business logic beans (slide 6); **constructor injection** (recommended default) (slides 9, 10, 11); `@Autowired` (slide 8); dependency injection concept / Inversion of Control (slides 2, 3, 4); controller → service → repository dependency graph (slide 8 diagram). `08-JPA.pdf` – Roadmap step 2/6: define a `@Service` class to encapsulate operations and separate the controller from the DB interface (slide 26); Roadmap step 3/6: let Spring inject the repository with `@Autowired` (slide 27).
 
-- [ ] **1.7 - Nav links.** Add Home / Browse links to the layout header.
+- [x] **1.7 - Nav links.** Add Home / Browse links to the layout header.
   > 📖 **Materials:** `07-SpringMVC.pdf` – Thymeleaf template syntax, `th:href` in layout (slide 13, 29); static folder for linked CSS/JS (slide 19). `08-thymeleaf.pdf` – `@{...}` link expressions: use `th:href="@{/browse}"` for context-aware URLs (slide 7); include links inside a reusable layout fragment (slides 11, 12).
 
 ---
@@ -141,6 +141,12 @@ testable before moving on.
 - [ ] **4.6 - Add review form.** Post a review (attributed to the temporary current user).
   > 📖 **Materials:** `07-SpringMVC.pdf` – `@PostMapping` (slide 6); `@RequestBody` or `@RequestParam` to receive form data (slides 7, 8); redirect after POST (slide 9); `07-SpringBeans.pdf` – validation annotations (`@NotBlank`, `@Min`, `@Max`) on the DTO class (slide 26); `@Valid` + `BindingResult` in controller (slide 26); `07-SpringMVC.pdf` – `BindingResult` in Other params (slide 17). `08-thymeleaf.pdf` – build the review form with `th:action="@{/product/{id}/review(id=${product.id})}"`, `th:object="${review}"`, `th:field="*{rating}"`, `th:field="*{comment}"` (slides 13, 14); display field errors inline with `th:if="${#fields.hasErrors('rating')}"` and `th:errors="*{rating}"` (slide 15). `08-JPA.pdf` – validation annotations `@Min`, `@Max`, `@NotBlank` on the Review entity (slides 14, 15); catch errors via `BindingResult` in the controller (slide 19).
 
+- [ ] **4.7 - Wishlist entity + repo.** `WishlistItem` (`createdAt`) with `@ManyToOne User owner` and `@ManyToOne Product product`. Repo: `findByOwner(User)`, `existsByOwnerAndProduct(User, Product)`. (7th entity.)
+  > 📖 **Materials:** `07-SpringBeans.pdf` – `@Repository` (slide 6); bean requirements (slide 7); beans for database access (slide 25). `08-JPA.pdf` – `@Entity` with two `@ManyToOne` relations (User + Product); `@CreationTimestamp` on `createdAt` (slide 3); query methods `findByOwner(...)` and `existsByOwnerAndProduct(...)` (slides 10, 11); Roadmap 1/6 for entity structure (slide 25); Roadmap 2/6 for `JpaRepository` interface (slide 26).
+
+- [ ] **4.8 - Wishlist add/remove + page.** "Save" button on Product Detail (and Browse cards) posts to `/wishlist/add`; `/wishlist` lists saved products; remove action. Attributed to the temporary current user.
+  > 📖 **Materials:** `07-SpringMVC.pdf` – `@GetMapping` / `@PostMapping` (slide 6); `@RequestParam` for product id (slide 7); redirect after POST (slide 9); `Model.addAttribute(list)` (slide 14). `07-SpringBeans.pdf` – `@Service` for wishlist logic (slide 6); constructor injection (slides 9, 10); inject `CurrentUserProvider` (slide 6). `08-thymeleaf.pdf` – wishlist form with `th:action="@{/wishlist/add}"` and hidden `productId` (slides 13, 14); iterate saved items with `th:each="item : ${wishlistItems}"` (slide 10); remove link with `th:href="@{/wishlist/remove/{id}(id=${item.id})}"` (slide 7). `08-JPA.pdf` – `save(wishlistItem)` and `deleteById(id)` (slide 9).
+
 ---
 
 ## Phase 5 - Orders & checkout
@@ -161,6 +167,12 @@ testable before moving on.
 
 - [ ] **5.5 - My Orders page.** `/orders` lists the current (fake) user's orders with status.
   > 📖 **Materials:** `07-SpringMVC.pdf` – `@GetMapping` (slide 6); `Model.addAttribute(list)` (slide 14); Thymeleaf rendering (slide 13). `08-thymeleaf.pdf` – iterate orders with `th:each="order : ${orders}"` (slide 10); show status with `th:text="${order.status}"` (slide 3); use `th:switch="${order.status}"` / `th:case` for status-colored badges (slide 9). `08-JPA.pdf` – query method `findByBuyer(User buyer)` to get only the current user's orders (slides 10, 11).
+
+- [ ] **5.6 - RecommendationService.** Collect categories from the current user's past orders, then suggest other ACTIVE products in those categories via `findByCategoryInAndStatus(...)`, excluding already-purchased items. No new entity — pure service/query logic.
+  > 📖 **Materials:** `07-SpringBeans.pdf` – `@Service` for recommendation logic (slide 6); constructor injection of `OrderRepository`, `ProductRepository`, `CurrentUserProvider` (slides 9, 10). `08-JPA.pdf` – traverse `Order` → `OrderItem` → `Product` to collect categories; query method `findByCategoryInAndStatus(...)` (slides 10, 11); use `@Query` if method-name syntax is insufficient (slide 13).
+
+- [ ] **5.7 - Show recommendations.** "Recommended for you" section on Home/Browse driven by `RecommendationService`; "Related products" (same `category`) block on Product Detail.
+  > 📖 **Materials:** `07-SpringMVC.pdf` – pass recommendation list via `Model.addAttribute()` (slide 14); `@GetMapping` on Home/Browse/Product controllers (slide 6). `08-thymeleaf.pdf` – iterate recommendations with `th:each="product : ${recommendations}"` (slide 10); product cards with `th:href="@{/product/{id}(id=${product.id})}"` (slide 7); conditionally hide section with `th:if="${!#lists.isEmpty(recommendations)}"` (slide 8). `08-JPA.pdf` – `findByCategoryAndStatus(...)` for related products on detail page (slides 10, 11).
 
 ---
 
@@ -204,6 +216,15 @@ testable before moving on.
 - [ ] **7.5 - Activity log + Interceptor.** Log key actions (login, order, product changes) via a `HandlerInterceptor`; show in admin.
   > 📖 **Materials:** `07-SpringBeans.pdf` – `@Component` for the interceptor bean (slide 6); `@Autowired` / constructor injection of the log repository (slides 8, 9); singleton scope — the interceptor is one instance shared by all requests, so thread-safety applies (slide 17); `07-LongPolling.pdf` – thread pool reminder: each HTTP request runs on its own thread, the interceptor runs in that thread context (slide 2).
 
+- [ ] **7.6 - SupportMessage entity + repo.** `SupportMessage` (`subject`, `body`, `senderType` USER/SUPPORT, `status` OPEN/CLOSED, `createdAt`) with `@ManyToOne User`. Repo: `findByUser(User)`, `findByStatus(...)`. (8th entity.)
+  > 📖 **Materials:** `07-SpringBeans.pdf` – `@Repository` (slide 6); bean requirements (slide 7); `@Converter` note for enum-to-DB mapping (slide 29). `08-JPA.pdf` – `@Entity` with `@ManyToOne User`; `@CreationTimestamp` on `createdAt` (slide 3); query methods `findByUser(...)` and `findByStatus(...)` (slides 10, 11); Roadmap 1/6 for entity structure (slide 25); Roadmap 2/6 for `JpaRepository` interface (slide 26).
+
+- [ ] **7.7 - Contact support (user side).** `/support` page: form to submit a message + list of the user's own messages and replies.
+  > 📖 **Materials:** `07-SpringMVC.pdf` – `@GetMapping` / `@PostMapping` (slide 6); `@Valid` form submission (slide 17); `Model.addAttribute(list)` (slide 14); redirect after POST (slide 9). `07-SpringBeans.pdf` – `@Service` for support message logic (slide 6); validation with `@NotBlank` on subject/body (slide 26). `08-thymeleaf.pdf` – support form with `th:action="@{/support}"`, `th:object`, `th:field="*{subject}"`, `th:field="*{body}"` (slides 13, 14); iterate messages with `th:each="msg : ${messages}"` (slide 10); show sender type with `th:switch` / `th:case` (slide 9). `08-JPA.pdf` – `save(supportMessage)` (slide 29).
+
+- [ ] **7.8 - Admin support inbox.** `/admin/support`: list all message threads, reply as SUPPORT, mark resolved (CLOSED).
+  > 📖 **Materials:** `07-SpringMVC.pdf` – `@GetMapping` / `@PostMapping` (slide 6); `@PathVariable` for message id (slide 8); redirect after reply/resolve (slide 9); `Model.addAttribute(list)` (slide 14). `07-SpringBeans.pdf` – `@Service` coordinates reply + status update (slide 6). `08-thymeleaf.pdf` – iterate threads with `th:each` (slide 10); reply form with `th:action` and `th:field` (slides 13, 14); status badge with `th:switch` / `th:case` (slide 9). `08-JPA.pdf` – `save(message)` after setting `status=CLOSED` or appending reply (slide 29).
+
 ---
 
 ## Phase 8 - Robustness & polish (before turning on security)
@@ -240,10 +261,10 @@ testable before moving on.
 - [ ] **9.4 - Login & Registration pages.** Login form + a registration form (`@Valid`) that creates a USER.
   > 📖 **Materials:** `07-SpringMVC.pdf` – `@PostMapping` (slide 6); `@RequestBody` / `@RequestParam` (slides 7, 8); redirect after successful registration (slide 9); `@GetMapping` for multiple URLs e.g. `{"/login","/logout"}` (slide 6); `07-SpringBeans.pdf` – DTO with `@NotBlank`, `@Email`, `@Pattern` for password complexity (slide 26); `@Valid` + `BindingResult` (slide 26). `08-thymeleaf.pdf` – build login and registration forms with `th:action`, `th:object`, `th:field` (slides 13, 14); show registration validation errors inline with `th:errors` (slide 15). `08-JPA.pdf` – validation annotations on the registration DTO: `@NotBlank`, `@Email`, `@Size` (slides 14, 15); Roadmap 6/6: `@Valid` + `BindingResult` pattern for form submission (slide 30).
 
-- [ ] **9.5 - Swap the fake current user.** `CurrentUserProvider` now reads the authenticated principal everywhere (reviews, orders, products).
+- [ ] **9.5 - Swap the fake current user.** `CurrentUserProvider` now reads the authenticated principal everywhere (reviews, orders, products, wishlist, support messages).
   > 📖 **Materials:** `07-SpringMVC.pdf` – `Principal` as a controller method parameter (slide 17, "Other params"); `07-SpringBeans.pdf` – the `CurrentUserProvider` bean is `@Component` / `@Service` injected by constructor (slides 6, 9).
 
-- [ ] **9.6 - Role-based access.** `/admin/`** -> ADMIN only; `/sell`, `/orders`, `/my-products`, checkout -> authenticated. Home/Browse/Detail stay public.
+- [ ] **9.6 - Role-based access.** `/admin/`** -> ADMIN only (including `/admin/support`); `/sell`, `/orders`, `/my-products`, `/wishlist`, `/support`, checkout -> authenticated. Home/Browse/Detail stay public.
   > 📖 **Materials:** `07-SpringMVC.pdf` – catching multiple URL patterns in one mapping (slide 6: `@GetMapping(value = {"/login","/logout"})`); `07-SpringBeans.pdf` – `@Configuration` SecurityConfig with role rules (slide 12, 14).
 
 - [ ] **9.7 - Ownership rules.** Users can only edit/delete **their own** products.
@@ -276,13 +297,13 @@ testable before moving on.
 ## Requirement coverage check
 
 - **Spring Boot MVC + Thymeleaf:** Phases 0-8 (controllers + views, server-side logic).
-- **>= 5 major pages:** Home, Browse/Search, Product Detail, Cart, Orders, Sell, My Products, Admin.
+- **>= 5 major pages:** Home, Browse/Search, Product Detail, Cart, Orders, Sell, My Products, Wishlist, Support, Admin.
 - **Sessions:** RecentSearchBean (2.5), CartBean (3.1), browsing state (2.4).
 - **Beans & DI:** Services injected via constructor (1.6 onward).
-- **JPA + MySQL `ex4`, >=4 related repos:** User, Product, Order, OrderItem, Review, SavedSearch (6 entities).
+- **JPA + MySQL `ex4`, >=4 related repos:** User, Product, Order, OrderItem, Review, SavedSearch, WishlistItem, SupportMessage (8 entities).
 - **Spring Security (auth + authz + registration):** Phase 9.
 - **Robustness:** validation, transactions, error pages, access control (Phases 5, 6, 8, 9).
-- **Optional extras:** file upload (6.3), interceptor/activity log (7.5).
+- **Optional extras:** file upload (6.3), interceptor/activity log (7.5), product recommendations (5.6–5.7), customer support messaging (7.6–7.8).
 
 ---
 
@@ -291,10 +312,10 @@ testable before moving on.
 
 | Material File        | Key Topics Covered                                                                                                                                                                                                                                                                                                                       | Steps That Use It                                                                                                                                      |
 | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `07-SpringMVC.pdf`   | `@Controller`, `@GetMapping`/`@PostMapping`/`@PutMapping`/`@DeleteMapping`, `@RequestParam`, `@PathVariable`, `@RequestBody`, Model/ModelMap/ModelAndView, Thymeleaf, static files, error pages, file upload, redirect/forward, `application.properties`                                                                                 | 0.1–0.7, 1.4–1.7, 2.1–2.4, 2.6, 3.2–3.5, 4.5–4.6, 5.2–5.5, 6.1–6.5, 7.1–7.3, 8.1–8.4, 9.3–9.7, 10.1–10.2                                               |
-| `07-SpringBeans.pdf` | `@Component`/`@Service`/`@Repository`, `@Bean`/`@Configuration`, `@Autowired`/`@Resource`, constructor/setter/field injection, `@SessionScope`/`@ApplicationScope`/`@RequestScope`, `@PostConstruct`/`@PreDestroy`, Validation (`@Valid`, `@NotBlank`, `@Email`, `@Pattern`), Spring sessions                                            | 0.4–0.5, 1.1–1.3, 1.6, 2.5–2.6, 3.1, 4.1–4.2, 4.4, 5.1, 5.3–5.4, 6.1–6.2, 7.4, 7.5, 8.2–8.4, 9.1–9.2, 9.5, 9.8–9.9                                     |
+| `07-SpringMVC.pdf`   | `@Controller`, `@GetMapping`/`@PostMapping`/`@PutMapping`/`@DeleteMapping`, `@RequestParam`, `@PathVariable`, `@RequestBody`, Model/ModelMap/ModelAndView, Thymeleaf, static files, error pages, file upload, redirect/forward, `application.properties`                                                                                 | 0.1–0.7, 1.4–1.7, 2.1–2.4, 2.6, 3.2–3.5, 4.5–4.8, 5.2–5.7, 6.1–6.5, 7.1–7.3, 7.7–7.8, 8.1–8.4, 9.3–9.7, 10.1–10.2                                      |
+| `07-SpringBeans.pdf` | `@Component`/`@Service`/`@Repository`, `@Bean`/`@Configuration`, `@Autowired`/`@Resource`, constructor/setter/field injection, `@SessionScope`/`@ApplicationScope`/`@RequestScope`, `@PostConstruct`/`@PreDestroy`, Validation (`@Valid`, `@NotBlank`, `@Email`, `@Pattern`), Spring sessions                                            | 0.4–0.5, 1.1–1.3, 1.6, 2.5–2.6, 3.1, 4.1–4.2, 4.4, 4.7–4.8, 5.1, 5.3–5.6, 6.1–6.2, 7.4–7.8, 8.2–8.4, 9.1–9.2, 9.5, 9.8–9.9                             |
 | `07-LongPolling.pdf` | Web-server thread pool, single controller instance, race conditions, non-blocking design (DeferredResult), WebSockets, SSE — **background architecture awareness**                                                                                                                                                                       | 0.5 (thread model), 2.5 (session + threads), 3.1 (session + threads), 5.3 (non-blocking service), 7.5 (interceptor threading), 9.8 (cart merge thread) |
-| `08-thymeleaf.pdf`   | Template engine setup (pom.xml dep + `xmlns:th`), `th:text`, `th:href`/`@{...}`, `th:each`, `th:if`/`th:unless`, `th:switch`/`th:case`, `th:object`/`th:field`/`th:action` (forms), `th:insert`/`th:replace` (fragments), `#fields.hasErrors`/`th:errors` (validation display), variable expressions `${...}` / `*{...}`                 | 0.5–0.6, 1.4–1.5, 1.7, 2.3, 2.6, 3.2–3.5, 4.3, 4.5–4.6, 5.2, 5.5, 6.1–6.2, 6.4–6.5, 7.1, 8.1, 8.3–8.4, 9.4                                             |
-| `08-JPA.pdf`         | `@Entity`/`@Id`/`@GeneratedValue`, `@ManyToOne`/`@OneToMany`/`@ManyToMany`, `JpaRepository`/`CrudRepository`, query method naming, `@Query`/`@Modifying`, validation annotations (`@NotNull`, `@NotBlank`, `@Email`, `@Min`/`@Max`), `@Valid`/`BindingResult`, `@Transactional`, `CommandLineRunner`, `application.properties` DB config | 0.2–0.3, 1.1–1.3, 1.4–1.6, 2.1–2.4, 4.1, 4.3–4.4, 4.6, 5.1, 5.3–5.5, 6.1–6.2, 6.4–6.5, 7.1–7.4, 8.2, 8.4, 9.2, 9.4, 9.9, 10.1, 10.3                    |
+| `08-thymeleaf.pdf`   | Template engine setup (pom.xml dep + `xmlns:th`), `th:text`, `th:href`/`@{...}`, `th:each`, `th:if`/`th:unless`, `th:switch`/`th:case`, `th:object`/`th:field`/`th:action` (forms), `th:insert`/`th:replace` (fragments), `#fields.hasErrors`/`th:errors` (validation display), variable expressions `${...}` / `*{...}`                 | 0.5–0.6, 1.4–1.5, 1.7, 2.3, 2.6, 3.2–3.5, 4.3, 4.5–4.8, 5.2, 5.5–5.7, 6.1–6.2, 6.4–6.5, 7.1, 7.7–7.8, 8.1, 8.3–8.4, 9.4                                |
+| `08-JPA.pdf`         | `@Entity`/`@Id`/`@GeneratedValue`, `@ManyToOne`/`@OneToMany`/`@ManyToMany`, `JpaRepository`/`CrudRepository`, query method naming, `@Query`/`@Modifying`, validation annotations (`@NotNull`, `@NotBlank`, `@Email`, `@Min`/`@Max`), `@Valid`/`BindingResult`, `@Transactional`, `CommandLineRunner`, `application.properties` DB config | 0.2–0.3, 1.1–1.3, 1.4–1.6, 2.1–2.4, 4.1, 4.3–4.4, 4.6–4.8, 5.1, 5.3–5.7, 6.1–6.2, 6.4–6.5, 7.1–7.4, 7.6–7.8, 8.2, 8.4, 9.2, 9.4, 9.9, 10.1, 10.3       |
 
 
