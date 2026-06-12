@@ -1,6 +1,7 @@
 package com.fashionplace.controller;
 
 import com.fashionplace.service.ProductService;
+import com.fashionplace.web.AddToCartForm;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +29,11 @@ public class ProductController {
     @GetMapping("/product/{id}")
     public String productDetail(@PathVariable Long id, Model model) {
         model.addAttribute("product", productService.findById(id));
+
+        AddToCartForm addToCart = new AddToCartForm();
+        addToCart.setProductId(id);
+        model.addAttribute("addToCart", addToCart);
+
         return "product";
     }
 }
