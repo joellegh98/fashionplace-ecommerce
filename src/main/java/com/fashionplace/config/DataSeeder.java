@@ -31,32 +31,44 @@ public class DataSeeder implements CommandLineRunner {
         productRepository.save(new Product(
                 "Gold Hoop Earrings",
                 "Classic 14k gold-plated hoop earrings, lightweight and perfect for everyday wear.",
-                new BigDecimal("45.99")
+                new BigDecimal("45.99"),
+                "Jewelry", "New", "ACTIVE",
+                "https://picsum.photos/seed/earrings/400/300"
         ));
         productRepository.save(new Product(
                 "Silver Chain Necklace",
                 "Delicate sterling silver chain with a minimalist pendant.",
-                new BigDecimal("62.50")
+                new BigDecimal("62.50"),
+                "Jewelry", "New", "ACTIVE",
+                "https://picsum.photos/seed/necklace/400/300"
         ));
         productRepository.save(new Product(
                 "Leather Biker Jacket",
                 "Genuine black leather jacket with zip front and quilted shoulders.",
-                new BigDecimal("189.00")
+                new BigDecimal("189.00"),
+                "Clothing", "Used", "ACTIVE",
+                "https://picsum.photos/seed/jacket/400/300"
         ));
         productRepository.save(new Product(
                 "Vintage Denim Jeans",
                 "High-waisted straight-leg jeans in a faded blue wash.",
-                new BigDecimal("55.00")
+                new BigDecimal("55.00"),
+                "Clothing", "Used", "ACTIVE",
+                "https://picsum.photos/seed/jeans/400/300"
         ));
         productRepository.save(new Product(
                 "Pearl Bracelet",
                 "Freshwater pearl bracelet with a silver clasp, elegant and timeless.",
-                new BigDecimal("38.75")
+                new BigDecimal("38.75"),
+                "Jewelry", "New", "ACTIVE",
+                "https://picsum.photos/seed/bracelet/400/300"
         ));
         productRepository.save(new Product(
                 "Silk Evening Dress",
                 "Floor-length emerald silk dress, ideal for formal occasions.",
-                new BigDecimal("220.00")
+                new BigDecimal("220.00"),
+                "Clothing", "New", "SOLD",
+                "https://picsum.photos/seed/dress/400/300"
         ));
     }
 }

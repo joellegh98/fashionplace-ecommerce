@@ -78,7 +78,7 @@ testable before moving on.
 
 **Goal:** Make Browse useful and introduce the first session-scoped bean.
 
-- [ ] **2.1 - Keyword search.** Add a search box on Browse; `/browse?q=ring` filters by title (repo `findByTitleContainingIgnoreCase`).
+- [x] **2.1 - Keyword search.** Add a search box on Browse; `/browse?q=ring` filters by title (repo `findByTitleContainingIgnoreCase`).
   > 📖 **Materials:** `07-SpringMVC.pdf` – `@RequestParam` to bind query-string parameters (slide 7); optional param with `required=false, defaultValue=""` (slide 7); `@GetMapping` (slide 6). `08-JPA.pdf` – Spring Data query creation by method name: `findByTitleContainingIgnoreCase(String q)` — Spring generates the SQL automatically (slides 10, 11); supported keywords include `Containing`, `IgnoreCase`, `And`, `Or` (slide 12).
 
 - [ ] **2.2 - Extend Product fields.** Add `category`, `condition`, `status` (e.g. ACTIVE/SOLD), `imageUrl`. Update seed data.

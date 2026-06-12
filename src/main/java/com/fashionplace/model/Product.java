@@ -1,5 +1,6 @@
 package com.fashionplace.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,9 +15,9 @@ import java.math.BigDecimal;
  * table by JPA/Hibernate; with {@code spring.jpa.hibernate.ddl-auto=update} configured,
  * Hibernate creates (or updates) the {@code product} table automatically at startup.</p>
  *
- * <p>This is the minimal version (Phase 1.1): it holds only the essential fields
- * ({@code id}, {@code title}, {@code description}, {@code price}). Additional fields such
- * as category, condition, status, image and the seller relation are introduced in later phases.</p>
+ * <p>Beyond the core fields ({@code id}, {@code title}, {@code description}, {@code price}),
+ * Phase 2.2 adds {@code category}, {@code condition}, {@code status} and {@code imageUrl}
+ * to support browsing filters and listing state. The seller relation is added in a later phase.</p>
  */
 @Entity
 public class Product {
@@ -40,6 +41,22 @@ public class Product {
     /** Selling price. {@link BigDecimal} is used to avoid floating-point rounding errors on money. */
     private BigDecimal price;
 
+    /** High-level grouping used for browsing/filtering (e.g. "Jewelry", "Clothing"). */
+    private String category;
+
+    /**
+     * Physical condition of the item (e.g. "New", "Used"). Mapped to {@code item_condition}
+     * because {@code condition} is a reserved word in SQL.
+     */
+    @Column(name = "item_condition")
+    private String condition;
+
+    /** Listing state, e.g. {@code ACTIVE} or {@code SOLD}. Defaults to {@code ACTIVE}. */
+    private String status = "ACTIVE";
+
+    /** Optional URL of the product image shown on cards and the detail page. */
+    private String imageUrl;
+
     /**
      * No-args constructor required by JPA to instantiate entities via reflection.
      */
@@ -47,7 +64,7 @@ public class Product {
     }
 
     /**
-     * Convenience constructor for creating a product in code (e.g. seed data).
+     * Convenience constructor for the core fields. {@code status} defaults to {@code ACTIVE}.
      *
      * @param title       the product title
      * @param description the product description
@@ -57,6 +74,28 @@ public class Product {
         this.title = title;
         this.description = description;
         this.price = price;
+    }
+
+    /**
+     * Full convenience constructor for creating a product in code (e.g. seed data).
+     *
+     * @param title       the product title
+     * @param description the product description
+     * @param price       the selling price
+     * @param category    the product category
+     * @param condition   the item condition
+     * @param status      the listing status (e.g. {@code ACTIVE}, {@code SOLD})
+     * @param imageUrl    the product image URL
+     */
+    public Product(String title, String description, BigDecimal price,
+                   String category, String condition, String status, String imageUrl) {
+        this.title = title;
+        this.description = description;
+        this.price = price;
+        this.category = category;
+        this.condition = condition;
+        this.status = status;
+        this.imageUrl = imageUrl;
     }
 
     /**
@@ -129,5 +168,77 @@ public class Product {
      */
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    /**
+     * Returns the product category.
+     *
+     * @return the category
+     */
+    public String getCategory() {
+        return category;
+    }
+
+    /**
+     * Sets the product category.
+     *
+     * @param category the category to set
+     */
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    /**
+     * Returns the item condition.
+     *
+     * @return the condition
+     */
+    public String getCondition() {
+        return condition;
+    }
+
+    /**
+     * Sets the item condition.
+     *
+     * @param condition the condition to set
+     */
+    public void setCondition(String condition) {
+        this.condition = condition;
+    }
+
+    /**
+     * Returns the listing status.
+     *
+     * @return the status
+     */
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * Sets the listing status.
+     *
+     * @param status the status to set
+     */
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    /**
+     * Returns the product image URL.
+     *
+     * @return the image URL
+     */
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    /**
+     * Sets the product image URL.
+     *
+     * @param imageUrl the image URL to set
+     */
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
