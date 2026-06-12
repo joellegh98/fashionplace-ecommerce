@@ -4,6 +4,8 @@ import com.fashionplace.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Spring Data JPA repository for {@link Product} entities (primary key type {@link Long}).
  *
@@ -12,4 +14,13 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
+
+    /**
+     * Finds products whose title contains the given text, ignoring case. Spring Data
+     * derives the SQL from the method name.
+     *
+     * @param title the keyword to search for within the product title
+     * @return matching products
+     */
+    List<Product> findByTitleContainingIgnoreCase(String title);
 }

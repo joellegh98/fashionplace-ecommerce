@@ -12,9 +12,34 @@
     <main>
         <h1 class="mb-4">Browse</h1>
 
-        <!-- Shown only when there are no products in the database -->
+        <!-- Keyword search: submits a GET so the query stays in the URL (/browse?q=...) -->
+        <form class="row g-2 mb-4" method="get" th:action="@{/browse}">
+            <div class="col-sm-8 col-md-6">
+                <!-- position-relative anchors the full-width suggestions dropdown below the input -->
+                <div class="position-relative">
+                    <input type="text" class="form-control" name="q" th:value="${q}"
+                           id="searchInput" autocomplete="off"
+                           placeholder="Search products...">
+                    <!-- Custom suggestions dropdown: same width as the input, filled by the script -->
+                    <ul id="titleSuggestions"
+                        class="list-group position-absolute w-100 shadow-sm d-none"
+                        style="z-index: 1000; top: 100%; max-height: 320px; overflow-y: auto;">
+                    </ul>
+                </div>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+            <div class="col-auto" th:if="${q != null and !q.isEmpty()}">
+                <a class="btn btn-outline-secondary" th:href="@{/browse}">Clear</a>
+            </div>
+        </form>
+
+        <!-- Empty-state message depends on whether a search is active -->
         <p th:if="${#lists.isEmpty(products)}" class="text-muted">
-            No products available yet.
+            <span th:if="${q != null and !q.isEmpty()}"
+                  th:text="'No products match \'' + ${q} + '\'.'">No matches.</span>
+            <span th:unless="${q != null and !q.isEmpty()}">No products available yet.</span>
         </p>
 
         <!-- Responsive grid of product cards -->
@@ -31,6 +56,65 @@
                 </a>
             </div>
         </div>
+
+        <!-- Must live inside <main>: layout only injects title + main into the page shell -->
+        <script th:inline="javascript">
+            (function () {
+                const input = document.getElementById('searchInput');
+                const list = document.getElementById('titleSuggestions');
+                if (!input || !list) return;
+
+                const suggestUrl = /*[[@{/api/products/suggest}]]*/ '/api/products/suggest';
+                // Show suggestions as soon as the user types this many characters
+                const MIN_CHARS = 1;
+
+                function hide() {
+                    list.classList.add('d-none');
+                    list.innerHTML = '';
+                }
+
+                function render(titles) {
+                    list.innerHTML = '';
+                    if (titles.length === 0) {
+                        hide();
+                        return;
+                    }
+                    titles.forEach(title => {
+                        const item = document.createElement('button');
+                        item.type = 'button';
+                        item.className = 'list-group-item list-group-item-action text-start';
+                        item.textContent = title;
+                        // Clicking a suggestion fills the box and runs the search
+                        item.addEventListener('click', function () {
+                            input.value = title;
+                            hide();
+                            input.form.submit();
+                        });
+                        list.appendChild(item);
+                    });
+                    list.classList.remove('d-none');
+                }
+
+                input.addEventListener('input', function () {
+                    const q = input.value.trim();
+                    if (q.length < MIN_CHARS) {
+                        hide();
+                        return;
+                    }
+                    fetch(suggestUrl + '?q=' + encodeURIComponent(q))
+                        .then(response => response.ok ? response.json() : [])
+                        .then(render)
+                        .catch(hide);
+                });
+
+                // Close the dropdown when clicking elsewhere on the page
+                document.addEventListener('click', function (event) {
+                    if (!list.contains(event.target) && event.target !== input) {
+                        hide();
+                    }
+                });
+            })();
+        </script>
     </main>
 </body>
 </html>
