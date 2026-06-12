@@ -12,34 +12,87 @@
     <main>
         <h1 class="mb-4">Browse</h1>
 
-        <!-- Keyword search: submits a GET so the query stays in the URL (/browse?q=...) -->
-        <form class="row g-2 mb-4" method="get" th:action="@{/browse}">
-            <div class="col-sm-8 col-md-6">
-                <!-- position-relative anchors the full-width suggestions dropdown below the input -->
-                <div class="position-relative">
-                    <input type="text" class="form-control" name="q" th:value="${q}"
-                           id="searchInput" autocomplete="off"
-                           placeholder="Search products...">
-                    <!-- Custom suggestions dropdown: same width as the input, filled by the script -->
-                    <ul id="titleSuggestions"
-                        class="list-group position-absolute w-100 shadow-sm d-none"
-                        style="z-index: 1000; top: 100%; max-height: 320px; overflow-y: auto;">
-                    </ul>
+        <!-- Search + filters: GET keeps all criteria in the URL -->
+        <form class="mb-4" method="get" th:action="@{/browse}" id="browseForm">
+            <div class="row g-2 mb-2">
+                <div class="col-sm-8 col-md-6">
+                    <div class="position-relative">
+                        <input type="text" class="form-control" name="q" th:value="${q}"
+                               id="searchInput" autocomplete="off"
+                               placeholder="Search products...">
+                        <ul id="titleSuggestions"
+                            class="list-group position-absolute w-100 shadow-sm d-none"
+                            style="z-index: 1000; top: 100%; max-height: 320px; overflow-y: auto;">
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-sm-4 col-md-3">
+                    <!-- Auto-submit the form as soon as a category is chosen -->
+                    <select class="form-select" name="category" onchange="this.form.submit()">
+                        <option value="">All categories</option>
+                        <option th:each="cat : ${categories}" th:value="${cat}"
+                                th:text="${cat}"
+                                th:selected="${cat == category}">Category</option>
+                    </select>
+                </div>
+                <div class="col-sm-4 col-md-3">
+                    <!-- Auto-submit the form as soon as a condition is chosen -->
+                    <select class="form-select" name="condition" onchange="this.form.submit()">
+                        <option value="">All conditions</option>
+                        <option th:each="cond : ${conditions}" th:value="${cond}"
+                                th:text="${cond}"
+                                th:selected="${cond == condition}">Condition</option>
+                    </select>
                 </div>
             </div>
-            <div class="col-auto">
-                <button type="submit" class="btn btn-primary">Search</button>
-            </div>
-            <div class="col-auto" th:if="${q != null and !q.isEmpty()}">
-                <a class="btn btn-outline-secondary" th:href="@{/browse}">Clear</a>
+            <div class="row g-2 align-items-end">
+                <div class="col-sm-4 col-md-2">
+                    <label class="form-label small text-muted mb-0">Min price</label>
+                    <input type="number" class="form-control" name="minPrice" step="0.01" min="0"
+                           th:value="${minPrice}" placeholder="0">
+                </div>
+                <div class="col-sm-4 col-md-2">
+                    <label class="form-label small text-muted mb-0">Max price</label>
+                    <input type="number" class="form-control" name="maxPrice" step="0.01" min="0"
+                           th:value="${maxPrice}" placeholder="Any">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary">Apply</button>
+                </div>
+                <div class="col-auto"
+                     th:if="${(q != null and !q.isEmpty()) or (category != null and !category.isEmpty()) or (condition != null and !condition.isEmpty()) or minPrice != null or maxPrice != null}">
+                    <a class="btn btn-outline-secondary" th:href="@{/browse}">Clear all</a>
+                </div>
             </div>
         </form>
 
-        <!-- Empty-state message depends on whether a search is active -->
+        <!-- Active filter badges -->
+        <div class="mb-3 d-flex flex-wrap gap-2"
+             th:if="${(q != null and !q.isEmpty()) or (category != null and !category.isEmpty()) or (condition != null and !condition.isEmpty()) or minPrice != null or maxPrice != null}">
+            <span th:if="${q != null and !q.isEmpty()}" class="badge bg-primary">
+                Search: <span th:text="${q}">q</span>
+            </span>
+            <span th:if="${category != null and !category.isEmpty()}" class="badge bg-secondary">
+                Category: <span th:text="${category}">cat</span>
+            </span>
+            <span th:if="${condition != null and !condition.isEmpty()}" class="badge bg-info text-dark">
+                Condition: <span th:text="${condition}">cond</span>
+            </span>
+            <span th:if="${minPrice != null}" class="badge bg-light text-dark border">
+                Min: $<span th:text="${minPrice}">0</span>
+            </span>
+            <span th:if="${maxPrice != null}" class="badge bg-light text-dark border">
+                Max: $<span th:text="${maxPrice}">0</span>
+            </span>
+        </div>
+
         <p th:if="${#lists.isEmpty(products)}" class="text-muted">
-            <span th:if="${q != null and !q.isEmpty()}"
-                  th:text="'No products match \'' + ${q} + '\'.'">No matches.</span>
-            <span th:unless="${q != null and !q.isEmpty()}">No products available yet.</span>
+            <span th:if="${(q != null and !q.isEmpty()) or (category != null and !category.isEmpty()) or (condition != null and !condition.isEmpty()) or minPrice != null or maxPrice != null}">
+                No products match your filters.
+            </span>
+            <span th:unless="${(q != null and !q.isEmpty()) or (category != null and !category.isEmpty()) or (condition != null and !condition.isEmpty()) or minPrice != null or maxPrice != null}">
+                No products available yet.
+            </span>
         </p>
 
         <!-- Responsive grid of product cards -->

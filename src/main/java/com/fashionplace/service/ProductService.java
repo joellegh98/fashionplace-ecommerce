@@ -4,6 +4,7 @@ import com.fashionplace.model.Product;
 import com.fashionplace.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -33,17 +34,45 @@ public class ProductService {
     }
 
     /**
-     * Returns products whose title matches the keyword. A blank or {@code null}
-     * keyword returns all products.
+     * Returns products matching the optional keyword and browse filters.
      *
-     * @param keyword the search text (may be blank or {@code null})
-     * @return matching products, or all products when no keyword is given
+     * @param keyword   optional title keyword
+     * @param category  optional category (exact match)
+     * @param condition optional item condition (exact match)
+     * @param minPrice  optional minimum price (inclusive)
+     * @param maxPrice  optional maximum price (inclusive)
+     * @return products matching all non-empty criteria
      */
-    public List<Product> search(String keyword) {
-        if (keyword == null || keyword.isBlank()) {
-            return productRepository.findAll();
+    public List<Product> browse(String keyword, String category, String condition,
+                                BigDecimal minPrice, BigDecimal maxPrice) {
+        return productRepository.filter(
+                blankToNull(keyword),
+                blankToNull(category),
+                blankToNull(condition),
+                minPrice,
+                maxPrice
+        );
+    }
+
+    /**
+     * Returns distinct category values present in the database (for filter dropdowns).
+     */
+    public List<String> findDistinctCategories() {
+        return productRepository.findDistinctCategories();
+    }
+
+    /**
+     * Returns distinct condition values present in the database (for filter dropdowns).
+     */
+    public List<String> findDistinctConditions() {
+        return productRepository.findDistinctConditions();
+    }
+
+    private static String blankToNull(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
         }
-        return productRepository.findByTitleContainingIgnoreCase(keyword.trim());
+        return value.trim();
     }
 
     /**

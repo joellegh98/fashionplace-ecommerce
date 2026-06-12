@@ -81,7 +81,7 @@ testable before moving on.
 - [x] **2.1 - Keyword search.** Add a search box on Browse; `/browse?q=ring` filters by title (repo `findByTitleContainingIgnoreCase`).
   > 📖 **Materials:** `07-SpringMVC.pdf` – `@RequestParam` to bind query-string parameters (slide 7); optional param with `required=false, defaultValue=""` (slide 7); `@GetMapping` (slide 6). `08-JPA.pdf` – Spring Data query creation by method name: `findByTitleContainingIgnoreCase(String q)` — Spring generates the SQL automatically (slides 10, 11); supported keywords include `Containing`, `IgnoreCase`, `And`, `Or` (slide 12).
 
-- [ ] **2.2 - Extend Product fields.** Add `category`, `condition`, `status` (e.g. ACTIVE/SOLD), `imageUrl`. Update seed data.
+- [x] **2.2 - Extend Product fields.** Add `category`, `condition`, `status` (e.g. ACTIVE/SOLD), `imageUrl`. Update seed data.
   > 📖 **Materials:** `07-SpringBeans.pdf` – bean member/getter/setter naming convention (slide 7); `@Converter` note for enum-to-DB mapping (slide 29). `08-JPA.pdf` – adding new fields to an `@Entity`: each field becomes a DB column automatically; use `ddl-auto=update` to add columns without dropping data (slide 3).
 
 - [ ] **2.3 - Filters.** Add category + min/max price + condition filters to Browse (service builds the query).
