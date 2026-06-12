@@ -5,6 +5,7 @@ import com.fashionplace.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -44,14 +45,34 @@ public class ProductService {
      * @return products matching all non-empty criteria
      */
     public List<Product> browse(String keyword, String category, String condition,
-                                BigDecimal minPrice, BigDecimal maxPrice) {
-        return productRepository.filter(
+                                BigDecimal minPrice, BigDecimal maxPrice, String sort) {
+        List<Product> products = productRepository.filter(
                 blankToNull(keyword),
                 blankToNull(category),
                 blankToNull(condition),
                 minPrice,
                 maxPrice
         );
+        return applySort(products, sort);
+    }
+
+    /**
+     * Sorts the given products. {@code newest} uses descending id as a stand-in until
+     * {@code createdAt} is added to the entity.
+     */
+    private List<Product> applySort(List<Product> products, String sort) {
+        String effectiveSort = (sort == null || sort.isBlank()) ? "newest" : sort;
+        return switch (effectiveSort) {
+            case "price_asc" -> products.stream()
+                    .sorted(Comparator.comparing(Product::getPrice, Comparator.nullsLast(Comparator.naturalOrder())))
+                    .toList();
+            case "price_desc" -> products.stream()
+                    .sorted(Comparator.comparing(Product::getPrice, Comparator.nullsLast(Comparator.reverseOrder())))
+                    .toList();
+            default -> products.stream()
+                    .sorted(Comparator.comparing(Product::getId, Comparator.nullsLast(Comparator.reverseOrder())))
+                    .toList();
+        };
     }
 
     /**

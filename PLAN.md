@@ -84,10 +84,10 @@ testable before moving on.
 - [x] **2.2 - Extend Product fields.** Add `category`, `condition`, `status` (e.g. ACTIVE/SOLD), `imageUrl`. Update seed data.
   > 📖 **Materials:** `07-SpringBeans.pdf` – bean member/getter/setter naming convention (slide 7); `@Converter` note for enum-to-DB mapping (slide 29). `08-JPA.pdf` – adding new fields to an `@Entity`: each field becomes a DB column automatically; use `ddl-auto=update` to add columns without dropping data (slide 3).
 
-- [ ] **2.3 - Filters.** Add category + min/max price + condition filters to Browse (service builds the query).
+- [x] **2.3 - Filters.** Add category + min/max price + condition filters to Browse (service builds the query).
   > 📖 **Materials:** `07-SpringMVC.pdf` – receiving all parameters as a `MultiValueMap` or individual `@RequestParam` values (slide 7); `@Service` builds the query (keep controller thin) (slide 9). `08-JPA.pdf` – use `@Query("SELECT p FROM Product p WHERE ...")` for complex filter queries when method-name syntax is insufficient (slide 13); use `@Param` to bind named parameters (slide 13). `08-thymeleaf.pdf` – use `th:if="${condition}"` / `th:unless` to conditionally show active filter badges (slide 8).
 
-- [ ] **2.4 - Sorting.** Add sort by price / newest. Keep current sort in the URL.
+- [x] **2.4 - Sorting.** Add sort by price / newest. Keep current sort in the URL.
   > 📖 **Materials:** `07-SpringMVC.pdf` – `@RequestParam` with `defaultValue` for sort direction (slide 7); controller passes sort state back via `Model` (slide 14). `08-JPA.pdf` – use `@Query(value = "SELECT p FROM Product p ORDER BY ...")` or `findAll(Sort.by(...))` for dynamic sorting (slide 13).
 
 - [ ] **2.5 - RecentSearchBean (`@SessionScope`).** Store last N search keywords in session.

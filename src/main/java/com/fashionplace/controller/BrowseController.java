@@ -28,6 +28,7 @@ public class BrowseController {
      * @param condition optional condition filter
      * @param minPrice  optional minimum price
      * @param maxPrice  optional maximum price
+     * @param sort      sort key: {@code newest}, {@code price_asc}, or {@code price_desc}
      * @param model     holds products and current filter state for the view
      * @return the {@code browse} view name
      */
@@ -37,14 +38,16 @@ public class BrowseController {
                          @RequestParam(required = false, defaultValue = "") String condition,
                          @RequestParam(required = false) BigDecimal minPrice,
                          @RequestParam(required = false) BigDecimal maxPrice,
+                         @RequestParam(required = false, defaultValue = "newest") String sort,
                          Model model) {
         model.addAttribute("products",
-                productService.browse(q, category, condition, minPrice, maxPrice));
+                productService.browse(q, category, condition, minPrice, maxPrice, sort));
         model.addAttribute("q", q);
         model.addAttribute("category", category);
         model.addAttribute("condition", condition);
         model.addAttribute("minPrice", minPrice);
         model.addAttribute("maxPrice", maxPrice);
+        model.addAttribute("sort", sort);
         model.addAttribute("categories", productService.findDistinctCategories());
         model.addAttribute("conditions", productService.findDistinctConditions());
         return "browse";
