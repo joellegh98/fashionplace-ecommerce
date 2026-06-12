@@ -90,10 +90,10 @@ testable before moving on.
 - [x] **2.4 - Sorting.** Add sort by price / newest. Keep current sort in the URL.
   > 📖 **Materials:** `07-SpringMVC.pdf` – `@RequestParam` with `defaultValue` for sort direction (slide 7); controller passes sort state back via `Model` (slide 14). `08-JPA.pdf` – use `@Query(value = "SELECT p FROM Product p ORDER BY ...")` or `findAll(Sort.by(...))` for dynamic sorting (slide 13).
 
-- [ ] **2.5 - RecentSearchBean (`@SessionScope`).** Store last N search keywords in session.
+- [x] **2.5 - RecentSearchBean (`@SessionScope`).** Store last N search keywords in session.
   > 📖 **Materials:** `07-SpringBeans.pdf` – `@SessionScope` bean scope (slides 17, 21); `@Bean @SessionScope` in a `@Configuration` class (slide 21); `@Resource(name=...)` injection by bean name (slides 13, 21, 22); bean must implement `Serializable` for HTTP session storage (slide 7); Spring sessions overview (slides 19, 23); why NOT to access `HttpSession` directly (slide 20); `07-LongPolling.pdf` – thread pool & race conditions context (slide 2: each request is a thread, shared bean state must be safe).
 
-- [ ] **2.6 - Show recent searches.** Render them as clickable "chips" on the Browse page. (Satisfies the **session** requirement.)
+- [x] **2.6 - Show recent searches.** Render them as clickable "chips" on the Browse page. (Satisfies the **session** requirement.)
   > 📖 **Materials:** `07-SpringBeans.pdf` – injecting the session bean into the controller with `@Resource` (slide 21); `07-SpringMVC.pdf` – pass session bean data to Thymeleaf via `Model` (slide 14); Thymeleaf iterating a list (slide 13). `08-thymeleaf.pdf` – iterate the recent-search list with `th:each="term : ${recentSearches}"` (slide 10); make each chip a link with `th:href="@{/browse(q=${term})}"` (slide 7).
 
 ---

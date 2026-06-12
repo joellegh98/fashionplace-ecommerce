@@ -12,10 +12,13 @@
     <main>
         <h1 class="mb-4">Browse</h1>
 
-        <!-- Search + filters: GET keeps all criteria in the URL -->
-        <form class="mb-4" method="get" th:action="@{/browse}" id="browseForm">
-            <div class="row g-2 mb-2">
-                <div class="col-sm-8 col-md-6">
+        <!-- One form holds the search box (top) and all filters (right sidebar);
+             GET keeps every criterion in the URL -->
+        <form method="get" th:action="@{/browse}" id="browseForm">
+
+            <!-- Search box: stays at the top, full width -->
+            <div class="row g-2 mb-3">
+                <div class="col">
                     <div class="position-relative">
                         <input type="text" class="form-control" name="q" th:value="${q}"
                                id="searchInput" autocomplete="off"
@@ -26,112 +29,139 @@
                         </ul>
                     </div>
                 </div>
-                <div class="col-sm-4 col-md-3">
-                    <!-- Auto-submit the form as soon as a category is chosen -->
-                    <select class="form-select" name="category" onchange="this.form.submit()">
-                        <option value="">All categories</option>
-                        <option th:each="cat : ${categories}" th:value="${cat}"
-                                th:text="${cat}"
-                                th:selected="${cat == category}">Category</option>
-                    </select>
-                </div>
-                <div class="col-sm-4 col-md-3">
-                    <!-- Auto-submit the form as soon as a condition is chosen -->
-                    <select class="form-select" name="condition" onchange="this.form.submit()">
-                        <option value="">All conditions</option>
-                        <option th:each="cond : ${conditions}" th:value="${cond}"
-                                th:text="${cond}"
-                                th:selected="${cond == condition}">Condition</option>
-                    </select>
-                </div>
-            </div>
-            <div class="row g-2 align-items-end">
-                <div class="col-sm-4 col-md-2">
-                    <label class="form-label small text-muted mb-0">Min price</label>
-                    <input type="number" class="form-control" name="minPrice" step="0.01" min="0"
-                           th:value="${minPrice}" placeholder="0">
-                </div>
-                <div class="col-sm-4 col-md-2">
-                    <label class="form-label small text-muted mb-0">Max price</label>
-                    <input type="number" class="form-control" name="maxPrice" step="0.01" min="0"
-                           th:value="${maxPrice}" placeholder="Any">
-                </div>
-                <div class="col-sm-4 col-md-3">
-                    <label class="form-label small text-muted mb-0">Sort by</label>
-                    <select class="form-select" name="sort" onchange="this.form.submit()">
-                        <option value="newest" th:selected="${sort == 'newest'}">Newest first</option>
-                        <option value="price_asc" th:selected="${sort == 'price_asc'}">Price: low to high</option>
-                        <option value="price_desc" th:selected="${sort == 'price_desc'}">Price: high to low</option>
-                    </select>
-                </div>
                 <div class="col-auto">
-                    <button type="submit" class="btn btn-primary">Apply</button>
-                </div>
-                <div class="col-auto"
-                     th:if="${(q != null and !q.isEmpty()) or (category != null and !category.isEmpty()) or (condition != null and !condition.isEmpty()) or minPrice != null or maxPrice != null or (sort != null and sort != 'newest')}">
-                    <a class="btn btn-outline-secondary" th:href="@{/browse}">Clear all</a>
+                    <button type="submit" class="btn btn-primary">Search</button>
                 </div>
             </div>
-        </form>
 
-        <!-- Active filter badges -->
-        <div class="mb-3 d-flex flex-wrap gap-2"
-             th:if="${(q != null and !q.isEmpty()) or (category != null and !category.isEmpty()) or (condition != null and !condition.isEmpty()) or minPrice != null or maxPrice != null or (sort != null and sort != 'newest')}">
-            <span th:if="${q != null and !q.isEmpty()}" class="badge bg-primary">
-                Search: <span th:text="${q}">q</span>
-            </span>
-            <span th:if="${category != null and !category.isEmpty()}" class="badge bg-secondary">
-                Category: <span th:text="${category}">cat</span>
-            </span>
-            <span th:if="${condition != null and !condition.isEmpty()}" class="badge bg-info text-dark">
-                Condition: <span th:text="${condition}">cond</span>
-            </span>
-            <span th:if="${minPrice != null}" class="badge bg-light text-dark border">
-                Min: $<span th:text="${minPrice}">0</span>
-            </span>
-            <span th:if="${maxPrice != null}" class="badge bg-light text-dark border">
-                Max: $<span th:text="${maxPrice}">0</span>
-            </span>
-            <span th:if="${sort == 'price_asc'}" class="badge bg-light text-dark border">
-                Sort: Price low → high
-            </span>
-            <span th:if="${sort == 'price_desc'}" class="badge bg-light text-dark border">
-                Sort: Price high → low
-            </span>
-        </div>
+            <!-- Recent searches: stays at the top -->
+            <div class="mb-3" th:if="${!#lists.isEmpty(recentSearches)}">
+                <span class="small text-muted me-2">Recent searches:</span>
+                <span th:each="term : ${recentSearches}" class="me-1 mb-1 d-inline-block">
+                    <a th:href="@{/browse(q=${term})}"
+                       class="btn btn-sm btn-outline-secondary rounded-pill"
+                       th:text="${term}">term</a>
+                </span>
+            </div>
 
-        <p th:if="${#lists.isEmpty(products)}" class="text-muted">
-            <span th:if="${(q != null and !q.isEmpty()) or (category != null and !category.isEmpty()) or (condition != null and !condition.isEmpty()) or minPrice != null or maxPrice != null}">
-                No products match your filters.
-            </span>
-            <span th:unless="${(q != null and !q.isEmpty()) or (category != null and !category.isEmpty()) or (condition != null and !condition.isEmpty()) or minPrice != null or maxPrice != null}">
-                No products available yet.
-            </span>
-        </p>
+            <!-- Two columns: products on the left, filters on the right -->
+            <div class="row">
+                <div class="col-lg-9 order-2 order-lg-1">
 
-        <!-- Responsive grid of product cards -->
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-            <div class="col" th:each="product : ${products}">
-                <a th:href="@{/product/{id}(id=${product.id})}"
-                   class="card h-100 text-decoration-none text-dark">
-                    <!-- Product image (shown only when an imageUrl is set) -->
-                    <img th:if="${product.imageUrl}" th:src="${product.imageUrl}"
-                         class="card-img-top" alt="" style="height: 180px; object-fit: cover;">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title" th:text="${product.title}">Product title</h5>
-                        <!-- Category + status badges -->
-                        <div class="mb-2">
-                            <span th:if="${product.category}" class="badge bg-secondary"
-                                  th:text="${product.category}">Category</span>
-                            <span th:if="${product.status == 'SOLD'}" class="badge bg-danger">Sold</span>
-                        </div>
-                        <p class="card-text" th:text="${product.description}">Description</p>
-                        <p class="card-text fw-bold mt-auto"
-                           th:text="'$' + ${product.price}">$0.00</p>
+                    <!-- Active filter badges -->
+                    <div class="mb-3 d-flex flex-wrap gap-2"
+                         th:if="${(q != null and !q.isEmpty()) or (category != null and !category.isEmpty()) or (condition != null and !condition.isEmpty()) or minPrice != null or maxPrice != null or (sort != null and sort != 'newest')}">
+                        <span th:if="${q != null and !q.isEmpty()}" class="badge bg-primary">
+                            Search: <span th:text="${q}">q</span>
+                        </span>
+                        <span th:if="${category != null and !category.isEmpty()}" class="badge bg-secondary">
+                            Category: <span th:text="${category}">cat</span>
+                        </span>
+                        <span th:if="${condition != null and !condition.isEmpty()}" class="badge bg-info text-dark">
+                            Condition: <span th:text="${condition}">cond</span>
+                        </span>
+                        <span th:if="${minPrice != null}" class="badge bg-light text-dark border">
+                            Min: $<span th:text="${minPrice}">0</span>
+                        </span>
+                        <span th:if="${maxPrice != null}" class="badge bg-light text-dark border">
+                            Max: $<span th:text="${maxPrice}">0</span>
+                        </span>
+                        <span th:if="${sort == 'price_asc'}" class="badge bg-light text-dark border">
+                            Sort: Price low → high
+                        </span>
+                        <span th:if="${sort == 'price_desc'}" class="badge bg-light text-dark border">
+                            Sort: Price high → low
+                        </span>
                     </div>
-                </a>
-            </div>
-        </div>
+
+                    <p th:if="${#lists.isEmpty(products)}" class="text-muted">
+                        <span th:if="${(q != null and !q.isEmpty()) or (category != null and !category.isEmpty()) or (condition != null and !condition.isEmpty()) or minPrice != null or maxPrice != null}">
+                            No products match your filters.
+                        </span>
+                        <span th:unless="${(q != null and !q.isEmpty()) or (category != null and !category.isEmpty()) or (condition != null and !condition.isEmpty()) or minPrice != null or maxPrice != null}">
+                            No products available yet.
+                        </span>
+                    </p>
+
+                    <!-- Responsive grid of product cards -->
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+                        <div class="col" th:each="product : ${products}">
+                            <a th:href="@{/product/{id}(id=${product.id})}"
+                               class="card h-100 text-decoration-none text-dark">
+                                <!-- Product image (shown only when an imageUrl is set) -->
+                                <img th:if="${product.imageUrl}" th:src="${product.imageUrl}"
+                                     class="card-img-top" alt="" style="height: 180px; object-fit: cover;">
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title" th:text="${product.title}">Product title</h5>
+                                    <!-- Category + status badges -->
+                                    <div class="mb-2">
+                                        <span th:if="${product.category}" class="badge bg-secondary"
+                                              th:text="${product.category}">Category</span>
+                                        <span th:if="${product.status == 'SOLD'}" class="badge bg-danger">Sold</span>
+                                    </div>
+                                    <p class="card-text" th:text="${product.description}">Description</p>
+                                    <p class="card-text fw-bold mt-auto"
+                                       th:text="'$' + ${product.price}">$0.00</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                </div><!-- /.col-lg-9 -->
+
+                <!-- Filters sidebar on the right -->
+                <aside class="col-lg-3 order-1 order-lg-2 mb-3 mb-lg-0">
+                    <div class="card">
+                        <div class="card-header py-2 fw-semibold">Filters</div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label small text-muted mb-1">Category</label>
+                                <select class="form-select" name="category" onchange="this.form.submit()">
+                                    <option value="">All categories</option>
+                                    <option th:each="cat : ${categories}" th:value="${cat}"
+                                            th:text="${cat}"
+                                            th:selected="${cat == category}">Category</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small text-muted mb-1">Condition</label>
+                                <select class="form-select" name="condition" onchange="this.form.submit()">
+                                    <option value="">All conditions</option>
+                                    <option th:each="cond : ${conditions}" th:value="${cond}"
+                                            th:text="${cond}"
+                                            th:selected="${cond == condition}">Condition</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small text-muted mb-1">Min price</label>
+                                <input type="number" class="form-control" name="minPrice" step="0.01" min="0"
+                                       th:value="${minPrice}" placeholder="0">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small text-muted mb-1">Max price</label>
+                                <input type="number" class="form-control" name="maxPrice" step="0.01" min="0"
+                                       th:value="${maxPrice}" placeholder="Any">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small text-muted mb-1">Sort by</label>
+                                <select class="form-select" name="sort" onchange="this.form.submit()">
+                                    <option value="newest" th:selected="${sort == 'newest'}">Newest first</option>
+                                    <option value="price_asc" th:selected="${sort == 'price_asc'}">Price: low to high</option>
+                                    <option value="price_desc" th:selected="${sort == 'price_desc'}">Price: high to low</option>
+                                </select>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary">Apply</button>
+                                <a class="btn btn-outline-secondary" th:href="@{/browse}"
+                                   th:if="${(q != null and !q.isEmpty()) or (category != null and !category.isEmpty()) or (condition != null and !condition.isEmpty()) or minPrice != null or maxPrice != null or (sort != null and sort != 'newest')}">
+                                    Clear all
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+            </div><!-- /.row -->
+        </form>
 
         <!-- Must live inside <main>: layout only injects title + main into the page shell -->
         <script th:inline="javascript">

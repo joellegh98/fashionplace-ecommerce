@@ -1,6 +1,8 @@
 package com.fashionplace.controller;
 
 import com.fashionplace.service.ProductService;
+import com.fashionplace.session.RecentSearchBean;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +17,9 @@ import java.math.BigDecimal;
 public class BrowseController {
 
     private final ProductService productService;
+
+    @Resource
+    private RecentSearchBean recentSearchBean;
 
     public BrowseController(ProductService productService) {
         this.productService = productService;
@@ -40,6 +45,10 @@ public class BrowseController {
                          @RequestParam(required = false) BigDecimal maxPrice,
                          @RequestParam(required = false, defaultValue = "newest") String sort,
                          Model model) {
+        if (q != null && !q.isBlank()) {
+            recentSearchBean.addSearch(q);
+        }
+
         model.addAttribute("products",
                 productService.browse(q, category, condition, minPrice, maxPrice, sort));
         model.addAttribute("q", q);
@@ -50,6 +59,7 @@ public class BrowseController {
         model.addAttribute("sort", sort);
         model.addAttribute("categories", productService.findDistinctCategories());
         model.addAttribute("conditions", productService.findDistinctConditions());
+        model.addAttribute("recentSearches", recentSearchBean.getRecentSearches());
         return "browse";
     }
 }
