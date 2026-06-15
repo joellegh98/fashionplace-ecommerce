@@ -46,6 +46,29 @@
             </dd>
         </dl>
 
+        <section class="mt-4">
+            <h2 class="h4 mb-3">Reviews</h2>
+
+            <p th:if="${averageRating != null}" class="mb-3">
+                Average rating:
+                <strong th:text="|${#numbers.formatDecimal(averageRating, 1, 1)} / 5|">4.5 / 5</strong>
+            </p>
+
+            <p th:if="${#lists.isEmpty(reviews)}" class="text-muted">No reviews yet.</p>
+
+            <div th:each="review : ${reviews}" class="border rounded p-3 mb-2">
+                <div class="fw-semibold">
+                    <span th:text="${review.reviewer.username}">reviewer</span>
+                    &middot;
+                    <span th:text="|${review.rating}/5|">5/5</span>
+                    <span class="text-muted small fw-normal ms-2"
+                          th:if="${review.createdAt != null}"
+                          th:text="${#temporals.format(review.createdAt, 'dd MMM yyyy')}">01 Jan 2026</span>
+                </div>
+                <p class="mb-0 mt-1" th:text="${review.comment}">Review comment</p>
+            </div>
+        </section>
+
         <div th:if="${cartMessage}" class="alert alert-success mt-3" th:text="${cartMessage}">
             Added to cart.
         </div>

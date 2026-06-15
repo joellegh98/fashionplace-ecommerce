@@ -135,7 +135,7 @@ testable before moving on.
 - [x] **4.4 - Review entity.** `Review` (`rating 1-5`, `comment`, `createdAt`) with `@ManyToOne` to `User` and `Product`. Repo included.
   > 📖 **Materials:** `07-SpringBeans.pdf` – `@Repository` (slide 6); bean requirements (slide 7); beans are used for database access (slide 25). `08-JPA.pdf` – `@Entity` with two `@ManyToOne` relations (User + Product); each relation adds a foreign key column; JPA may create a join table (slide 5); add `@Min(1)` / `@Max(5)` validation on `rating`, `@NotBlank` on `comment` (slides 14, 15).
 
-- [ ] **4.5 - Show reviews.** Display a product's reviews + average rating on Product Detail.
+- [x] **4.5 - Show reviews.** Display a product's reviews + average rating on Product Detail.
   > 📖 **Materials:** `07-SpringMVC.pdf` – `Model.addAttribute()` / `ModelAndView` to pass a list to the view (slides 14, 16); Thymeleaf iteration (slide 13). `08-thymeleaf.pdf` – iterate reviews with `th:each="review : ${reviews}"` (slide 10); show rating and comment with `th:text="${review.rating}"` (slide 3); conditionally show "No reviews yet" with `th:if="${#lists.isEmpty(reviews)}"` (slide 8).
 
 - [ ] **4.6 - Add review form.** Post a review (attributed to the temporary current user).

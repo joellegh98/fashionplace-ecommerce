@@ -1,8 +1,10 @@
 package com.fashionplace.config;
 
 import com.fashionplace.model.Product;
+import com.fashionplace.model.Review;
 import com.fashionplace.model.User;
 import com.fashionplace.repository.ProductRepository;
+import com.fashionplace.repository.ReviewRepository;
 import com.fashionplace.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -18,16 +20,21 @@ public class DataSeeder implements CommandLineRunner {
 
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
+    private final ReviewRepository reviewRepository;
 
-    public DataSeeder(ProductRepository productRepository, UserRepository userRepository) {
+    public DataSeeder(ProductRepository productRepository,
+                      UserRepository userRepository,
+                      ReviewRepository reviewRepository) {
         this.productRepository = productRepository;
         this.userRepository = userRepository;
+        this.reviewRepository = reviewRepository;
     }
 
     @Override
     public void run(String... args) {
         seedUsers();
         seedProducts();
+        seedReviews();
     }
 
     /** Inserts one admin and two regular users (placeholder passwords until Phase 9). */
@@ -119,5 +126,36 @@ public class DataSeeder implements CommandLineRunner {
     private void save(Product product, User seller) {
         product.setSeller(seller);
         productRepository.save(product);
+    }
+
+    /** Inserts sample reviews when the {@code review} table is empty. */
+    private void seedReviews() {
+        if (reviewRepository.count() > 0) {
+            return;
+        }
+
+        User bob = userRepository.findByUsername("bob").orElse(null);
+        User alice = userRepository.findByUsername("alice").orElse(null);
+        Product earrings = productRepository.findAll().stream()
+                .filter(p -> "Gold Hoop Earrings".equals(p.getTitle()))
+                .findFirst()
+                .orElse(null);
+
+        if (earrings == null || bob == null || alice == null) {
+            return;
+        }
+
+        reviewRepository.save(new Review(
+                5,
+                "Beautiful earrings, exactly as described!",
+                bob,
+                earrings
+        ));
+        reviewRepository.save(new Review(
+                4,
+                "Lovely quality, slightly smaller than I expected.",
+                alice,
+                earrings
+        ));
     }
 }

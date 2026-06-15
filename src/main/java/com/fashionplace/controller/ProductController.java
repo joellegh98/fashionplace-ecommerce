@@ -1,6 +1,8 @@
 package com.fashionplace.controller;
 
+import com.fashionplace.model.Product;
 import com.fashionplace.service.ProductService;
+import com.fashionplace.service.ReviewService;
 import com.fashionplace.web.AddToCartForm;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,9 +16,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class ProductController {
 
     private final ProductService productService;
+    private final ReviewService reviewService;
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, ReviewService reviewService) {
         this.productService = productService;
+        this.reviewService = reviewService;
     }
 
     /**
@@ -28,7 +32,10 @@ public class ProductController {
      */
     @GetMapping("/product/{id}")
     public String productDetail(@PathVariable Long id, Model model) {
-        model.addAttribute("product", productService.findById(id));
+        Product product = productService.findById(id);
+        model.addAttribute("product", product);
+        model.addAttribute("reviews", reviewService.findByProduct(product));
+        model.addAttribute("averageRating", reviewService.averageRating(product));
 
         AddToCartForm addToCart = new AddToCartForm();
         addToCart.setProductId(id);
