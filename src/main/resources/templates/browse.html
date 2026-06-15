@@ -86,31 +86,31 @@
                     </p>
 
                     <!-- Responsive grid of product cards -->
-                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+                    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-3">
                         <div class="col" th:each="product : ${products}">
                             <div class="card h-100">
                                 <!-- Product image (shown only when an imageUrl is set) -->
                                 <a th:href="@{/product/{id}(id=${product.id})}">
                                     <img th:if="${product.imageUrl}" th:src="${product.imageUrl}"
-                                         class="card-img-top" alt="" style="height: 180px; object-fit: cover;">
+                                         class="card-img-top" alt="" style="height: 120px; object-fit: cover;">
                                 </a>
-                                <div class="card-body d-flex flex-column">
-                                    <h5 class="card-title">
+                                <div class="card-body d-flex flex-column p-2">
+                                    <h6 class="card-title mb-1">
                                         <a th:href="@{/product/{id}(id=${product.id})}"
                                            class="text-decoration-none text-dark"
                                            th:text="${product.title}">Product title</a>
-                                    </h5>
+                                    </h6>
                                     <!-- Category + status badges -->
-                                    <div class="mb-2">
+                                    <div class="mb-1">
                                         <span th:if="${product.category}" class="badge bg-secondary"
                                               th:text="${product.category}">Category</span>
                                         <span th:if="${product.status == 'SOLD'}" class="badge bg-danger">Sold</span>
                                     </div>
-                                    <p class="card-text" th:text="${product.description}">Description</p>
-                                    <p class="card-text fw-bold mt-auto"
+                                    <p class="card-text small text-muted" th:text="${product.description}">Description</p>
+                                    <p class="card-text fw-bold mt-auto mb-1"
                                        th:text="'$' + ${product.price}">$0.00</p>
                                     <!-- Save to wishlist (attributed to the fake current user) -->
-                                    <button type="button" class="btn btn-sm w-100 mt-2"
+                                    <button type="button" class="btn btn-sm w-100"
                                             th:classappend="${wishlistProductIds.contains(product.id)} ? 'btn-success' : 'btn-outline-secondary'"
                                             th:attr="data-wishlist-add=${product.id},data-label-unsaved='Save'"
                                             th:utext="${wishlistProductIds.contains(product.id)} ? '&#9829; Saved' : '&#9825; Save'">

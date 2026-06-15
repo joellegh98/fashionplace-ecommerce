@@ -9,15 +9,15 @@
     <section th:fragment="section(title, products)"
              th:if="${products != null and !#lists.isEmpty(products)}" class="mb-4">
         <h2 class="h4 mb-3" th:text="${title}">Products</h2>
-        <div class="row row-cols-2 row-cols-md-4 g-3">
+        <div class="row row-cols-2 row-cols-md-5 g-2">
             <div class="col" th:each="product : ${products}">
                 <a th:href="@{/product/{id}(id=${product.id})}"
                    class="card h-100 text-decoration-none text-dark">
                     <img th:if="${product.imageUrl}" th:src="${product.imageUrl}"
-                         class="card-img-top" alt="" style="height: 140px; object-fit: cover;">
-                    <div class="card-body">
-                        <h6 class="card-title mb-1" th:text="${product.title}">Product title</h6>
-                        <span class="fw-bold" th:text="'$' + ${product.price}">$0.00</span>
+                         class="card-img-top" alt="" style="height: 100px; object-fit: cover;">
+                    <div class="card-body p-2">
+                        <h6 class="card-title mb-1 small" th:text="${product.title}">Product title</h6>
+                        <span class="fw-bold small" th:text="'$' + ${product.price}">$0.00</span>
                     </div>
                 </a>
             </div>
