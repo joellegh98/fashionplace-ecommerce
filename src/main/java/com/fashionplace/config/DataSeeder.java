@@ -1,29 +1,66 @@
 package com.fashionplace.config;
 
 import com.fashionplace.model.Product;
+import com.fashionplace.model.User;
 import com.fashionplace.repository.ProductRepository;
+import com.fashionplace.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
 /**
- * Inserts sample products at startup when the {@code product} table is empty.
- *
- * <p>Runs after the Spring context is ready ({@link CommandLineRunner}). Skips seeding
- * if any product already exists so restarts do not duplicate data.</p>
+ * Seeds sample users and products at startup, each only if its table is empty
+ * (so restarts never duplicate data).
  */
 @Component
 public class DataSeeder implements CommandLineRunner {
 
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
 
-    public DataSeeder(ProductRepository productRepository) {
+    public DataSeeder(ProductRepository productRepository, UserRepository userRepository) {
         this.productRepository = productRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
     public void run(String... args) {
+        seedUsers();
+        seedProducts();
+    }
+
+    /** Inserts one admin and two regular users (placeholder passwords until Phase 9). */
+    private void seedUsers() {
+        if (userRepository.count() > 0) {
+            return;
+        }
+
+        userRepository.save(new User(
+                "admin",
+                "admin@fashionplace.com",
+                "placeholder-hash",
+                "ADMIN",
+                "1 Market Street, Springfield"
+        ));
+        userRepository.save(new User(
+                "alice",
+                "alice@example.com",
+                "placeholder-hash",
+                "USER",
+                "42 Maple Avenue, Rivertown"
+        ));
+        userRepository.save(new User(
+                "bob",
+                "bob@example.com",
+                "placeholder-hash",
+                "USER",
+                "7 Oak Lane, Hillside"
+        ));
+    }
+
+    /** Inserts sample products when the {@code product} table is empty. */
+    private void seedProducts() {
         if (productRepository.count() > 0) {
             return;
         }

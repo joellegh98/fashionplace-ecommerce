@@ -123,7 +123,7 @@ testable before moving on.
 
 **Goal:** Introduce the User entity and wire relationships. We fake "who is logged in" for now.
 
-- [ ] **4.1 - User entity + repo.** Fields: `id`, `username`, `email`, `passwordHash`, `role`, `address`, `createdAt`. Seed an admin user + a couple of regular users.
+- [x] **4.1 - User entity + repo.** Fields: `id`, `username`, `email`, `passwordHash`, `role`, `address`, `createdAt`. Seed an admin user + a couple of regular users.
   > 📖 **Materials:** `07-SpringBeans.pdf` – `@Repository` for database access bean (slide 6); bean class requirements (slide 7); beans used for database access (slide 25); `@PostConstruct` in DataSeeder for seeding (slide 28). `08-JPA.pdf` – `@Entity` definition with `@Id`, `@GeneratedValue`, `@CreationTimestamp` (slide 3); add validation to fields: `@NotEmpty`, `@Email`, `@NotNull` directly on entity members (slides 14, 15); Roadmap 1/6 for entity structure (slide 25); Roadmap 2/6 for `JpaRepository` interface (slide 26).
 
 - [ ] **4.2 - Temporary "current user" helper.** A tiny `CurrentUserProvider` bean that returns a seeded user. (Phase 9 swaps this for the real logged-in user.)
