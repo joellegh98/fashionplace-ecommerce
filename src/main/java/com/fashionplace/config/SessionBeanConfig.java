@@ -1,6 +1,7 @@
 package com.fashionplace.config;
 
 import com.fashionplace.session.CartBean;
+import com.fashionplace.session.InterestBean;
 import com.fashionplace.session.RecentSearchBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,5 +29,15 @@ public class SessionBeanConfig {
     @SessionScope
     public CartBean cartBean() {
         return new CartBean();
+    }
+
+    /**
+     * Per-session memory of products the user added to the cart or wishlist, kept even after
+     * removal so recommendations can keep suggesting them.
+     */
+    @Bean
+    @SessionScope
+    public InterestBean interestBean() {
+        return new InterestBean();
     }
 }

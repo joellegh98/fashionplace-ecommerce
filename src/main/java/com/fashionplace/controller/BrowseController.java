@@ -1,6 +1,7 @@
 package com.fashionplace.controller;
 
 import com.fashionplace.service.ProductService;
+import com.fashionplace.service.RecommendationService;
 import com.fashionplace.service.WishlistService;
 import com.fashionplace.session.RecentSearchBean;
 import jakarta.annotation.Resource;
@@ -19,13 +20,17 @@ public class BrowseController {
 
     private final ProductService productService;
     private final WishlistService wishlistService;
+    private final RecommendationService recommendationService;
 
     @Resource
     private RecentSearchBean recentSearchBean;
 
-    public BrowseController(ProductService productService, WishlistService wishlistService) {
+    public BrowseController(ProductService productService,
+                            WishlistService wishlistService,
+                            RecommendationService recommendationService) {
         this.productService = productService;
         this.wishlistService = wishlistService;
+        this.recommendationService = recommendationService;
     }
 
     /**
@@ -64,6 +69,7 @@ public class BrowseController {
         model.addAttribute("conditions", productService.findDistinctConditions());
         model.addAttribute("recentSearches", recentSearchBean.getRecentSearches());
         model.addAttribute("wishlistProductIds", wishlistService.savedProductIdsForCurrentUser());
+        model.addAttribute("recommendations", recommendationService.recommendForCurrentUser());
         return "browse";
     }
 }

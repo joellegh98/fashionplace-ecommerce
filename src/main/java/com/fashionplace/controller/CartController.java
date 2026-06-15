@@ -3,6 +3,7 @@ package com.fashionplace.controller;
 import com.fashionplace.model.Product;
 import com.fashionplace.service.ProductService;
 import com.fashionplace.session.CartBean;
+import com.fashionplace.session.InterestBean;
 import com.fashionplace.web.AddToCartForm;
 import com.fashionplace.web.CartLineItem;
 import jakarta.annotation.Resource;
@@ -29,6 +30,9 @@ public class CartController {
 
     @Resource
     private CartBean cartBean;
+
+    @Resource
+    private InterestBean interestBean;
 
     public CartController(ProductService productService) {
         this.productService = productService;
@@ -80,6 +84,7 @@ public class CartController {
                             + (alreadyInCart > 0 ? " (you already have " + alreadyInCart + " in your cart)." : "."));
         } else {
             cartBean.addItem(form.getProductId(), form.getQuantity());
+            interestBean.record(form.getProductId());
             redirectAttributes.addFlashAttribute("cartMessage", "Added to cart.");
         }
         return "redirect:/product/" + form.getProductId();

@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -50,4 +51,23 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT DISTINCT p.condition FROM Product p WHERE p.condition IS NOT NULL ORDER BY p.condition")
     List<String> findDistinctConditions();
+
+    /**
+     * Finds products whose category is in the given set and whose status matches. Used by
+     * the recommendation logic to suggest available items in categories the user likes.
+     *
+     * @param categories the categories to include
+     * @param status     the required listing status (e.g. {@code ACTIVE})
+     * @return matching products
+     */
+    List<Product> findByCategoryInAndStatus(Collection<String> categories, String status);
+
+    /**
+     * Finds products in one category with the given status (e.g. related products on a detail page).
+     *
+     * @param category the category to match
+     * @param status   the required listing status (e.g. {@code ACTIVE})
+     * @return matching products
+     */
+    List<Product> findByCategoryAndStatus(String category, String status);
 }

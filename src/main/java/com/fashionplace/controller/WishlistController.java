@@ -1,6 +1,8 @@
 package com.fashionplace.controller;
 
 import com.fashionplace.service.WishlistService;
+import com.fashionplace.session.InterestBean;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +20,9 @@ import java.util.Map;
 public class WishlistController {
 
     private final WishlistService wishlistService;
+
+    @Resource
+    private InterestBean interestBean;
 
     public WishlistController(WishlistService wishlistService) {
         this.wishlistService = wishlistService;
@@ -47,6 +52,7 @@ public class WishlistController {
     @ResponseBody
     public Map<String, Object> toggle(@RequestParam Long productId) {
         boolean saved = wishlistService.toggleForCurrentUser(productId);
+        interestBean.record(productId);
         return Map.of("saved", saved);
     }
 

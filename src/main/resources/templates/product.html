@@ -134,6 +134,9 @@
                 <a th:href="@{/wishlist}">View wishlist</a>
             </span>
         </div>
+
+        <hr class="my-4">
+        <div th:replace="~{fragments/productcards :: section('Related products', ${relatedProducts})}"></div>
     </main>
 </body>
 </html>

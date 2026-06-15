@@ -3,6 +3,7 @@ package com.fashionplace.controller;
 import com.fashionplace.model.Product;
 import com.fashionplace.service.CurrentUserProvider;
 import com.fashionplace.service.ProductService;
+import com.fashionplace.service.RecommendationService;
 import com.fashionplace.service.ReviewService;
 import com.fashionplace.service.WishlistService;
 import com.fashionplace.web.AddToCartForm;
@@ -27,15 +28,18 @@ public class ProductController {
     private final ReviewService reviewService;
     private final CurrentUserProvider currentUserProvider;
     private final WishlistService wishlistService;
+    private final RecommendationService recommendationService;
 
     public ProductController(ProductService productService,
                              ReviewService reviewService,
                              CurrentUserProvider currentUserProvider,
-                             WishlistService wishlistService) {
+                             WishlistService wishlistService,
+                             RecommendationService recommendationService) {
         this.productService = productService;
         this.reviewService = reviewService;
         this.currentUserProvider = currentUserProvider;
         this.wishlistService = wishlistService;
+        this.recommendationService = recommendationService;
     }
 
     /**
@@ -91,6 +95,7 @@ public class ProductController {
         model.addAttribute("review", reviewForm);
         model.addAttribute("currentUsername", currentUserProvider.getCurrentUser().getUsername());
         model.addAttribute("onWishlist", wishlistService.isOnCurrentUserWishlist(product));
+        model.addAttribute("relatedProducts", recommendationService.relatedProducts(product));
 
         AddToCartForm addToCart = new AddToCartForm();
         addToCart.setProductId(id);

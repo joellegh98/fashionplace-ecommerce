@@ -168,10 +168,10 @@ testable before moving on.
 - [x] **5.5 - My Orders page.** `/orders` lists the current (fake) user's orders with status.
   > 📖 **Materials:** `07-SpringMVC.pdf` – `@GetMapping` (slide 6); `Model.addAttribute(list)` (slide 14); Thymeleaf rendering (slide 13). `08-thymeleaf.pdf` – iterate orders with `th:each="order : ${orders}"` (slide 10); show status with `th:text="${order.status}"` (slide 3); use `th:switch="${order.status}"` / `th:case` for status-colored badges (slide 9). `08-JPA.pdf` – query method `findByBuyer(User buyer)` to get only the current user's orders (slides 10, 11).
 
-- [ ] **5.6 - RecommendationService.** Collect categories from the current user's past orders, then suggest other ACTIVE products in those categories via `findByCategoryInAndStatus(...)`, excluding already-purchased items. No new entity — pure service/query logic.
+- [x] **5.6 - RecommendationService.** Collect categories from the current user's past orders, then suggest other ACTIVE products in those categories via `findByCategoryInAndStatus(...)`, excluding already-purchased items. No new entity — pure service/query logic.
   > 📖 **Materials:** `07-SpringBeans.pdf` – `@Service` for recommendation logic (slide 6); constructor injection of `OrderRepository`, `ProductRepository`, `CurrentUserProvider` (slides 9, 10). `08-JPA.pdf` – traverse `Order` → `OrderItem` → `Product` to collect categories; query method `findByCategoryInAndStatus(...)` (slides 10, 11); use `@Query` if method-name syntax is insufficient (slide 13).
 
-- [ ] **5.7 - Show recommendations.** "Recommended for you" section on Home/Browse driven by `RecommendationService`; "Related products" (same `category`) block on Product Detail.
+- [x] **5.7 - Show recommendations.** "Recommended for you" section on Home/Browse driven by `RecommendationService`; "Related products" (same `category`) block on Product Detail.
   > 📖 **Materials:** `07-SpringMVC.pdf` – pass recommendation list via `Model.addAttribute()` (slide 14); `@GetMapping` on Home/Browse/Product controllers (slide 6). `08-thymeleaf.pdf` – iterate recommendations with `th:each="product : ${recommendations}"` (slide 10); product cards with `th:href="@{/product/{id}(id=${product.id})}"` (slide 7); conditionally hide section with `th:if="${!#lists.isEmpty(recommendations)}"` (slide 8). `08-JPA.pdf` – `findByCategoryAndStatus(...)` for related products on detail page (slides 10, 11).
 
 ---

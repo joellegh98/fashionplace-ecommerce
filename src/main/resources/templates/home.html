@@ -10,7 +10,9 @@
 </head>
 <body>
     <main>
-        <h1>FashionPlace</h1>
+        <h1 class="mb-4">FashionPlace</h1>
+
+        <div th:replace="~{fragments/productcards :: section('Recommended for you', ${recommendations})}"></div>
     </main>
 </body>
 </html>

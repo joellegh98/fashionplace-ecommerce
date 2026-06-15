@@ -12,6 +12,8 @@
     <main>
         <h1 class="mb-4">Browse</h1>
 
+        <div th:replace="~{fragments/productcards :: section('Recommended for you', ${recommendations})}"></div>
+
         <!-- One form holds the search box (top) and all filters (right sidebar);
              GET keeps every criterion in the URL -->
         <form method="get" th:action="@{/browse}" id="browseForm">
