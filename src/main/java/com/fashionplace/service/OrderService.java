@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -69,5 +70,15 @@ public class OrderService {
      */
     public Order findById(Long id) {
         return orderRepository.findById(id).orElseThrow();
+    }
+
+    /**
+     * Returns a buyer's orders, newest first.
+     *
+     * @param buyer the purchasing user
+     * @return the buyer's orders
+     */
+    public List<Order> findByBuyer(User buyer) {
+        return orderRepository.findByBuyerOrderByCreatedAtDesc(buyer);
     }
 }

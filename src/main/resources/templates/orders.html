@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<!--
+  My Orders page. Lists the current user's orders with status, newest first.
+-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title>FashionPlace - My Orders</title>
+</head>
+<body>
+    <main>
+        <h1 class="mb-4">My Orders</h1>
+
+        <div th:if="${#lists.isEmpty(orders)}" class="alert alert-info">
+            You have no orders yet.
+            <a th:href="@{/browse}">Browse products</a>
+        </div>
+
+        <div th:unless="${#lists.isEmpty(orders)}" class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th scope="col">Order</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Items</th>
+                        <th scope="col">Status</th>
+                        <th scope="col" class="text-end">Total</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="order : ${orders}">
+                        <td>#<span th:text="${order.id}">0</span></td>
+                        <td th:text="${order.createdAt != null} ? ${#temporals.format(order.createdAt, 'dd MMM yyyy, HH:mm')} : ''">
+                            01 Jan 2026
+                        </td>
+                        <td th:text="${order.orderItems.size()}">0</td>
+                        <td>
+                            <span class="badge" th:switch="${order.status}"
+                                  th:classappend="${order.status == 'CANCELLED'} ? 'bg-danger' : (${order.status == 'SHIPPED'} ? 'bg-info text-dark' : 'bg-success')">
+                                <span th:case="'PLACED'">Placed</span>
+                                <span th:case="'SHIPPED'">Shipped</span>
+                                <span th:case="'CANCELLED'">Cancelled</span>
+                                <span th:case="*" th:text="${order.status}">Status</span>
+                            </span>
+                        </td>
+                        <td class="text-end fw-semibold" th:text="'$' + ${order.totalPrice}">$0.00</td>
+                        <td class="text-end">
+                            <a class="btn btn-sm btn-outline-primary"
+                               th:href="@{/checkout/confirmation/{id}(id=${order.id})}">View</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>

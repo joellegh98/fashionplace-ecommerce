@@ -165,7 +165,7 @@ testable before moving on.
 - [x] **5.4 - Post-order cleanup.** Clear the cart; mark purchased products `SOLD`.
   > 📖 **Materials:** `07-SpringBeans.pdf` – accessing the `@SessionScope` CartBean and clearing it (slides 17, 21); `@Service` method coordination (slide 6); `07-SpringMVC.pdf` – redirect after POST-order to avoid double-submission (slide 9). `08-JPA.pdf` – use `repository.save(product)` after setting `product.setStatus("SOLD")` to persist the update (slide 29); keep both updates inside the same `@Transactional` method for atomicity (slide 34).
 
-- [ ] **5.5 - My Orders page.** `/orders` lists the current (fake) user's orders with status.
+- [x] **5.5 - My Orders page.** `/orders` lists the current (fake) user's orders with status.
   > 📖 **Materials:** `07-SpringMVC.pdf` – `@GetMapping` (slide 6); `Model.addAttribute(list)` (slide 14); Thymeleaf rendering (slide 13). `08-thymeleaf.pdf` – iterate orders with `th:each="order : ${orders}"` (slide 10); show status with `th:text="${order.status}"` (slide 3); use `th:switch="${order.status}"` / `th:case` for status-colored badges (slide 9). `08-JPA.pdf` – query method `findByBuyer(User buyer)` to get only the current user's orders (slides 10, 11).
 
 - [ ] **5.6 - RecommendationService.** Collect categories from the current user's past orders, then suggest other ACTIVE products in those categories via `findByCategoryInAndStatus(...)`, excluding already-purchased items. No new entity — pure service/query logic.
