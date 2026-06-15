@@ -132,7 +132,7 @@ testable before moving on.
 - [x] **4.3 - Product -> seller relation.** `Product` gets `@ManyToOne User seller`. Update seed + show seller name on Product Detail.
   > 📖 **Materials:** `07-SpringBeans.pdf` – bean member with getter/setter (slide 7); `07-SpringMVC.pdf` – pass updated Product object to Thymeleaf view via `Model` (slide 14). `08-JPA.pdf` – relational DB design: store foreign key to avoid data duplication (slide 4); `@ManyToOne` annotation: many products belong to one seller; JPA creates a `seller_id` foreign key column (slide 5); avoid bidirectional relations to prevent infinite loops; if needed mark reverse field `@Transient` (slide 6). `08-thymeleaf.pdf` – display seller name with `th:text="${product.seller.username}"` via chained property access (slide 5).
 
-- [ ] **4.4 - Review entity.** `Review` (`rating 1-5`, `comment`, `createdAt`) with `@ManyToOne` to `User` and `Product`. Repo included.
+- [x] **4.4 - Review entity.** `Review` (`rating 1-5`, `comment`, `createdAt`) with `@ManyToOne` to `User` and `Product`. Repo included.
   > 📖 **Materials:** `07-SpringBeans.pdf` – `@Repository` (slide 6); bean requirements (slide 7); beans are used for database access (slide 25). `08-JPA.pdf` – `@Entity` with two `@ManyToOne` relations (User + Product); each relation adds a foreign key column; JPA may create a join table (slide 5); add `@Min(1)` / `@Max(5)` validation on `rating`, `@NotBlank` on `comment` (slides 14, 15).
 
 - [ ] **4.5 - Show reviews.** Display a product's reviews + average rating on Product Detail.
