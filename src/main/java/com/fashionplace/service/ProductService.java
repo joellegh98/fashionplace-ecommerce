@@ -124,4 +124,21 @@ public class ProductService {
     public Product findById(Long id) {
         return productRepository.findById(id).orElseThrow();
     }
+
+    /**
+     * Reduces a product's stock by the purchased amount and persists it. When the remaining
+     * quantity reaches zero the product is marked {@code SOLD}. Quantity never goes negative.
+     *
+     * @param product  the product to update
+     * @param quantity the number of units sold
+     * @return the saved product
+     */
+    public Product reduceStock(Product product, int quantity) {
+        int remaining = Math.max(product.getQuantity() - quantity, 0);
+        product.setQuantity(remaining);
+        if (remaining == 0) {
+            product.setStatus("SOLD");
+        }
+        return productRepository.save(product);
+    }
 }

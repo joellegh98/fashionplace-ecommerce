@@ -68,9 +68,20 @@ public class CartController {
      */
     @PostMapping("/cart/add")
     public String addToCart(@ModelAttribute AddToCartForm form, RedirectAttributes redirectAttributes) {
-        productService.findById(form.getProductId());
-        cartBean.addItem(form.getProductId(), form.getQuantity());
-        redirectAttributes.addFlashAttribute("cartMessage", "Added to cart.");
+        Product product = productService.findById(form.getProductId());
+        int alreadyInCart = cartBean.getItems().getOrDefault(form.getProductId(), 0);
+        int requestedTotal = alreadyInCart + Math.max(form.getQuantity(), 0);
+
+        if (product.getQuantity() <= 0) {
+            redirectAttributes.addFlashAttribute("cartError", "This item is out of stock.");
+        } else if (requestedTotal > product.getQuantity()) {
+            redirectAttributes.addFlashAttribute("cartError",
+                    "Only " + product.getQuantity() + " in stock"
+                            + (alreadyInCart > 0 ? " (you already have " + alreadyInCart + " in your cart)." : "."));
+        } else {
+            cartBean.addItem(form.getProductId(), form.getQuantity());
+            redirectAttributes.addFlashAttribute("cartMessage", "Added to cart.");
+        }
         return "redirect:/product/" + form.getProductId();
     }
 
@@ -81,9 +92,15 @@ public class CartController {
      * @return redirect back to the cart page
      */
     @PostMapping("/cart/update")
-    public String updateQuantity(@ModelAttribute AddToCartForm form) {
-        productService.findById(form.getProductId());
-        cartBean.setQuantity(form.getProductId(), form.getQuantity());
+    public String updateQuantity(@ModelAttribute AddToCartForm form, RedirectAttributes redirectAttributes) {
+        Product product = productService.findById(form.getProductId());
+        if (form.getQuantity() > product.getQuantity()) {
+            cartBean.setQuantity(form.getProductId(), product.getQuantity());
+            redirectAttributes.addFlashAttribute("cartError",
+                    "Only " + product.getQuantity() + " of \"" + product.getTitle() + "\" in stock.");
+        } else {
+            cartBean.setQuantity(form.getProductId(), form.getQuantity());
+        }
         return "redirect:/cart";
     }
 

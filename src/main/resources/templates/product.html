@@ -44,6 +44,9 @@
                       th:classappend="${product.status == 'SOLD'} ? 'bg-danger' : 'bg-success'"
                       th:text="${product.status}">ACTIVE</span>
             </dd>
+
+            <dt class="col-sm-2">In stock</dt>
+            <dd class="col-sm-10" th:text="${product.quantity}">0</dd>
         </dl>
 
         <section class="mt-4">
@@ -98,21 +101,27 @@
         <div th:if="${cartMessage}" class="alert alert-success mt-3" th:text="${cartMessage}">
             Added to cart.
         </div>
+        <div th:if="${cartError}" class="alert alert-danger mt-3" th:text="${cartError}">
+            Out of stock.
+        </div>
 
-        <form th:if="${product.status != 'SOLD'}" th:action="@{/cart/add}" th:object="${addToCart}"
-              method="post" class="mt-3">
+        <form th:if="${product.status != 'SOLD' and product.quantity > 0}" th:action="@{/cart/add}"
+              th:object="${addToCart}" method="post" class="mt-3">
             <input type="hidden" th:field="*{productId}">
             <div class="row g-2 align-items-end">
                 <div class="col-auto">
                     <label for="quantity" class="form-label mb-0">Quantity</label>
                     <input type="number" id="quantity" class="form-control" th:field="*{quantity}"
-                           min="1" style="width: 5rem;">
+                           min="1" th:max="${product.quantity}" style="width: 5rem;">
                 </div>
                 <div class="col-auto">
                     <button type="submit" class="btn btn-primary">Add to Cart</button>
                 </div>
             </div>
         </form>
+        <p th:if="${product.status == 'SOLD' or product.quantity <= 0}" class="text-danger mt-3">
+            This item is sold out.
+        </p>
 
         <div class="mt-3">
             <button type="button" class="btn"

@@ -159,10 +159,10 @@ testable before moving on.
 - [x] **5.2 - Checkout page.** `/checkout` shows cart summary + shipping address field.
   > 📖 **Materials:** `07-SpringMVC.pdf` – `@GetMapping` (slide 6); `Model` with cart data (slide 14); `07-SpringBeans.pdf` – `@Resource` injection of CartBean (session scope) (slide 21). `08-thymeleaf.pdf` – build checkout form with `th:action="@{/checkout}"`, `th:object`, and `th:field="*{shippingAddress}"` (slides 13, 14); iterate cart summary items with `th:each` (slide 10).
 
-- [ ] **5.3 - Place order (`@Transactional`).** `OrderService.placeOrder(...)` creates the Order + OrderItems atomically.
+- [x] **5.3 - Place order (`@Transactional`).** `OrderService.placeOrder(...)` creates the Order + OrderItems atomically.
   > 📖 **Materials:** `07-SpringBeans.pdf` – `@Service` for business logic (slide 6); constructor injection of repositories into the service (slides 9, 10); `07-LongPolling.pdf` – thread pool: the controller must **not block** the server thread; the service runs within the same thread but `@Transactional` ensures atomicity (slide 2 and slide 8 for the non-blocking / DeferredResult parallel concept). `08-JPA.pdf` – DB integrity problem: when multiple writes must succeed or fail together (slide 31); `@Transactional` ensures all operations are atomic; if any step throws an exception Spring rolls back all changes (slides 32, 33, 34); rule of thumb: any method with more than one write operation needs `@Transactional` (slide 33).
 
-- [ ] **5.4 - Post-order cleanup.** Clear the cart; mark purchased products `SOLD`.
+- [x] **5.4 - Post-order cleanup.** Clear the cart; mark purchased products `SOLD`.
   > 📖 **Materials:** `07-SpringBeans.pdf` – accessing the `@SessionScope` CartBean and clearing it (slides 17, 21); `@Service` method coordination (slide 6); `07-SpringMVC.pdf` – redirect after POST-order to avoid double-submission (slide 9). `08-JPA.pdf` – use `repository.save(product)` after setting `product.setStatus("SOLD")` to persist the update (slide 29); keep both updates inside the same `@Transactional` method for atomicity (slide 34).
 
 - [ ] **5.5 - My Orders page.** `/orders` lists the current (fake) user's orders with status.

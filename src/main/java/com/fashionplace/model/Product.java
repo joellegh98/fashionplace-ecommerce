@@ -56,6 +56,10 @@ public class Product {
     /** Listing state, e.g. {@code ACTIVE} or {@code SOLD}. Defaults to {@code ACTIVE}. */
     private String status = "ACTIVE";
 
+    /** Units currently in stock. Becomes {@code SOLD} once this reaches zero. */
+    @Column(nullable = false)
+    private int quantity = 1;
+
     /** Optional URL of the product image shown on cards and the detail page. */
     private String imageUrl;
 
@@ -95,16 +99,18 @@ public class Product {
      * @param category    the product category
      * @param condition   the item condition
      * @param status      the listing status (e.g. {@code ACTIVE}, {@code SOLD})
+     * @param quantity    the units in stock
      * @param imageUrl    the product image URL
      */
     public Product(String title, String description, BigDecimal price,
-                   String category, String condition, String status, String imageUrl) {
+                   String category, String condition, String status, int quantity, String imageUrl) {
         this.title = title;
         this.description = description;
         this.price = price;
         this.category = category;
         this.condition = condition;
         this.status = status;
+        this.quantity = quantity;
         this.imageUrl = imageUrl;
     }
 
@@ -232,6 +238,24 @@ public class Product {
      */
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    /**
+     * Returns the units currently in stock.
+     *
+     * @return the quantity
+     */
+    public int getQuantity() {
+        return quantity;
+    }
+
+    /**
+     * Sets the units currently in stock.
+     *
+     * @param quantity the quantity to set
+     */
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     /**
