@@ -1,6 +1,7 @@
 package com.fashionplace.controller;
 
 import com.fashionplace.service.ProductService;
+import com.fashionplace.service.WishlistService;
 import com.fashionplace.session.RecentSearchBean;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Controller;
@@ -17,12 +18,14 @@ import java.math.BigDecimal;
 public class BrowseController {
 
     private final ProductService productService;
+    private final WishlistService wishlistService;
 
     @Resource
     private RecentSearchBean recentSearchBean;
 
-    public BrowseController(ProductService productService) {
+    public BrowseController(ProductService productService, WishlistService wishlistService) {
         this.productService = productService;
+        this.wishlistService = wishlistService;
     }
 
     /**
@@ -60,6 +63,7 @@ public class BrowseController {
         model.addAttribute("categories", productService.findDistinctCategories());
         model.addAttribute("conditions", productService.findDistinctConditions());
         model.addAttribute("recentSearches", recentSearchBean.getRecentSearches());
+        model.addAttribute("wishlistProductIds", wishlistService.savedProductIdsForCurrentUser());
         return "browse";
     }
 }

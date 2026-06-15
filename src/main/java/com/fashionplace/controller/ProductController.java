@@ -4,6 +4,7 @@ import com.fashionplace.model.Product;
 import com.fashionplace.service.CurrentUserProvider;
 import com.fashionplace.service.ProductService;
 import com.fashionplace.service.ReviewService;
+import com.fashionplace.service.WishlistService;
 import com.fashionplace.web.AddToCartForm;
 import com.fashionplace.web.ReviewForm;
 import jakarta.validation.Valid;
@@ -25,13 +26,16 @@ public class ProductController {
     private final ProductService productService;
     private final ReviewService reviewService;
     private final CurrentUserProvider currentUserProvider;
+    private final WishlistService wishlistService;
 
     public ProductController(ProductService productService,
                              ReviewService reviewService,
-                             CurrentUserProvider currentUserProvider) {
+                             CurrentUserProvider currentUserProvider,
+                             WishlistService wishlistService) {
         this.productService = productService;
         this.reviewService = reviewService;
         this.currentUserProvider = currentUserProvider;
+        this.wishlistService = wishlistService;
     }
 
     /**
@@ -86,6 +90,7 @@ public class ProductController {
         model.addAttribute("averageRating", reviewService.averageRating(product));
         model.addAttribute("review", reviewForm);
         model.addAttribute("currentUsername", currentUserProvider.getCurrentUser().getUsername());
+        model.addAttribute("onWishlist", wishlistService.isOnCurrentUserWishlist(product));
 
         AddToCartForm addToCart = new AddToCartForm();
         addToCart.setProductId(id);

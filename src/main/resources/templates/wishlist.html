@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<!--
+  Wishlist page. Lists the current user's saved products with a remove action.
+-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title>FashionPlace - Wishlist</title>
+</head>
+<body>
+    <main>
+        <h1 class="mb-4">Your Wishlist</h1>
+
+        <div th:if="${#lists.isEmpty(wishlistItems)}" class="alert alert-info">
+            Your wishlist is empty.
+            <a th:href="@{/browse}">Browse products</a>
+        </div>
+
+        <div th:unless="${#lists.isEmpty(wishlistItems)}"
+             class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+            <div class="col" th:each="item : ${wishlistItems}">
+                <div class="card h-100">
+                    <a th:href="@{/product/{id}(id=${item.product.id})}">
+                        <img th:if="${item.product.imageUrl}" th:src="${item.product.imageUrl}"
+                             class="card-img-top" alt="" style="height: 180px; object-fit: cover;">
+                    </a>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">
+                            <a th:href="@{/product/{id}(id=${item.product.id})}"
+                               class="text-decoration-none text-dark"
+                               th:text="${item.product.title}">Product title</a>
+                        </h5>
+                        <p class="card-text fw-bold" th:text="'$' + ${item.product.price}">$0.00</p>
+                        <form th:action="@{/wishlist/remove/{id}(id=${item.id})}" method="post"
+                              class="mt-auto">
+                            <input type="hidden" name="returnUrl" value="/wishlist">
+                            <button type="submit" class="btn btn-sm btn-outline-danger w-100">Remove</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

@@ -113,6 +113,18 @@
                 </div>
             </div>
         </form>
+
+        <div class="mt-3">
+            <button type="button" class="btn"
+                    th:classappend="${onWishlist} ? 'btn-success' : 'btn-outline-secondary'"
+                    th:attr="data-wishlist-add=${product.id},data-label-unsaved='Save to Wishlist'"
+                    th:utext="${onWishlist} ? '&#9829; Saved' : '&#9825; Save to Wishlist'">
+                Save to Wishlist
+            </button>
+            <span class="ms-2" data-wishlist-saved-extra th:classappend="${onWishlist} ? '' : 'd-none'">
+                <a th:href="@{/wishlist}">View wishlist</a>
+            </span>
+        </div>
     </main>
 </body>
 </html>
