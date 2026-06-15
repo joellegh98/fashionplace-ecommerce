@@ -2,6 +2,7 @@ package com.fashionplace.service;
 
 import com.fashionplace.model.Product;
 import com.fashionplace.model.Review;
+import com.fashionplace.model.User;
 import com.fashionplace.repository.ReviewRepository;
 import org.springframework.stereotype.Service;
 
@@ -44,5 +45,17 @@ public class ReviewService {
                 .mapToInt(Review::getRating)
                 .average()
                 .orElse(0.0);
+    }
+
+    /**
+     * Saves a new review for a product, attributed to the given user.
+     *
+     * @param product  the product being reviewed
+     * @param reviewer the user submitting the review
+     * @param rating   star rating (1–5)
+     * @param comment  review text
+     */
+    public void addReview(Product product, User reviewer, int rating, String comment) {
+        reviewRepository.save(new Review(rating, comment, reviewer, product));
     }
 }
