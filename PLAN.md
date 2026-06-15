@@ -153,10 +153,10 @@ testable before moving on.
 
 **Goal:** Turn a cart into a persisted order. Introduces transactions.
 
-- [ ] **5.1 - Order + OrderItem entities.** `Order` (`totalPrice`, `status`, `createdAt`, `shippingAddress`) `@ManyToOne buyer`, `@OneToMany orderItems`. `OrderItem` (`quantity`, `priceAtPurchase`) `@ManyToOne` to `Order` and `Product`. Add both repos.
+- [x] **5.1 - Order + OrderItem entities.** `Order` (`totalPrice`, `status`, `createdAt`, `shippingAddress`) `@ManyToOne buyer`, `@OneToMany orderItems`. `OrderItem` (`quantity`, `priceAtPurchase`) `@ManyToOne` to `Order` and `Product`. Add both repos.
   > 📖 **Materials:** `07-SpringBeans.pdf` – `@Repository` (slide 6); bean class requirements (slide 7); beans for database access (slide 25). `08-JPA.pdf` – `@Entity` for each class (slide 3); `@ManyToOne` for buyer → Order relation; `@OneToMany` for Order → OrderItems list; `mappedBy` to specify the owning side; JPA creates a join table for `@OneToMany` (slides 5, 6); avoid bidirectional loops (slide 6).
 
-- [ ] **5.2 - Checkout page.** `/checkout` shows cart summary + shipping address field.
+- [x] **5.2 - Checkout page.** `/checkout` shows cart summary + shipping address field.
   > 📖 **Materials:** `07-SpringMVC.pdf` – `@GetMapping` (slide 6); `Model` with cart data (slide 14); `07-SpringBeans.pdf` – `@Resource` injection of CartBean (session scope) (slide 21). `08-thymeleaf.pdf` – build checkout form with `th:action="@{/checkout}"`, `th:object`, and `th:field="*{shippingAddress}"` (slides 13, 14); iterate cart summary items with `th:each` (slide 10).
 
 - [ ] **5.3 - Place order (`@Transactional`).** `OrderService.placeOrder(...)` creates the Order + OrderItems atomically.
