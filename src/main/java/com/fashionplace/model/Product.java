@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 import java.math.BigDecimal;
 
@@ -16,8 +18,8 @@ import java.math.BigDecimal;
  * Hibernate creates (or updates) the {@code product} table automatically at startup.</p>
  *
  * <p>Beyond the core fields ({@code id}, {@code title}, {@code description}, {@code price}),
- * Phase 2.2 adds {@code category}, {@code condition}, {@code status} and {@code imageUrl}
- * to support browsing filters and listing state. The seller relation is added in a later phase.</p>
+ * Phase 2.2 adds {@code category}, {@code condition}, {@code status} and {@code imageUrl},
+ * and Phase 4.3 adds a {@code seller} relation pointing to the {@link User} who listed it.</p>
  */
 @Entity
 public class Product {
@@ -56,6 +58,14 @@ public class Product {
 
     /** Optional URL of the product image shown on cards and the detail page. */
     private String imageUrl;
+
+    /**
+     * The user who listed this product. Many products can belong to one seller;
+     * JPA maps this to a {@code seller_id} foreign key column.
+     */
+    @ManyToOne
+    @JoinColumn(name = "seller_id")
+    private User seller;
 
     /**
      * No-args constructor required by JPA to instantiate entities via reflection.
@@ -240,5 +250,23 @@ public class Product {
      */
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    /**
+     * Returns the seller who listed this product.
+     *
+     * @return the seller, possibly {@code null}
+     */
+    public User getSeller() {
+        return seller;
+    }
+
+    /**
+     * Sets the seller who listed this product.
+     *
+     * @param seller the seller to set
+     */
+    public void setSeller(User seller) {
+        this.seller = seller;
     }
 }

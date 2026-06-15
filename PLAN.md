@@ -126,10 +126,10 @@ testable before moving on.
 - [x] **4.1 - User entity + repo.** Fields: `id`, `username`, `email`, `passwordHash`, `role`, `address`, `createdAt`. Seed an admin user + a couple of regular users.
   > 📖 **Materials:** `07-SpringBeans.pdf` – `@Repository` for database access bean (slide 6); bean class requirements (slide 7); beans used for database access (slide 25); `@PostConstruct` in DataSeeder for seeding (slide 28). `08-JPA.pdf` – `@Entity` definition with `@Id`, `@GeneratedValue`, `@CreationTimestamp` (slide 3); add validation to fields: `@NotEmpty`, `@Email`, `@NotNull` directly on entity members (slides 14, 15); Roadmap 1/6 for entity structure (slide 25); Roadmap 2/6 for `JpaRepository` interface (slide 26).
 
-- [ ] **4.2 - Temporary "current user" helper.** A tiny `CurrentUserProvider` bean that returns a seeded user. (Phase 9 swaps this for the real logged-in user.)
+- [x] **4.2 - Temporary "current user" helper.** A tiny `CurrentUserProvider` bean that returns a seeded user. (Phase 9 swaps this for the real logged-in user.)
   > 📖 **Materials:** `07-SpringBeans.pdf` – `@Component` for a utility bean (slide 6); `@Autowired` / constructor injection (slides 8, 9); singleton scope (default) means one instance shared across all requests (slide 17); `07-SpringMVC.pdf` – `Principal` parameter in controllers (slide 17, "Other params") — this is the real equivalent in Phase 9.
 
-- [ ] **4.3 - Product -> seller relation.** `Product` gets `@ManyToOne User seller`. Update seed + show seller name on Product Detail.
+- [x] **4.3 - Product -> seller relation.** `Product` gets `@ManyToOne User seller`. Update seed + show seller name on Product Detail.
   > 📖 **Materials:** `07-SpringBeans.pdf` – bean member with getter/setter (slide 7); `07-SpringMVC.pdf` – pass updated Product object to Thymeleaf view via `Model` (slide 14). `08-JPA.pdf` – relational DB design: store foreign key to avoid data duplication (slide 4); `@ManyToOne` annotation: many products belong to one seller; JPA creates a `seller_id` foreign key column (slide 5); avoid bidirectional relations to prevent infinite loops; if needed mark reverse field `@Transient` (slide 6). `08-thymeleaf.pdf` – display seller name with `th:text="${product.seller.username}"` via chained property access (slide 5).
 
 - [ ] **4.4 - Review entity.** `Review` (`rating 1-5`, `comment`, `createdAt`) with `@ManyToOne` to `User` and `Product`. Repo included.

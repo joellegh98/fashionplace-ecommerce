@@ -28,6 +28,10 @@
             <dt class="col-sm-2">Price</dt>
             <dd class="col-sm-10 fw-bold" th:text="'$' + ${product.price}">$0.00</dd>
 
+            <dt class="col-sm-2">Seller</dt>
+            <dd class="col-sm-10"
+                th:text="${product.seller != null} ? ${product.seller.username} : 'Unknown'">Seller</dd>
+
             <dt class="col-sm-2">Category</dt>
             <dd class="col-sm-10" th:text="${product.category}">Category</dd>
 
