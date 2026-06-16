@@ -57,7 +57,9 @@
                             <th scope="col">Username</th>
                             <th scope="col">Email</th>
                             <th scope="col">Role</th>
+                            <th scope="col">Status</th>
                             <th scope="col">Joined</th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -70,7 +72,25 @@
                                       th:classappend="${user.role == 'ADMIN'} ? 'bg-warning text-dark' : 'bg-secondary'"
                                       th:text="${user.role}">USER</span>
                             </td>
+                            <td>
+                                <span class="badge"
+                                      th:classappend="${user.disabled} ? 'bg-danger' : 'bg-success'"
+                                      th:text="${user.disabled} ? 'Disabled' : 'Active'">Active</span>
+                            </td>
                             <td th:text="${user.createdAt != null} ? ${#temporals.format(user.createdAt, 'dd MMM yyyy')} : ''">01 Jan 2026</td>
+                            <td class="text-end text-nowrap">
+                                <form th:if="${!user.disabled and user.role != 'ADMIN'}"
+                                      th:action="@{/admin/users/{id}/disable(id=${user.id})}" method="post"
+                                      class="d-inline"
+                                      onsubmit="return confirm('Disable this user account?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Disable</button>
+                                </form>
+                                <form th:if="${user.disabled}"
+                                      th:action="@{/admin/users/{id}/enable(id=${user.id})}" method="post"
+                                      class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-success">Enable</button>
+                                </form>
+                            </td>
                         </tr>
                     </tbody>
                 </table>

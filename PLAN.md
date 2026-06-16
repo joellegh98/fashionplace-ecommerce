@@ -207,7 +207,7 @@ testable before moving on.
 - [x] **7.2 - Admin manage products.** Delete/flag any product.
   > 📖 **Materials:** `07-SpringMVC.pdf` – `@DeleteMapping` / `@PostMapping` with action param (slide 6); `@PathVariable` (slide 8); redirect after action (slide 9). `08-JPA.pdf` – `repository.deleteById(id)` or `repository.delete(entity)` (slide 9); for flag/status update use `repository.save(product)` after modifying field (slide 29).
 
-- [ ] **7.3 - Admin manage users.** View/disable users.
+- [x] **7.3 - Admin manage users.** View/disable users.
   > 📖 **Materials:** `07-SpringMVC.pdf` – `@GetMapping` / `@PostMapping` (slide 6); `@PathVariable` (slide 8); `07-SpringBeans.pdf` – `@Service` for user management logic (slide 6). `08-JPA.pdf` – `findAll()` for listing all users; `save(user)` after setting `enabled=false`; use `findByUsername(String name)` query method (slides 9, 10, 11).
 
 - [ ] **7.4 - SavedSearch entity.** `SavedSearch` (`keyword`, `category`, `minPrice`, `maxPrice`) `@ManyToOne User` + repo. Persist a user's searches (the 6th entity).

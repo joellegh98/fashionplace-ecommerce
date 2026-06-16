@@ -44,6 +44,14 @@ public class User {
     /** Optional postal/shipping address. */
     private String address;
 
+    /**
+     * Whether an admin has disabled this account. Stored as a flag (rather than an
+     * {@code enabled} column) so that adding it to an existing database leaves current
+     * rows {@code false} — i.e. still enabled. A disabled user is treated as blocked.
+     */
+    @Column(nullable = false)
+    private boolean disabled = false;
+
     /** Creation time, set automatically on first persist. */
     @CreationTimestamp
     @Column(updatable = false)
@@ -128,6 +136,16 @@ public class User {
     /** @param address the address to set */
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    /** @return {@code true} if this account has been disabled by an admin */
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    /** @param disabled whether the account is disabled */
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 
     /** @return when this account was created */

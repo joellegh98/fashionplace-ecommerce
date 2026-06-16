@@ -1,5 +1,6 @@
 package com.fashionplace.service;
 
+import com.fashionplace.model.User;
 import com.fashionplace.repository.OrderRepository;
 import com.fashionplace.repository.ProductRepository;
 import com.fashionplace.repository.UserRepository;
@@ -59,5 +60,34 @@ public class AdminService {
     /** Clears an admin flag and restores the listing status. */
     public void unflagProduct(Long id) {
         productService.unflagListing(id);
+    }
+
+    /**
+     * Disables a user account so it is treated as blocked. Admin accounts cannot be
+     * disabled, to avoid locking the team out of the admin area.
+     *
+     * @param id the user to disable
+     * @throws java.util.NoSuchElementException if no user has the given id
+     * @throws IllegalStateException            if the user is an admin
+     */
+    public void disableUser(Long id) {
+        User user = userRepository.findById(id).orElseThrow();
+        if ("ADMIN".equals(user.getRole())) {
+            throw new IllegalStateException("Admin accounts cannot be disabled.");
+        }
+        user.setDisabled(true);
+        userRepository.save(user);
+    }
+
+    /**
+     * Re-enables a previously disabled user account.
+     *
+     * @param id the user to enable
+     * @throws java.util.NoSuchElementException if no user has the given id
+     */
+    public void enableUser(Long id) {
+        User user = userRepository.findById(id).orElseThrow();
+        user.setDisabled(false);
+        userRepository.save(user);
     }
 }

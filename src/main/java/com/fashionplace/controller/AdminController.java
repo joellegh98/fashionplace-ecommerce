@@ -89,4 +89,42 @@ public class AdminController {
         }
         return "redirect:/admin";
     }
+
+    /**
+     * Disables a user account from the admin dashboard.
+     *
+     * @param id                 the user to disable
+     * @param redirectAttributes flash message shown after redirect
+     * @return redirect back to the admin dashboard
+     */
+    @PostMapping("/admin/users/{id}/disable")
+    public String disableUser(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            adminService.disableUser(id);
+            redirectAttributes.addFlashAttribute("adminMessage", "User disabled.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("adminError",
+                    "Could not disable user: " + e.getMessage());
+        }
+        return "redirect:/admin";
+    }
+
+    /**
+     * Re-enables a disabled user account from the admin dashboard.
+     *
+     * @param id                 the user to enable
+     * @param redirectAttributes flash message shown after redirect
+     * @return redirect back to the admin dashboard
+     */
+    @PostMapping("/admin/users/{id}/enable")
+    public String enableUser(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            adminService.enableUser(id);
+            redirectAttributes.addFlashAttribute("adminMessage", "User enabled.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("adminError",
+                    "Could not enable user: " + e.getMessage());
+        }
+        return "redirect:/admin";
+    }
 }
