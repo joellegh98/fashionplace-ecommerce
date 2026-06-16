@@ -123,6 +123,9 @@ public class ProductController {
         model.addAttribute("averageRating", reviewService.averageRating(product));
         model.addAttribute("review", reviewForm);
         model.addAttribute("currentUsername", currentUserProvider.getCurrentUser().getUsername());
+        boolean ownProduct = product.getSeller() != null
+                && product.getSeller().getId().equals(currentUserProvider.getCurrentUser().getId());
+        model.addAttribute("ownProduct", ownProduct);
         model.addAttribute("onWishlist", wishlistService.isOnCurrentUserWishlist(product));
         model.addAttribute("relatedProducts", recommendationService.relatedProducts(product));
 

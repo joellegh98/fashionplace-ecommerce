@@ -192,7 +192,7 @@ testable before moving on.
 - [x] **6.4 - My Products page.** `/my-products` shows the user's active/sold items.
   > 📖 **Materials:** `07-SpringMVC.pdf` – `@GetMapping` (slide 6); `Model.addAttribute(list)` (slide 14); Thymeleaf iteration (slide 13). `08-thymeleaf.pdf` – iterate with `th:each="product : ${myProducts}"` (slide 10); show status badge with `th:switch` / `th:case` (slide 9). `08-JPA.pdf` – use `findBySeller(User seller)` query method (slides 10, 11).
 
-- [ ] **6.5 - Edit / delete product.** Edit form + delete action from My Products.
+- [x] **6.5 - Edit / delete product.** Edit form + delete action from My Products.
   > 📖 **Materials:** `07-SpringMVC.pdf` – `@PutMapping` / `@DeleteMapping` (slide 6); `@PathVariable` for product id (slide 8); `@RequestBody` or `@RequestParam` for update data (slides 7, 8); redirect after action (slide 9). `08-thymeleaf.pdf` – pre-populate the edit form with existing data using `th:field="*{title}"` inside `th:object="${product}"` (slides 13, 14); link to edit page with `th:href="@{/product/{id}/edit(id=${product.id})}"` (slide 7). `08-JPA.pdf` – update with `repository.save(product)` (existing entity with set id performs UPDATE); delete with `repository.deleteById(id)` (slide 9).
 
 ---

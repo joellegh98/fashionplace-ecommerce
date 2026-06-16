@@ -1,6 +1,7 @@
 package com.fashionplace.controller;
 
 import com.fashionplace.model.Product;
+import com.fashionplace.service.CurrentUserProvider;
 import com.fashionplace.service.ProductService;
 import com.fashionplace.session.CartBean;
 import com.fashionplace.session.InterestBean;
@@ -24,6 +25,7 @@ import java.util.Optional;
 public class CartController {
 
     private final ProductService productService;
+    private final CurrentUserProvider currentUserProvider;
 
     @Resource
     private CartBean cartBean;
@@ -31,8 +33,10 @@ public class CartController {
     @Resource
     private InterestBean interestBean;
 
-    public CartController(ProductService productService) {
+    public CartController(ProductService productService,
+                          CurrentUserProvider currentUserProvider) {
         this.productService = productService;
+        this.currentUserProvider = currentUserProvider;
     }
 
     /**
@@ -60,7 +64,9 @@ public class CartController {
         int alreadyInCart = cartBean.getItems().getOrDefault(form.getProductId(), 0);
         int requestedTotal = alreadyInCart + Math.max(form.getQuantity(), 0);
 
-        if (product.getQuantity() <= 0) {
+        if (isOwnProduct(product)) {
+            redirectAttributes.addFlashAttribute("cartError", "You can't buy your own listing.");
+        } else if (product.getQuantity() <= 0) {
             redirectAttributes.addFlashAttribute("cartError", "This item is out of stock.");
         } else if (requestedTotal > product.getQuantity()) {
             redirectAttributes.addFlashAttribute("cartError",
@@ -120,6 +126,12 @@ public class CartController {
         }
         model.addAttribute("cartItems", summary.getLines());
         model.addAttribute("grandTotal", summary.getGrandTotal());
+    }
+
+    /** Whether the given product was listed by the current user. */
+    private boolean isOwnProduct(Product product) {
+        return product.getSeller() != null
+                && product.getSeller().getId().equals(currentUserProvider.getCurrentUser().getId());
     }
 
     private static String unavailableCartMessage() {

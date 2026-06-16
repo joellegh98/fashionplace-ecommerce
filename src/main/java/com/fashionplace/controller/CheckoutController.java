@@ -2,6 +2,7 @@ package com.fashionplace.controller;
 
 import com.fashionplace.model.Order;
 import com.fashionplace.model.Product;
+import com.fashionplace.model.User;
 import com.fashionplace.service.CurrentUserProvider;
 import com.fashionplace.service.OrderService;
 import com.fashionplace.service.ProductService;
@@ -115,10 +116,16 @@ public class CheckoutController {
      * @return an error message if any line exceeds available stock, otherwise {@code null}
      */
     private String findStockProblem() {
+        User currentUser = currentUserProvider.getCurrentUser();
         for (Map.Entry<Long, Integer> entry : cartBean.getItems().entrySet()) {
             Product product = productService.findByIdOptional(entry.getKey()).orElse(null);
             if (product == null) {
                 return unavailableCartMessage();
+            }
+            if (product.getSeller() != null
+                    && product.getSeller().getId().equals(currentUser.getId())) {
+                return "You can't buy your own listing (\"" + product.getTitle()
+                        + "\"). Please remove it from your cart.";
             }
             if (entry.getValue() > product.getQuantity()) {
                 return "Not enough stock for \"" + product.getTitle()

@@ -106,7 +106,10 @@
             Out of stock.
         </div>
 
-        <form th:if="${product.status != 'SOLD' and product.quantity > 0}" th:action="@{/cart/add}"
+        <p th:if="${ownProduct}" class="text-muted mt-3">
+            This is your own listing, so you can't buy it.
+        </p>
+        <form th:if="${!ownProduct and product.status != 'SOLD' and product.quantity > 0}" th:action="@{/cart/add}"
               th:object="${addToCart}" method="post" class="mt-3">
             <input type="hidden" th:field="*{productId}">
             <div class="row g-2 align-items-end">
@@ -120,7 +123,7 @@
                 </div>
             </div>
         </form>
-        <p th:if="${product.status == 'SOLD' or product.quantity <= 0}" class="text-danger mt-3">
+        <p th:if="${!ownProduct and (product.status == 'SOLD' or product.quantity <= 0)}" class="text-danger mt-3">
             This item is sold out.
         </p>
 
