@@ -53,19 +53,24 @@
                 </li>
             </ul>
             <div class="card-body">
-                <form th:action="@{/admin/support/{id}/reply(id=${thread.id})}" method="post" class="mb-2">
-                    <div class="mb-2">
-                        <label class="form-label small text-muted mb-1">Reply as support</label>
-                        <textarea name="body" class="form-control" rows="2" required
-                                  placeholder="Type your reply..."></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-sm btn-primary">Send reply</button>
-                </form>
-                <form th:if="${thread.open}" th:action="@{/admin/support/{id}/close(id=${thread.id})}" method="post"
-                      class="d-inline"
-                      onsubmit="return confirm('Mark this conversation as resolved?');">
-                    <button type="submit" class="btn btn-sm btn-outline-secondary">Mark resolved</button>
-                </form>
+                <div th:if="${thread.open}">
+                    <form th:action="@{/admin/support/{id}/reply(id=${thread.id})}" method="post" class="mb-2">
+                        <div class="mb-2">
+                            <label class="form-label small text-muted mb-1">Reply as support</label>
+                            <textarea name="body" class="form-control" rows="2" required
+                                      placeholder="Type your reply..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-sm btn-primary">Send reply</button>
+                    </form>
+                    <form th:action="@{/admin/support/{id}/close(id=${thread.id})}" method="post"
+                          class="d-inline"
+                          onsubmit="return confirm('Mark this conversation as resolved?');">
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">Mark resolved</button>
+                    </form>
+                </div>
+                <p th:unless="${thread.open}" class="text-muted small mb-0">
+                    This conversation is resolved and closed.
+                </p>
             </div>
         </div>
     </main>

@@ -41,6 +41,9 @@ public class ActivityLogService {
         if (path.equals("/support")) {
             return "Contacted support";
         }
+        if (path.matches("/support/\\d+/reply")) {
+            return "Replied to support";
+        }
         if (path.matches("/product/\\d+/edit")) {
             return "Updated product";
         }

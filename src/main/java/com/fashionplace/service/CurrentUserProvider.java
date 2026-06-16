@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 public class CurrentUserProvider {
 
     /** Seeded regular user used as the fake "logged-in" account. */
-    private static final String DEFAULT_USERNAME = "alice";
+    private static final String DEFAULT_USERNAME = "bob";
 
     private final UserRepository userRepository;
 

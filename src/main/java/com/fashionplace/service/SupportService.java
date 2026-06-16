@@ -49,6 +49,40 @@ public class SupportService {
     }
 
     /**
+     * Adds a reply from the current user to one of their own open conversations. The reply is
+     * attributed to the {@code USER} sender and keeps the conversation {@code OPEN}.
+     *
+     * @param messageId any message id within the target conversation
+     * @param body      the reply text
+     * @throws java.util.NoSuchElementException if no message has the given id
+     * @throws IllegalArgumentException         if the reply body is blank
+     * @throws IllegalStateException            if the conversation isn't the user's own, or is closed
+     */
+    @Transactional
+    public void replyAsCurrentUser(Long messageId, String body) {
+        if (body == null || body.isBlank()) {
+            throw new IllegalArgumentException("Reply cannot be empty.");
+        }
+        User user = currentUserProvider.getCurrentUser();
+        SupportMessage source = supportMessageRepository.findById(messageId).orElseThrow();
+        if (source.getUser() == null || !source.getUser().getId().equals(user.getId())) {
+            throw new IllegalStateException("You can only reply to your own conversations.");
+        }
+
+        List<SupportMessage> thread =
+                supportMessageRepository.findByUserAndSubjectOrderByIdAsc(user, source.getSubject());
+        boolean closed = !thread.isEmpty()
+                && SupportMessage.STATUS_CLOSED.equals(thread.get(thread.size() - 1).getStatus());
+        if (closed) {
+            throw new IllegalStateException("This conversation is closed.");
+        }
+
+        supportMessageRepository.save(new SupportMessage(
+                user, source.getSubject(), body.trim(),
+                SupportMessage.SENDER_USER, SupportMessage.STATUS_OPEN));
+    }
+
+    /**
      * Returns the current user's support conversations, grouped by subject. Within a thread
      * messages are ordered oldest first; threads are ordered with the most recently updated
      * first.

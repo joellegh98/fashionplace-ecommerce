@@ -8,7 +8,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
@@ -59,6 +61,28 @@ public class SupportController {
         supportService.submitForCurrentUser(supportForm);
         redirectAttributes.addFlashAttribute("supportMessage",
                 "Your message was sent to our support team.");
+        return "redirect:/support";
+    }
+
+    /**
+     * Adds a reply from the current user to one of their own open conversations.
+     *
+     * @param id                 any message id within the target conversation
+     * @param body               the reply text
+     * @param redirectAttributes flash message shown after redirect
+     * @return redirect back to the support page
+     */
+    @PostMapping("/support/{id}/reply")
+    public String reply(@PathVariable Long id,
+                        @RequestParam("body") String body,
+                        RedirectAttributes redirectAttributes) {
+        try {
+            supportService.replyAsCurrentUser(id, body);
+            redirectAttributes.addFlashAttribute("supportMessage", "Your reply was sent.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("supportError",
+                    "Could not send reply: " + e.getMessage());
+        }
         return "redirect:/support";
     }
 }

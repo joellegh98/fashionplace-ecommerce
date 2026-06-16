@@ -15,6 +15,9 @@
         <div th:if="${supportMessage}" class="alert alert-success" th:text="${supportMessage}">
             Your message was sent.
         </div>
+        <div th:if="${supportError}" class="alert alert-danger" th:text="${supportError}">
+            Something went wrong.
+        </div>
 
         <div class="row g-4">
             <!-- New message form -->
@@ -74,6 +77,21 @@
                             <div th:text="${msg.body}" style="white-space: pre-wrap;">Message body</div>
                         </li>
                     </ul>
+                    <div class="card-body">
+                        <!-- While the conversation is open the user can keep replying -->
+                        <form th:if="${thread.open}"
+                              th:action="@{/support/{id}/reply(id=${thread.id})}" method="post">
+                            <div class="mb-2">
+                                <label class="form-label small text-muted mb-1">Reply</label>
+                                <textarea name="body" class="form-control" rows="2" required
+                                          placeholder="Type your reply..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-sm btn-primary">Send reply</button>
+                        </form>
+                        <p th:unless="${thread.open}" class="text-muted small mb-0">
+                            This conversation is closed. Start a new request if you still need help.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
