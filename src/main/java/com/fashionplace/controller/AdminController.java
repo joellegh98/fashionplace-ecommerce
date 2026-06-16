@@ -1,11 +1,13 @@
 package com.fashionplace.controller;
 
 import com.fashionplace.service.AdminService;
+import com.fashionplace.service.SupportService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
@@ -16,9 +18,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class AdminController {
 
     private final AdminService adminService;
+    private final SupportService supportService;
 
-    public AdminController(AdminService adminService) {
+    public AdminController(AdminService adminService, SupportService supportService) {
         this.adminService = adminService;
+        this.supportService = supportService;
     }
 
     /**
@@ -126,5 +130,58 @@ public class AdminController {
                     "Could not enable user: " + e.getMessage());
         }
         return "redirect:/admin";
+    }
+
+    /**
+     * Shows the support inbox: every conversation across all users.
+     *
+     * @param model holds {@code threads} for the view
+     * @return the {@code admin/support} view name
+     */
+    @GetMapping("/admin/support")
+    public String supportInbox(Model model) {
+        model.addAttribute("threads", supportService.allThreads());
+        return "admin/support";
+    }
+
+    /**
+     * Posts a support-team reply to a conversation, then returns to the inbox.
+     *
+     * @param id                 any message id within the target conversation
+     * @param body               the reply text
+     * @param redirectAttributes flash message shown after redirect
+     * @return redirect back to the support inbox
+     */
+    @PostMapping("/admin/support/{id}/reply")
+    public String replySupport(@PathVariable Long id,
+                               @RequestParam("body") String body,
+                               RedirectAttributes redirectAttributes) {
+        try {
+            supportService.replyToThread(id, body);
+            redirectAttributes.addFlashAttribute("adminMessage", "Reply sent.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("adminError",
+                    "Could not send reply: " + e.getMessage());
+        }
+        return "redirect:/admin/support";
+    }
+
+    /**
+     * Marks a conversation resolved (CLOSED), then returns to the inbox.
+     *
+     * @param id                 any message id within the target conversation
+     * @param redirectAttributes flash message shown after redirect
+     * @return redirect back to the support inbox
+     */
+    @PostMapping("/admin/support/{id}/close")
+    public String closeSupport(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            supportService.closeThread(id);
+            redirectAttributes.addFlashAttribute("adminMessage", "Conversation closed.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("adminError",
+                    "Could not close conversation: " + e.getMessage());
+        }
+        return "redirect:/admin/support";
     }
 }

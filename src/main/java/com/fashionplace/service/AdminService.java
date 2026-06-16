@@ -19,15 +19,18 @@ public class AdminService {
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
     private final ProductService productService;
+    private final ActivityLogService activityLogService;
 
     public AdminService(UserRepository userRepository,
                         ProductRepository productRepository,
                         OrderRepository orderRepository,
-                        ProductService productService) {
+                        ProductService productService,
+                        ActivityLogService activityLogService) {
         this.userRepository = userRepository;
         this.productRepository = productRepository;
         this.orderRepository = orderRepository;
         this.productService = productService;
+        this.activityLogService = activityLogService;
     }
 
     /**
@@ -44,7 +47,8 @@ public class AdminService {
                 orderRepository.count(),
                 userRepository.findAll(newestFirst),
                 productRepository.findAll(newestFirst),
-                orderRepository.findAll(newestFirst));
+                orderRepository.findAll(newestFirst),
+                activityLogService.recentActivity());
     }
 
     /** Soft-deletes any product, regardless of who listed it. */

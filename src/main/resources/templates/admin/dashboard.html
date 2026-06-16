@@ -10,7 +10,10 @@
 </head>
 <body>
     <main>
-        <h1 class="mb-4">Admin Dashboard</h1>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="mb-0">Admin Dashboard</h1>
+            <a th:href="@{/admin/support}" class="btn btn-outline-primary">Support inbox</a>
+        </div>
 
         <div th:if="${adminMessage}" class="alert alert-success" th:text="${adminMessage}">
             Action completed.
@@ -180,6 +183,34 @@
                             <td class="text-end" th:text="'$' + ${order.totalPrice}">$0.00</td>
                             <td><span class="badge bg-info text-dark" th:text="${order.status}">PLACED</span></td>
                             <td th:text="${order.createdAt != null} ? ${#temporals.format(order.createdAt, 'dd MMM yyyy, HH:mm')} : ''">01 Jan 2026</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="mb-4">
+            <h2 class="h4 mb-3">Activity log</h2>
+            <div th:if="${#lists.isEmpty(dashboard.activity)}" class="alert alert-info">No activity recorded yet.</div>
+            <div th:unless="${#lists.isEmpty(dashboard.activity)}" class="table-responsive">
+                <table class="table table-sm align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">When</th>
+                            <th scope="col">User</th>
+                            <th scope="col">Action</th>
+                            <th scope="col">Request</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="entry : ${dashboard.activity}">
+                            <td th:text="${entry.createdAt != null} ? ${#temporals.format(entry.createdAt, 'dd MMM yyyy, HH:mm')} : ''">01 Jan 2026</td>
+                            <td th:text="${entry.username}">alice</td>
+                            <td th:text="${entry.action}">Placed order</td>
+                            <td class="text-muted small">
+                                <span th:text="${entry.method}">POST</span>
+                                <span th:text="${entry.path}">/checkout</span>
+                            </td>
                         </tr>
                     </tbody>
                 </table>

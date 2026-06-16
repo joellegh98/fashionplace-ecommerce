@@ -51,6 +51,9 @@
                         <li class="nav-item">
                             <a class="nav-link" th:href="@{/orders}">My Orders</a>
                         </li>
+                        <li class="nav-item" th:unless="${isAdmin}">
+                            <a class="nav-link" th:href="@{/support}">Support</a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link" th:href="@{/cart}">
                                 Cart

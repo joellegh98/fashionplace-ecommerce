@@ -1,5 +1,6 @@
 package com.fashionplace.web;
 
+import com.fashionplace.model.ActivityLog;
 import com.fashionplace.model.Order;
 import com.fashionplace.model.Product;
 import com.fashionplace.model.User;
@@ -8,7 +9,7 @@ import java.util.List;
 
 /**
  * Read-only snapshot for the admin dashboard: total counts plus recent rows
- * for the users, products and orders tables.
+ * for the users, products and orders tables, and the latest activity log entries.
  */
 public class AdminDashboard {
 
@@ -18,15 +19,18 @@ public class AdminDashboard {
     private final List<User> users;
     private final List<Product> products;
     private final List<Order> orders;
+    private final List<ActivityLog> activity;
 
     public AdminDashboard(long userCount, long productCount, long orderCount,
-                          List<User> users, List<Product> products, List<Order> orders) {
+                          List<User> users, List<Product> products, List<Order> orders,
+                          List<ActivityLog> activity) {
         this.userCount = userCount;
         this.productCount = productCount;
         this.orderCount = orderCount;
         this.users = users;
         this.products = products;
         this.orders = orders;
+        this.activity = activity;
     }
 
     /** @return total number of registered users */
@@ -57,5 +61,10 @@ public class AdminDashboard {
     /** @return the orders shown in the dashboard table */
     public List<Order> getOrders() {
         return orders;
+    }
+
+    /** @return the recent activity log entries shown in the dashboard */
+    public List<ActivityLog> getActivity() {
+        return activity;
     }
 }

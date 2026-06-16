@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<!--
+  Admin support inbox (Phase 7.8). Lists every support conversation across all users,
+  with a reply form (sends as SUPPORT) and a button to mark a conversation resolved.
+-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title>FashionPlace - Support Inbox</title>
+</head>
+<body>
+    <main>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="mb-0">Support Inbox</h1>
+            <a th:href="@{/admin}" class="btn btn-outline-secondary">Back to dashboard</a>
+        </div>
+
+        <div th:if="${adminMessage}" class="alert alert-success" th:text="${adminMessage}">
+            Action completed.
+        </div>
+        <div th:if="${adminError}" class="alert alert-danger" th:text="${adminError}">
+            Action failed.
+        </div>
+
+        <div th:if="${#lists.isEmpty(threads)}" class="alert alert-info">
+            No support conversations yet.
+        </div>
+
+        <div th:each="thread : ${threads}" class="card mb-3">
+            <div class="card-header d-flex justify-content-between align-items-center py-2">
+                <span>
+                    <span class="fw-semibold" th:text="${thread.subject}">Subject</span>
+                    <span class="text-muted ms-2">
+                        from <span th:text="${thread.user != null} ? ${thread.user.username} : '-'">user</span>
+                    </span>
+                </span>
+                <span class="badge"
+                      th:classappend="${thread.open} ? 'bg-success' : 'bg-secondary'"
+                      th:text="${thread.open} ? 'Open' : 'Closed'">Open</span>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item" th:each="msg : ${thread.messages}">
+                    <div class="d-flex justify-content-between">
+                        <span class="badge mb-1"
+                              th:classappend="${msg.senderType == 'SUPPORT'} ? 'bg-info text-dark' : 'bg-primary'"
+                              th:text="${msg.senderType == 'SUPPORT'} ? 'Support' : 'Customer'">Customer</span>
+                        <small class="text-muted"
+                               th:text="${msg.createdAt != null} ? ${#temporals.format(msg.createdAt, 'dd MMM yyyy, HH:mm')} : ''">
+                            01 Jan 2026
+                        </small>
+                    </div>
+                    <div th:text="${msg.body}" style="white-space: pre-wrap;">Message body</div>
+                </li>
+            </ul>
+            <div class="card-body">
+                <form th:action="@{/admin/support/{id}/reply(id=${thread.id})}" method="post" class="mb-2">
+                    <div class="mb-2">
+                        <label class="form-label small text-muted mb-1">Reply as support</label>
+                        <textarea name="body" class="form-control" rows="2" required
+                                  placeholder="Type your reply..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-sm btn-primary">Send reply</button>
+                </form>
+                <form th:if="${thread.open}" th:action="@{/admin/support/{id}/close(id=${thread.id})}" method="post"
+                      class="d-inline"
+                      onsubmit="return confirm('Mark this conversation as resolved?');">
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">Mark resolved</button>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

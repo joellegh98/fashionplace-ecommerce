@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<!--
+  Customer support page (Phase 7.7). Lets the current user send a message to support and
+  view their own conversations (each subject is a thread of messages + support replies).
+-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title>FashionPlace - Support</title>
+</head>
+<body>
+    <main>
+        <h1 class="mb-4">Customer Support</h1>
+
+        <div th:if="${supportMessage}" class="alert alert-success" th:text="${supportMessage}">
+            Your message was sent.
+        </div>
+
+        <div class="row g-4">
+            <!-- New message form -->
+            <div class="col-lg-5">
+                <div class="card">
+                    <div class="card-header py-2 fw-semibold">Contact support</div>
+                    <div class="card-body">
+                        <form th:action="@{/support}" th:object="${supportForm}" method="post">
+                            <div class="mb-3">
+                                <label for="subject" class="form-label">Subject</label>
+                                <input type="text" id="subject" class="form-control"
+                                       th:field="*{subject}" th:errorclass="is-invalid"
+                                       placeholder="What do you need help with?">
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('subject')}"
+                                     th:errors="*{subject}">Subject error</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="body" class="form-label">Message</label>
+                                <textarea id="body" class="form-control" rows="4"
+                                          th:field="*{body}" th:errorclass="is-invalid"
+                                          placeholder="Describe your issue..."></textarea>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('body')}"
+                                     th:errors="*{body}">Body error</div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Send message</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Existing conversations -->
+            <div class="col-lg-7">
+                <h2 class="h5 mb-3">Your conversations</h2>
+
+                <div th:if="${#lists.isEmpty(threads)}" class="alert alert-info">
+                    You haven't contacted support yet. Use the form to send your first message.
+                </div>
+
+                <div th:each="thread : ${threads}" class="card mb-3">
+                    <div class="card-header d-flex justify-content-between align-items-center py-2">
+                        <span class="fw-semibold" th:text="${thread.subject}">Subject</span>
+                        <span class="badge"
+                              th:classappend="${thread.open} ? 'bg-success' : 'bg-secondary'"
+                              th:text="${thread.open} ? 'Open' : 'Closed'">Open</span>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item" th:each="msg : ${thread.messages}">
+                            <div class="d-flex justify-content-between">
+                                <span class="badge mb-1"
+                                      th:classappend="${msg.senderType == 'SUPPORT'} ? 'bg-info text-dark' : 'bg-primary'"
+                                      th:text="${msg.senderType == 'SUPPORT'} ? 'Support' : 'You'">You</span>
+                                <small class="text-muted"
+                                       th:text="${msg.createdAt != null} ? ${#temporals.format(msg.createdAt, 'dd MMM yyyy, HH:mm')} : ''">
+                                    01 Jan 2026
+                                </small>
+                            </div>
+                            <div th:text="${msg.body}" style="white-space: pre-wrap;">Message body</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

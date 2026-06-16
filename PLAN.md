@@ -210,19 +210,16 @@ testable before moving on.
 - [x] **7.3 - Admin manage users.** View/disable users.
   > 📖 **Materials:** `07-SpringMVC.pdf` – `@GetMapping` / `@PostMapping` (slide 6); `@PathVariable` (slide 8); `07-SpringBeans.pdf` – `@Service` for user management logic (slide 6). `08-JPA.pdf` – `findAll()` for listing all users; `save(user)` after setting `enabled=false`; use `findByUsername(String name)` query method (slides 9, 10, 11).
 
-- [ ] **7.4 - SavedSearch entity.** `SavedSearch` (`keyword`, `category`, `minPrice`, `maxPrice`) `@ManyToOne User` + repo. Persist a user's searches (the 6th entity).
-  > 📖 **Materials:** `07-SpringBeans.pdf` – `@Repository` (slide 6); bean requirements (slide 7); beans for database access (slide 25). `08-JPA.pdf` – `@Entity` with fields + `@ManyToOne User owner` foreign key (slides 3, 5); Roadmap 1/6: entity definition (slide 25); Roadmap 2/6: `JpaRepository` interface + `findByOwner(User owner)` query method (slides 26, 10).
-
-- [ ] **7.5 - Activity log + Interceptor.** Log key actions (login, order, product changes) via a `HandlerInterceptor`; show in admin.
+- [x] **7.5 - Activity log + Interceptor.** Log key actions (login, order, product changes) via a `HandlerInterceptor`; show in admin.
   > 📖 **Materials:** `07-SpringBeans.pdf` – `@Component` for the interceptor bean (slide 6); `@Autowired` / constructor injection of the log repository (slides 8, 9); singleton scope — the interceptor is one instance shared by all requests, so thread-safety applies (slide 17); `07-LongPolling.pdf` – thread pool reminder: each HTTP request runs on its own thread, the interceptor runs in that thread context (slide 2).
 
-- [ ] **7.6 - SupportMessage entity + repo.** `SupportMessage` (`subject`, `body`, `senderType` USER/SUPPORT, `status` OPEN/CLOSED, `createdAt`) with `@ManyToOne User`. Repo: `findByUser(User)`, `findByStatus(...)`. (8th entity.)
+- [x] **7.6 - SupportMessage entity + repo.** `SupportMessage` (`subject`, `body`, `senderType` USER/SUPPORT, `status` OPEN/CLOSED, `createdAt`) with `@ManyToOne User`. Repo: `findByUser(User)`, `findByStatus(...)`. (8th entity.)
   > 📖 **Materials:** `07-SpringBeans.pdf` – `@Repository` (slide 6); bean requirements (slide 7); `@Converter` note for enum-to-DB mapping (slide 29). `08-JPA.pdf` – `@Entity` with `@ManyToOne User`; `@CreationTimestamp` on `createdAt` (slide 3); query methods `findByUser(...)` and `findByStatus(...)` (slides 10, 11); Roadmap 1/6 for entity structure (slide 25); Roadmap 2/6 for `JpaRepository` interface (slide 26).
 
-- [ ] **7.7 - Contact support (user side).** `/support` page: form to submit a message + list of the user's own messages and replies.
+- [x] **7.7 - Contact support (user side).** `/support` page: form to submit a message + list of the user's own messages and replies.
   > 📖 **Materials:** `07-SpringMVC.pdf` – `@GetMapping` / `@PostMapping` (slide 6); `@Valid` form submission (slide 17); `Model.addAttribute(list)` (slide 14); redirect after POST (slide 9). `07-SpringBeans.pdf` – `@Service` for support message logic (slide 6); validation with `@NotBlank` on subject/body (slide 26). `08-thymeleaf.pdf` – support form with `th:action="@{/support}"`, `th:object`, `th:field="*{subject}"`, `th:field="*{body}"` (slides 13, 14); iterate messages with `th:each="msg : ${messages}"` (slide 10); show sender type with `th:switch` / `th:case` (slide 9). `08-JPA.pdf` – `save(supportMessage)` (slide 29).
 
-- [ ] **7.8 - Admin support inbox.** `/admin/support`: list all message threads, reply as SUPPORT, mark resolved (CLOSED).
+- [x] **7.8 - Admin support inbox.** `/admin/support`: list all message threads, reply as SUPPORT, mark resolved (CLOSED).
   > 📖 **Materials:** `07-SpringMVC.pdf` – `@GetMapping` / `@PostMapping` (slide 6); `@PathVariable` for message id (slide 8); redirect after reply/resolve (slide 9); `Model.addAttribute(list)` (slide 14). `07-SpringBeans.pdf` – `@Service` coordinates reply + status update (slide 6). `08-thymeleaf.pdf` – iterate threads with `th:each` (slide 10); reply form with `th:action` and `th:field` (slides 13, 14); status badge with `th:switch` / `th:case` (slide 9). `08-JPA.pdf` – `save(message)` after setting `status=CLOSED` or appending reply (slide 29).
 
 ---
@@ -300,7 +297,7 @@ testable before moving on.
 - **>= 5 major pages:** Home, Browse/Search, Product Detail, Cart, Orders, Sell, My Products, Wishlist, Support, Admin.
 - **Sessions:** RecentSearchBean (2.5), CartBean (3.1), browsing state (2.4).
 - **Beans & DI:** Services injected via constructor (1.6 onward).
-- **JPA + MySQL `ex4`, >=4 related repos:** User, Product, Order, OrderItem, Review, SavedSearch, WishlistItem, SupportMessage (8 entities).
+- **JPA + MySQL `ex4`, >=4 related repos:** User, Product, Order, OrderItem, Review, WishlistItem, ActivityLog, SupportMessage (8 entities).
 - **Spring Security (auth + authz + registration):** Phase 9.
 - **Robustness:** validation, transactions, error pages, access control (Phases 5, 6, 8, 9).
 - **Optional extras:** file upload (6.3), interceptor/activity log (7.5), product recommendations (5.6–5.7), customer support messaging (7.6–7.8).
