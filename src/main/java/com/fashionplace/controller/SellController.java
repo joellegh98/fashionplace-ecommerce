@@ -111,7 +111,8 @@ public class SellController {
     public String updateListing(@PathVariable Long id,
                                 @Valid @ModelAttribute("sellForm") SellForm sellForm,
                                 BindingResult bindingResult,
-                                Model model) {
+                                Model model,
+                                RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("product", productService.findById(id));
             model.addAttribute("productId", id);
@@ -119,6 +120,7 @@ public class SellController {
             return "edit-product";
         }
         productService.updateListing(id, sellForm);
+        redirectAttributes.addFlashAttribute("successMessage", "Product updated.");
         return "redirect:/product/" + id;
     }
 
@@ -133,9 +135,9 @@ public class SellController {
     public String deleteListing(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             productService.deleteListing(id);
-            redirectAttributes.addFlashAttribute("productMessage", "Product deleted.");
+            redirectAttributes.addFlashAttribute("successMessage", "Product deleted.");
         } catch (DataIntegrityViolationException e) {
-            redirectAttributes.addFlashAttribute("productError",
+            redirectAttributes.addFlashAttribute("errorMessage",
                     "This product could not be deleted due to a database constraint.");
         }
         return "redirect:/my-products";

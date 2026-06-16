@@ -62,7 +62,7 @@ public class CartController {
     public String addToCart(@ModelAttribute AddToCartForm form, RedirectAttributes redirectAttributes) {
         Optional<Product> productOpt = productService.findByIdOptional(form.getProductId());
         if (productOpt.isEmpty()) {
-            redirectAttributes.addFlashAttribute("cartError",
+            redirectAttributes.addFlashAttribute("errorMessage",
                     "This item is no longer available.");
             return "redirect:/browse";
         }
@@ -71,17 +71,16 @@ public class CartController {
         int requestedTotal = alreadyInCart + Math.max(form.getQuantity(), 0);
 
         if (isOwnProduct(product)) {
-            redirectAttributes.addFlashAttribute("cartError", "You can't buy your own listing.");
+            redirectAttributes.addFlashAttribute("errorMessage", "You can't buy your own listing.");
         } else if (product.getQuantity() <= 0) {
-            redirectAttributes.addFlashAttribute("cartError", "This item is out of stock.");
+            redirectAttributes.addFlashAttribute("errorMessage", "This item is out of stock.");
         } else if (requestedTotal > product.getQuantity()) {
-            redirectAttributes.addFlashAttribute("cartError",
+            redirectAttributes.addFlashAttribute("errorMessage",
                     "Only " + product.getQuantity() + " in stock"
                             + (alreadyInCart > 0 ? " (you already have " + alreadyInCart + " in your cart)." : "."));
         } else {
             cartBean.addItem(form.getProductId(), form.getQuantity());
             interestBean.record(form.getProductId());
-            redirectAttributes.addFlashAttribute("cartMessage", "Added to cart.");
         }
         return "redirect:/product/" + form.getProductId();
     }
@@ -97,13 +96,13 @@ public class CartController {
         Optional<Product> productOpt = productService.findByIdOptional(form.getProductId());
         if (productOpt.isEmpty()) {
             cartBean.removeItem(form.getProductId());
-            redirectAttributes.addFlashAttribute("cartError", unavailableCartMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", unavailableCartMessage());
             return "redirect:/cart";
         }
         Product product = productOpt.get();
         if (form.getQuantity() > product.getQuantity()) {
             cartBean.setQuantity(form.getProductId(), product.getQuantity());
-            redirectAttributes.addFlashAttribute("cartError",
+            redirectAttributes.addFlashAttribute("errorMessage",
                     "Only " + product.getQuantity() + " of \"" + product.getTitle() + "\" in stock.");
         } else {
             cartBean.setQuantity(form.getProductId(), form.getQuantity());
@@ -128,7 +127,7 @@ public class CartController {
         CartSummary summary = productService.summarizeCart(cartBean.getItems());
         summary.getMissingProductIds().forEach(cartBean::removeItem);
         if (summary.hadMissingProducts()) {
-            model.addAttribute("cartError", unavailableCartMessage());
+            model.addAttribute("errorMessage", unavailableCartMessage());
         }
         model.addAttribute("cartItems", summary.getLines());
         model.addAttribute("grandTotal", summary.getGrandTotal());

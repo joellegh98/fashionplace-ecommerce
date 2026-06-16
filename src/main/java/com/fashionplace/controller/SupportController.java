@@ -52,15 +52,12 @@ public class SupportController {
     @PostMapping("/support")
     public String submit(@Valid @ModelAttribute("supportForm") SupportForm supportForm,
                          BindingResult bindingResult,
-                         Model model,
-                         RedirectAttributes redirectAttributes) {
+                         Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("threads", supportService.threadsForCurrentUser());
             return "support";
         }
         supportService.submitForCurrentUser(supportForm);
-        redirectAttributes.addFlashAttribute("supportMessage",
-                "Your message was sent to our support team.");
         return "redirect:/support";
     }
 
@@ -78,9 +75,8 @@ public class SupportController {
                         RedirectAttributes redirectAttributes) {
         try {
             supportService.replyAsCurrentUser(id, body);
-            redirectAttributes.addFlashAttribute("supportMessage", "Your reply was sent.");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("supportError",
+            redirectAttributes.addFlashAttribute("errorMessage",
                     "Could not send reply: " + e.getMessage());
         }
         return "redirect:/support";

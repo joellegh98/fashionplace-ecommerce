@@ -11,10 +11,6 @@
     <main>
         <h1 class="mb-4">Your Cart</h1>
 
-        <div th:if="${cartError}" class="alert alert-danger" th:text="${cartError}">
-            Stock problem.
-        </div>
-
         <div th:if="${#lists.isEmpty(cartItems)}" class="alert alert-info">
             Your cart is empty.
             <a th:href="@{/browse}">Browse products</a>

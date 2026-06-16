@@ -48,9 +48,8 @@ public class AdminController {
     public String deleteProduct(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             adminService.deleteProduct(id);
-            redirectAttributes.addFlashAttribute("adminMessage", "Product deleted.");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("adminError",
+            redirectAttributes.addFlashAttribute("errorMessage",
                     "Could not delete product: " + e.getMessage());
         }
         return "redirect:/admin";
@@ -67,9 +66,8 @@ public class AdminController {
     public String flagProduct(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             adminService.flagProduct(id);
-            redirectAttributes.addFlashAttribute("adminMessage", "Product flagged.");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("adminError",
+            redirectAttributes.addFlashAttribute("errorMessage",
                     "Could not flag product: " + e.getMessage());
         }
         return "redirect:/admin";
@@ -86,9 +84,8 @@ public class AdminController {
     public String unflagProduct(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             adminService.unflagProduct(id);
-            redirectAttributes.addFlashAttribute("adminMessage", "Product unflagged.");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("adminError",
+            redirectAttributes.addFlashAttribute("errorMessage",
                     "Could not unflag product: " + e.getMessage());
         }
         return "redirect:/admin";
@@ -105,9 +102,8 @@ public class AdminController {
     public String disableUser(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             adminService.disableUser(id);
-            redirectAttributes.addFlashAttribute("adminMessage", "User disabled.");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("adminError",
+            redirectAttributes.addFlashAttribute("errorMessage",
                     "Could not disable user: " + e.getMessage());
         }
         return "redirect:/admin";
@@ -124,9 +120,8 @@ public class AdminController {
     public String enableUser(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             adminService.enableUser(id);
-            redirectAttributes.addFlashAttribute("adminMessage", "User enabled.");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("adminError",
+            redirectAttributes.addFlashAttribute("errorMessage",
                     "Could not enable user: " + e.getMessage());
         }
         return "redirect:/admin";
@@ -158,9 +153,8 @@ public class AdminController {
                                RedirectAttributes redirectAttributes) {
         try {
             supportService.replyToThread(id, body);
-            redirectAttributes.addFlashAttribute("adminMessage", "Reply sent.");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("adminError",
+            redirectAttributes.addFlashAttribute("errorMessage",
                     "Could not send reply: " + e.getMessage());
         }
         return "redirect:/admin/support";
@@ -177,9 +171,8 @@ public class AdminController {
     public String closeSupport(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             supportService.closeThread(id);
-            redirectAttributes.addFlashAttribute("adminMessage", "Conversation closed.");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("adminError",
+            redirectAttributes.addFlashAttribute("errorMessage",
                     "Could not close conversation: " + e.getMessage());
         }
         return "redirect:/admin/support";

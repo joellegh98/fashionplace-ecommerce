@@ -88,17 +88,17 @@ public class CheckoutController {
 
         String unavailable = removeUnavailableCartItems();
         if (unavailable != null) {
-            redirectAttributes.addFlashAttribute("cartError", unavailable);
+            redirectAttributes.addFlashAttribute("errorMessage", unavailable);
             return "redirect:/cart";
         }
         if (cartBean.isEmpty()) {
-            redirectAttributes.addFlashAttribute("cartError", unavailableCartMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", unavailableCartMessage());
             return "redirect:/cart";
         }
 
         String stockProblem = findStockProblem();
         if (stockProblem != null) {
-            redirectAttributes.addFlashAttribute("cartError", stockProblem);
+            redirectAttributes.addFlashAttribute("errorMessage", stockProblem);
             return "redirect:/cart";
         }
 
@@ -159,9 +159,9 @@ public class CheckoutController {
         summary.getMissingProductIds().forEach(cartBean::removeItem);
         if (summary.hadMissingProducts()) {
             if (redirectAttributes != null) {
-                redirectAttributes.addFlashAttribute("cartError", unavailableCartMessage());
+                redirectAttributes.addFlashAttribute("errorMessage", unavailableCartMessage());
             } else {
-                model.addAttribute("cartError", unavailableCartMessage());
+                model.addAttribute("errorMessage", unavailableCartMessage());
             }
             return false;
         }

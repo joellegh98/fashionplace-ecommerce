@@ -14,13 +14,6 @@
             <a th:href="@{/sell}" class="btn btn-primary">List a new item</a>
         </div>
 
-        <div th:if="${productMessage}" class="alert alert-success" th:text="${productMessage}">
-            Product deleted.
-        </div>
-        <div th:if="${productError}" class="alert alert-danger" th:text="${productError}">
-            Could not delete product.
-        </div>
-
         <div th:if="${#lists.isEmpty(myProducts)}" class="alert alert-info">
             You haven't listed any products yet.
             <a th:href="@{/sell}">Sell an item</a>
@@ -69,7 +62,7 @@
                                th:href="@{/product/{id}/edit(id=${product.id})}">Edit</a>
                             <form th:action="@{/product/{id}/delete(id=${product.id})}" method="post"
                                   class="d-inline"
-                                  onsubmit="return confirm('Delete this product? This cannot be undone.');">
+                                  data-confirm="Delete this product? This cannot be undone.">
                                 <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
                             </form>
                         </td>

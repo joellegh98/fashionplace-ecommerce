@@ -231,10 +231,10 @@ testable before moving on.
 - [x] **8.1 - Custom error pages.** `error/403.html`, `error/404.html`, `error/500.html`.
   > 📖 **Materials:** `07-SpringMVC.pdf` – define default error page: `server.error.path=/error` in `application.properties`; implement `ErrorController`; return the error view (slide 21). `08-thymeleaf.pdf` – error pages are standard Thymeleaf templates; add `xmlns:th` and use the layout fragment like any other view (slide 2); use `th:text="${message}"` to display the error description (slide 3).
 
-- [ ] **8.2 - Global exception handling.** `@ControllerAdvice` for clean error feedback.
+- [x] **8.2 - Global exception handling.** `@ControllerAdvice` for clean error feedback.
   > 📖 **Materials:** `07-SpringMVC.pdf` – define a default error page to catch uncaught exceptions (slide 21); `07-SpringBeans.pdf` – `@Component`-based bean managed by Spring (slide 6); important remarks: "define a global error page to catch unexpected errors such as validation errors" (slide 27). `08-JPA.pdf` – use `@ExceptionHandler(MethodArgumentNotValidException.class)` + `@ResponseStatus(HttpStatus.BAD_REQUEST)` to return structured error JSON with field names and messages (slide 18).
 
-- [ ] **8.3 - Flash messages.** Success/error banners after actions (add to cart, order placed, product saved).
+- [x] **8.3 - Flash messages.** Success/error banners after actions (add to cart, order placed, product saved).
   > 📖 **Materials:** `07-SpringMVC.pdf` – redirect vs forward: redirect sends 302 to browser (client-side), use `RedirectAttributes` for flash scope (slide 9, slide 16); `07-SpringBeans.pdf` – `@RequestScope` bean could hold flash data per request (slide 17). `08-thymeleaf.pdf` – display the flash message banner conditionally with `th:if="${successMessage != null}"` and `th:text="${successMessage}"` in the layout fragment (slides 8, 3).
 
 - [ ] **8.4 - Input validation pass.** Ensure every form has server-side `@Valid` checks.

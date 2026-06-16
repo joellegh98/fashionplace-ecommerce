@@ -73,10 +73,6 @@
             </div>
         </section>
 
-        <div th:if="${reviewMessage}" class="alert alert-success mt-3" th:text="${reviewMessage}">
-            Thank you for your review!
-        </div>
-
         <section class="mt-4">
             <h2 class="h5 mb-3">Write a review</h2>
             <p class="text-muted small">Posting as <span th:text="${currentUsername}">alice</span></p>
@@ -98,13 +94,6 @@
                 <button type="submit" class="btn btn-primary">Submit review</button>
             </form>
         </section>
-
-        <div th:if="${cartMessage}" class="alert alert-success mt-3" th:text="${cartMessage}">
-            Added to cart.
-        </div>
-        <div th:if="${cartError}" class="alert alert-danger mt-3" th:text="${cartError}">
-            Out of stock.
-        </div>
 
         <p th:if="${ownProduct}" class="text-muted mt-3">
             This is your own listing, so you can't buy it.

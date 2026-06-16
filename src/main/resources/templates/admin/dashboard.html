@@ -15,13 +15,6 @@
             <a th:href="@{/admin/support}" class="btn btn-outline-primary">Support inbox</a>
         </div>
 
-        <div th:if="${adminMessage}" class="alert alert-success" th:text="${adminMessage}">
-            Action completed.
-        </div>
-        <div th:if="${adminError}" class="alert alert-danger" th:text="${adminError}">
-            Action failed.
-        </div>
-
         <div class="row g-3 mb-4">
             <div class="col-12 col-md-4">
                 <div class="card text-bg-light h-100">
@@ -85,7 +78,7 @@
                                 <form th:if="${!user.disabled and user.role != 'ADMIN'}"
                                       th:action="@{/admin/users/{id}/disable(id=${user.id})}" method="post"
                                       class="d-inline"
-                                      onsubmit="return confirm('Disable this user account?');">
+                                      data-confirm="Disable this user account?">
                                     <button type="submit" class="btn btn-sm btn-outline-danger">Disable</button>
                                 </form>
                                 <form th:if="${user.disabled}"
@@ -150,7 +143,7 @@
                                 <form th:if="${!product.deleted}"
                                       th:action="@{/admin/products/{id}/delete(id=${product.id})}" method="post"
                                       class="d-inline"
-                                      onsubmit="return confirm('Delete this product? It will be hidden from the site but kept for order history.');">
+                                      data-confirm="Delete this product? It will be hidden from the site but kept for order history.">
                                     <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
                                 </form>
                             </td>

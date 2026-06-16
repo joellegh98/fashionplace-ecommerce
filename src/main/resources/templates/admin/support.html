@@ -15,13 +15,6 @@
             <a th:href="@{/admin}" class="btn btn-outline-secondary">Back to dashboard</a>
         </div>
 
-        <div th:if="${adminMessage}" class="alert alert-success" th:text="${adminMessage}">
-            Action completed.
-        </div>
-        <div th:if="${adminError}" class="alert alert-danger" th:text="${adminError}">
-            Action failed.
-        </div>
-
         <div th:if="${#lists.isEmpty(threads)}" class="alert alert-info">
             No support conversations yet.
         </div>
@@ -64,7 +57,7 @@
                     </form>
                     <form th:action="@{/admin/support/{id}/close(id=${thread.id})}" method="post"
                           class="d-inline"
-                          onsubmit="return confirm('Mark this conversation as resolved?');">
+                          data-confirm="Mark this conversation as resolved?">
                         <button type="submit" class="btn btn-sm btn-outline-secondary">Mark resolved</button>
                     </form>
                 </div>

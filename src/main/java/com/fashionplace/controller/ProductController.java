@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 /**
  * Serves the product detail page for a single item.
  */
@@ -91,15 +89,13 @@ public class ProductController {
      * @param review             rating and comment from the form
      * @param bindingResult      validation errors, if any
      * @param model              repopulated when validation fails
-     * @param redirectAttributes flash message on success
      * @return redirect to the product page, or the form again on error
      */
     @PostMapping("/product/{id}/review")
     public String submitReview(@PathVariable Long id,
                                @Valid @ModelAttribute("review") ReviewForm review,
                                BindingResult bindingResult,
-                               Model model,
-                               RedirectAttributes redirectAttributes) {
+                               Model model) {
         if (bindingResult.hasErrors()) {
             populateProductDetail(id, model, review);
             return "product";
@@ -112,7 +108,6 @@ public class ProductController {
                 review.getRating(),
                 review.getComment()
         );
-        redirectAttributes.addFlashAttribute("reviewMessage", "Thank you for your review!");
         return "redirect:/product/" + id;
     }
 

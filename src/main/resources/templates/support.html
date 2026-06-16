@@ -12,13 +12,6 @@
     <main>
         <h1 class="mb-4">Customer Support</h1>
 
-        <div th:if="${supportMessage}" class="alert alert-success" th:text="${supportMessage}">
-            Your message was sent.
-        </div>
-        <div th:if="${supportError}" class="alert alert-danger" th:text="${supportError}">
-            Something went wrong.
-        </div>
-
         <div class="row g-4">
             <!-- New message form -->
             <div class="col-lg-5">
