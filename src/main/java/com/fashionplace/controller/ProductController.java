@@ -55,7 +55,7 @@ public class ProductController {
     @GetMapping("/product/{id}")
     public String productDetail(@PathVariable Long id, Model model) {
         Product product = productService.findById(id);
-        if (product.isDeleted()) {
+        if (product.isDeleted() || "FLAGGED".equals(product.getStatus())) {
             return "redirect:/browse";
         }
         populateProductDetail(id, model, new ReviewForm());

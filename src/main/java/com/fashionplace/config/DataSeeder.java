@@ -54,7 +54,7 @@ public class DataSeeder implements CommandLineRunner {
                 "alice",
                 "alice@example.com",
                 "placeholder-hash",
-                "USER",
+                "ADMIN",
                 "42 Maple Avenue, Rivertown"
         ));
         userRepository.save(new User(

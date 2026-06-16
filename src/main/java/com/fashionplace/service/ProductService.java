@@ -126,7 +126,8 @@ public class ProductService {
         if (keyword == null || keyword.isBlank()) {
             return List.of();
         }
-        return productRepository.findByTitleContainingIgnoreCaseAndDeletedFalse(keyword.trim()).stream()
+        return productRepository.findByTitleContainingIgnoreCaseAndDeletedFalseAndStatusNot(
+                keyword.trim(), "FLAGGED").stream()
                 .map(Product::getTitle)
                 .distinct()
                 .limit(MAX_SUGGESTIONS)
@@ -153,7 +154,7 @@ public class ProductService {
      */
     public Optional<Product> findByIdOptional(Long id) {
         return productRepository.findById(id)
-                .filter(product -> !product.isDeleted());
+                .filter(product -> !product.isDeleted() && !"FLAGGED".equals(product.getStatus()));
     }
 
     /**
@@ -171,7 +172,7 @@ public class ProductService {
 
         for (Map.Entry<Long, Integer> entry : cartItems.entrySet()) {
             Product product = productRepository.findById(entry.getKey()).orElse(null);
-            if (product == null || product.isDeleted()) {
+            if (product == null || product.isDeleted() || "FLAGGED".equals(product.getStatus())) {
                 missing.add(entry.getKey());
                 continue;
             }
@@ -257,6 +258,45 @@ public class ProductService {
         product.setDeleted(true);
         product.setQuantity(0);
         product.setStatus("SOLD");
+        productRepository.save(product);
+    }
+
+    /**
+     * Flags a product for admin review: sets status to {@code FLAGGED}, removes it from
+     * wishlists, and hides it from Browse and the cart. The listing stays in the database.
+     *
+     * @param id the product to flag
+     * @throws NoSuchElementException if no product has the given id
+     * @throws IllegalStateException  if the product is already deleted
+     */
+    @Transactional
+    public void flagListing(Long id) {
+        Product product = productRepository.findById(id).orElseThrow();
+        if (product.isDeleted()) {
+            throw new IllegalStateException("Cannot flag a deleted product.");
+        }
+        wishlistItemRepository.deleteByProduct(product);
+        product.setStatus("FLAGGED");
+        productRepository.save(product);
+    }
+
+    /**
+     * Clears an admin flag and restores the listing status from its current stock level.
+     *
+     * @param id the product to unflag
+     * @throws NoSuchElementException if no product has the given id
+     * @throws IllegalStateException  if the product is deleted or not flagged
+     */
+    @Transactional
+    public void unflagListing(Long id) {
+        Product product = productRepository.findById(id).orElseThrow();
+        if (product.isDeleted()) {
+            throw new IllegalStateException("Cannot unflag a deleted product.");
+        }
+        if (!"FLAGGED".equals(product.getStatus())) {
+            throw new IllegalStateException("Product is not flagged.");
+        }
+        product.setStatus(product.getQuantity() > 0 ? "ACTIVE" : "SOLD");
         productRepository.save(product);
     }
 

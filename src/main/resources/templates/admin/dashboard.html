@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<!--
+  Admin dashboard (Phase 7.1). Shows total counts and tables of users, products and
+  orders. Product delete/flag actions are available from the products table (Phase 7.2).
+-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title>FashionPlace - Admin</title>
+</head>
+<body>
+    <main>
+        <h1 class="mb-4">Admin Dashboard</h1>
+
+        <div th:if="${adminMessage}" class="alert alert-success" th:text="${adminMessage}">
+            Action completed.
+        </div>
+        <div th:if="${adminError}" class="alert alert-danger" th:text="${adminError}">
+            Action failed.
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-12 col-md-4">
+                <div class="card text-bg-light h-100">
+                    <div class="card-body">
+                        <h6 class="card-subtitle text-muted">Users</h6>
+                        <p class="display-6 mb-0" th:text="${dashboard.userCount}">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="card text-bg-light h-100">
+                    <div class="card-body">
+                        <h6 class="card-subtitle text-muted">Products</h6>
+                        <p class="display-6 mb-0" th:text="${dashboard.productCount}">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="card text-bg-light h-100">
+                    <div class="card-body">
+                        <h6 class="card-subtitle text-muted">Orders</h6>
+                        <p class="display-6 mb-0" th:text="${dashboard.orderCount}">0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="mb-5">
+            <h2 class="h4 mb-3">Users</h2>
+            <div th:if="${#lists.isEmpty(dashboard.users)}" class="alert alert-info">No users yet.</div>
+            <div th:unless="${#lists.isEmpty(dashboard.users)}" class="table-responsive">
+                <table class="table table-sm align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Username</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Role</th>
+                            <th scope="col">Joined</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="user : ${dashboard.users}">
+                            <td th:text="${user.id}">1</td>
+                            <td th:text="${user.username}">alice</td>
+                            <td th:text="${user.email}">alice@example.com</td>
+                            <td>
+                                <span class="badge"
+                                      th:classappend="${user.role == 'ADMIN'} ? 'bg-warning text-dark' : 'bg-secondary'"
+                                      th:text="${user.role}">USER</span>
+                            </td>
+                            <td th:text="${user.createdAt != null} ? ${#temporals.format(user.createdAt, 'dd MMM yyyy')} : ''">01 Jan 2026</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="mb-5">
+            <h2 class="h4 mb-3">Products</h2>
+            <div th:if="${#lists.isEmpty(dashboard.products)}" class="alert alert-info">No products yet.</div>
+            <div th:unless="${#lists.isEmpty(dashboard.products)}" class="table-responsive">
+                <table class="table table-sm align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Seller</th>
+                            <th scope="col" class="text-end">Price</th>
+                            <th scope="col" class="text-center">In stock</th>
+                            <th scope="col">Status</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="product : ${dashboard.products}">
+                            <td th:text="${product.id}">1</td>
+                            <td>
+                                <a th:if="${!product.deleted and product.status != 'FLAGGED'}"
+                                   th:href="@{/product/{id}(id=${product.id})}"
+                                   class="text-decoration-none" th:text="${product.title}">Title</a>
+                                <span th:unless="${!product.deleted and product.status != 'FLAGGED'}"
+                                      th:text="${product.title}">Title</span>
+                            </td>
+                            <td th:text="${product.category}">Category</td>
+                            <td th:text="${product.seller != null} ? ${product.seller.username} : '-'">seller</td>
+                            <td class="text-end" th:text="'$' + ${product.price}">$0.00</td>
+                            <td class="text-center" th:text="${product.quantity}">0</td>
+                            <td>
+                                <span class="badge"
+                                      th:classappend="${product.deleted} ? 'bg-dark' : (${product.status == 'FLAGGED'} ? 'bg-warning text-dark' : (${product.status == 'SOLD'} ? 'bg-danger' : 'bg-success'))"
+                                      th:text="${product.deleted} ? 'Deleted' : ${product.status}">Status</span>
+                            </td>
+                            <td class="text-end text-nowrap">
+                                <form th:if="${!product.deleted and product.status != 'FLAGGED'}"
+                                      th:action="@{/admin/products/{id}/flag(id=${product.id})}" method="post"
+                                      class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-warning">Flag</button>
+                                </form>
+                                <form th:if="${!product.deleted and product.status == 'FLAGGED'}"
+                                      th:action="@{/admin/products/{id}/unflag(id=${product.id})}" method="post"
+                                      class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary">Unflag</button>
+                                </form>
+                                <form th:if="${!product.deleted}"
+                                      th:action="@{/admin/products/{id}/delete(id=${product.id})}" method="post"
+                                      class="d-inline"
+                                      onsubmit="return confirm('Delete this product? It will be hidden from the site but kept for order history.');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="mb-4">
+            <h2 class="h4 mb-3">Orders</h2>
+            <div th:if="${#lists.isEmpty(dashboard.orders)}" class="alert alert-info">No orders yet.</div>
+            <div th:unless="${#lists.isEmpty(dashboard.orders)}" class="table-responsive">
+                <table class="table table-sm align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Buyer</th>
+                            <th scope="col" class="text-center">Items</th>
+                            <th scope="col" class="text-end">Total</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Placed</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="order : ${dashboard.orders}">
+                            <td th:text="${order.id}">1</td>
+                            <td th:text="${order.buyer != null} ? ${order.buyer.username} : '-'">buyer</td>
+                            <td class="text-center" th:text="${#lists.size(order.orderItems)}">0</td>
+                            <td class="text-end" th:text="'$' + ${order.totalPrice}">$0.00</td>
+                            <td><span class="badge bg-info text-dark" th:text="${order.status}">PLACED</span></td>
+                            <td th:text="${order.createdAt != null} ? ${#temporals.format(order.createdAt, 'dd MMM yyyy, HH:mm')} : ''">01 Jan 2026</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

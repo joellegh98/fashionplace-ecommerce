@@ -201,10 +201,10 @@ testable before moving on.
 
 **Goal:** An admin area to manage everything, plus the remaining entities. Still guarded only by a temporary check.
 
-- [ ] **7.1 - Admin dashboard.** `/admin` shows counts + tables of users, products, orders.
+- [x] **7.1 - Admin dashboard.** `/admin` shows counts + tables of users, products, orders.
   > 📖 **Materials:** `07-SpringMVC.pdf` – `@GetMapping` (slide 6); passing multiple model attributes (slide 14); `ModelMap` for many attributes (slide 15); `07-SpringBeans.pdf` – `@Service` aggregates counts from multiple repos (slide 6). `08-thymeleaf.pdf` – display stats with `th:text="${productCount}"` (slide 3); render summary tables with `th:each` (slide 10). `08-JPA.pdf` – `repository.count()` returns the total number of rows; `findAll()` returns all entities (slide 9).
 
-- [ ] **7.2 - Admin manage products.** Delete/flag any product.
+- [x] **7.2 - Admin manage products.** Delete/flag any product.
   > 📖 **Materials:** `07-SpringMVC.pdf` – `@DeleteMapping` / `@PostMapping` with action param (slide 6); `@PathVariable` (slide 8); redirect after action (slide 9). `08-JPA.pdf` – `repository.deleteById(id)` or `repository.delete(entity)` (slide 9); for flag/status update use `repository.save(product)` after modifying field (slide 29).
 
 - [ ] **7.3 - Admin manage users.** View/disable users.

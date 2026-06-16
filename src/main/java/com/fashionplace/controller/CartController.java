@@ -60,7 +60,13 @@ public class CartController {
      */
     @PostMapping("/cart/add")
     public String addToCart(@ModelAttribute AddToCartForm form, RedirectAttributes redirectAttributes) {
-        Product product = productService.findById(form.getProductId());
+        Optional<Product> productOpt = productService.findByIdOptional(form.getProductId());
+        if (productOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("cartError",
+                    "This item is no longer available.");
+            return "redirect:/browse";
+        }
+        Product product = productOpt.get();
         int alreadyInCart = cartBean.getItems().getOrDefault(form.getProductId(), 0);
         int requestedTotal = alreadyInCart + Math.max(form.getQuantity(), 0);
 

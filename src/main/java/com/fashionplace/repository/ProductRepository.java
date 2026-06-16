@@ -27,7 +27,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      * @param title the keyword to search for within the product title
      * @return matching products
      */
-    List<Product> findByTitleContainingIgnoreCaseAndDeletedFalse(String title);
+    List<Product> findByTitleContainingIgnoreCaseAndDeletedFalseAndStatusNot(String title, String status);
 
     /**
      * Returns non-deleted products matching all supplied filters. A {@code null} or blank
@@ -36,6 +36,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("""
             SELECT p FROM Product p
             WHERE p.deleted = false
+              AND p.status <> 'FLAGGED'
               AND (:keyword IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%')))
               AND (:category IS NULL OR p.category = :category)
               AND (:condition IS NULL OR p.condition = :condition)
