@@ -8,8 +8,10 @@ import com.fashionplace.session.InterestBean;
 import com.fashionplace.web.AddToCartForm;
 import com.fashionplace.web.CartSummary;
 import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -59,7 +61,13 @@ public class CartController {
      * @return redirect to the product detail page
      */
     @PostMapping("/cart/add")
-    public String addToCart(@ModelAttribute AddToCartForm form, RedirectAttributes redirectAttributes) {
+    public String addToCart(@Valid @ModelAttribute AddToCartForm form,
+                            BindingResult bindingResult,
+                            RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errorMessage", firstError(bindingResult));
+            return "redirect:/browse";
+        }
         Optional<Product> productOpt = productService.findByIdOptional(form.getProductId());
         if (productOpt.isEmpty()) {
             redirectAttributes.addFlashAttribute("errorMessage",
@@ -92,7 +100,13 @@ public class CartController {
      * @return redirect back to the cart page
      */
     @PostMapping("/cart/update")
-    public String updateQuantity(@ModelAttribute AddToCartForm form, RedirectAttributes redirectAttributes) {
+    public String updateQuantity(@Valid @ModelAttribute AddToCartForm form,
+                                 BindingResult bindingResult,
+                                 RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errorMessage", firstError(bindingResult));
+            return "redirect:/cart";
+        }
         Optional<Product> productOpt = productService.findByIdOptional(form.getProductId());
         if (productOpt.isEmpty()) {
             cartBean.removeItem(form.getProductId());
@@ -141,5 +155,13 @@ public class CartController {
 
     private static String unavailableCartMessage() {
         return "One or more items were removed from your cart because they are no longer available.";
+    }
+
+    /** Returns a user-friendly message for the first binding error. */
+    private static String firstError(BindingResult bindingResult) {
+        return bindingResult.getAllErrors().stream()
+                .findFirst()
+                .map(error -> error.getDefaultMessage())
+                .orElse("Invalid request.");
     }
 }
