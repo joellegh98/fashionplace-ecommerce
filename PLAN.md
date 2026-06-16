@@ -228,7 +228,7 @@ testable before moving on.
 
 **Goal:** Make it sturdy and friendly.
 
-- [ ] **8.1 - Custom error pages.** `error/403.html`, `error/404.html`, `error/500.html`.
+- [x] **8.1 - Custom error pages.** `error/403.html`, `error/404.html`, `error/500.html`.
   > 📖 **Materials:** `07-SpringMVC.pdf` – define default error page: `server.error.path=/error` in `application.properties`; implement `ErrorController`; return the error view (slide 21). `08-thymeleaf.pdf` – error pages are standard Thymeleaf templates; add `xmlns:th` and use the layout fragment like any other view (slide 2); use `th:text="${message}"` to display the error description (slide 3).
 
 - [ ] **8.2 - Global exception handling.** `@ControllerAdvice` for clean error feedback.
