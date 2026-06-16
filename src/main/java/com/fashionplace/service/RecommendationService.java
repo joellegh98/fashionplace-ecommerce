@@ -77,6 +77,9 @@ public class RecommendationService {
         // Items the user interacted with (cart/wishlist), most recent first. Kept after removal.
         for (Long productId : interestBean.getRecentProductIds()) {
             productRepository.findById(productId).ifPresent(product -> {
+                if (product.isDeleted()) {
+                    return;
+                }
                 if (product.getCategory() != null) {
                     likedCategories.add(product.getCategory());
                 }
@@ -109,7 +112,7 @@ public class RecommendationService {
 
         // Fill remaining slots with other active products in those categories, newest first.
         if (!likedCategories.isEmpty()) {
-            productRepository.findByCategoryInAndStatus(likedCategories, "ACTIVE").stream()
+            productRepository.findByCategoryInAndStatusAndDeletedFalse(likedCategories, "ACTIVE").stream()
                     .sorted(Comparator.comparing(Product::getId).reversed())
                     .forEach(product -> recommendations.putIfAbsent(product.getId(), product));
         }
@@ -129,7 +132,7 @@ public class RecommendationService {
         if (product.getCategory() == null) {
             return List.of();
         }
-        return productRepository.findByCategoryAndStatus(product.getCategory(), "ACTIVE").stream()
+        return productRepository.findByCategoryAndStatusAndDeletedFalse(product.getCategory(), "ACTIVE").stream()
                 .filter(other -> !other.getId().equals(product.getId()))
                 .toList();
     }

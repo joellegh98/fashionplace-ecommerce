@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<!--
+  My Products page. Lists the products listed by the current user (active and sold), newest first.
+-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title>FashionPlace - My Products</title>
+</head>
+<body>
+    <main>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="mb-0">My Products</h1>
+            <a th:href="@{/sell}" class="btn btn-primary">List a new item</a>
+        </div>
+
+        <div th:if="${productMessage}" class="alert alert-success" th:text="${productMessage}">
+            Product deleted.
+        </div>
+        <div th:if="${productError}" class="alert alert-danger" th:text="${productError}">
+            Could not delete product.
+        </div>
+
+        <div th:if="${#lists.isEmpty(myProducts)}" class="alert alert-info">
+            You haven't listed any products yet.
+            <a th:href="@{/sell}">Sell an item</a>
+        </div>
+
+        <div th:unless="${#lists.isEmpty(myProducts)}" class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Category</th>
+                        <th scope="col" class="text-end">Price</th>
+                        <th scope="col" class="text-center">In stock</th>
+                        <th scope="col">Status</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="product : ${myProducts}">
+                        <td style="width: 64px;">
+                            <img th:if="${product.hasUploadedImage or !#strings.isEmpty(product.imageUrl)}"
+                                 th:src="${product.hasUploadedImage} ? @{/product/{id}/image(id=${product.id})} : ${product.imageUrl}"
+                                 alt="" style="width: 56px; height: 56px; object-fit: cover;" class="rounded">
+                        </td>
+                        <td>
+                            <a th:href="@{/product/{id}(id=${product.id})}"
+                               class="text-decoration-none text-dark fw-semibold"
+                               th:text="${product.title}">Product title</a>
+                        </td>
+                        <td th:text="${product.category}">Category</td>
+                        <td class="text-end fw-semibold" th:text="'$' + ${product.price}">$0.00</td>
+                        <td class="text-center" th:text="${product.quantity}">0</td>
+                        <td>
+                            <span class="badge" th:switch="${product.status}"
+                                  th:classappend="${product.status == 'SOLD'} ? 'bg-danger' : 'bg-success'">
+                                <span th:case="'ACTIVE'">Active</span>
+                                <span th:case="'SOLD'">Sold</span>
+                                <span th:case="*" th:text="${product.status}">Status</span>
+                            </span>
+                        </td>
+                        <td class="text-end text-nowrap">
+                            <a class="btn btn-sm btn-outline-primary"
+                               th:href="@{/product/{id}(id=${product.id})}">View</a>
+                            <a class="btn btn-sm btn-outline-secondary"
+                               th:href="@{/product/{id}/edit(id=${product.id})}">Edit</a>
+                            <form th:action="@{/product/{id}/delete(id=${product.id})}" method="post"
+                                  class="d-inline"
+                                  onsubmit="return confirm('Delete this product? This cannot be undone.');">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>

@@ -38,4 +38,11 @@ public interface WishlistItemRepository extends JpaRepository<WishlistItem, Long
      * @param product the product to unsave
      */
     void deleteByOwnerAndProduct(User owner, Product product);
+
+    /**
+     * Removes all wishlist entries for a product (required before deleting the product itself).
+     *
+     * @param product the product to remove from every wishlist
+     */
+    void deleteByProduct(Product product);
 }

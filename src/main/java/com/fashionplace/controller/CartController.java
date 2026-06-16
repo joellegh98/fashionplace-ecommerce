@@ -5,7 +5,7 @@ import com.fashionplace.service.ProductService;
 import com.fashionplace.session.CartBean;
 import com.fashionplace.session.InterestBean;
 import com.fashionplace.web.AddToCartForm;
-import com.fashionplace.web.CartLineItem;
+import com.fashionplace.web.CartSummary;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,10 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 /**
  * Handles shopping-cart mutations (add, update, remove).
@@ -46,20 +43,7 @@ public class CartController {
      */
     @GetMapping("/cart")
     public String cart(Model model) {
-        List<CartLineItem> cartItems = new ArrayList<>();
-        BigDecimal grandTotal = BigDecimal.ZERO;
-
-        for (Map.Entry<Long, Integer> entry : cartBean.getItems().entrySet()) {
-            Product product = productService.findById(entry.getKey());
-            int quantity = entry.getValue();
-            CartLineItem line = new CartLineItem(
-                    product.getId(), product.getTitle(), product.getPrice(), quantity);
-            cartItems.add(line);
-            grandTotal = grandTotal.add(line.getLineTotal());
-        }
-
-        model.addAttribute("cartItems", cartItems);
-        model.addAttribute("grandTotal", grandTotal);
+        addCartToModel(model);
         return "cart";
     }
 
@@ -98,7 +82,13 @@ public class CartController {
      */
     @PostMapping("/cart/update")
     public String updateQuantity(@ModelAttribute AddToCartForm form, RedirectAttributes redirectAttributes) {
-        Product product = productService.findById(form.getProductId());
+        Optional<Product> productOpt = productService.findByIdOptional(form.getProductId());
+        if (productOpt.isEmpty()) {
+            cartBean.removeItem(form.getProductId());
+            redirectAttributes.addFlashAttribute("cartError", unavailableCartMessage());
+            return "redirect:/cart";
+        }
+        Product product = productOpt.get();
         if (form.getQuantity() > product.getQuantity()) {
             cartBean.setQuantity(form.getProductId(), product.getQuantity());
             redirectAttributes.addFlashAttribute("cartError",
@@ -119,5 +109,20 @@ public class CartController {
     public String removeItem(@PathVariable Long id) {
         cartBean.removeItem(id);
         return "redirect:/cart";
+    }
+
+    /** Resolves cart lines, drops deleted products from the session cart, and fills the model. */
+    private void addCartToModel(Model model) {
+        CartSummary summary = productService.summarizeCart(cartBean.getItems());
+        summary.getMissingProductIds().forEach(cartBean::removeItem);
+        if (summary.hadMissingProducts()) {
+            model.addAttribute("cartError", unavailableCartMessage());
+        }
+        model.addAttribute("cartItems", summary.getLines());
+        model.addAttribute("grandTotal", summary.getGrandTotal());
+    }
+
+    private static String unavailableCartMessage() {
+        return "One or more items were removed from your cart because they are no longer available.";
     }
 }

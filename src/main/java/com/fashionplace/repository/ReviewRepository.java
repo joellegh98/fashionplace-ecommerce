@@ -20,4 +20,11 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
      * @return reviews for that product
      */
     List<Review> findByProductOrderByCreatedAtDesc(Product product);
+
+    /**
+     * Removes all reviews for a product (required before deleting the product itself).
+     *
+     * @param product the product whose reviews to delete
+     */
+    void deleteByProduct(Product product);
 }

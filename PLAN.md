@@ -186,10 +186,10 @@ testable before moving on.
 - [x] **6.2 - Server-side validation.** Add `@Valid` + `BindingResult`; show field errors in the form.
   > 📖 **Materials:** `07-SpringBeans.pdf` – validation with `@NotBlank`, `@Email`, `@Pattern`, `@Min`/`@Max` on the bean class (slide 26); `@Valid` on the controller parameter (slide 26); important remarks about validation even when client-side exists (slide 27); `07-SpringMVC.pdf` – `BindingResult` in controller method parameters (slide 17); Thymeleaf displaying validation errors (slide 31 — "More on thymeleaf"). `08-thymeleaf.pdf` – display per-field errors with `th:if="${#fields.hasErrors('price')}"` and `th:errors="*{price}"` (slide 15); display all errors as a list with `th:each="err : ${#fields.errors('product.*')}"` (slide 16); style error messages with a CSS class using `th:class="${#fields.hasErrors('price')}? error"` (slide 16). `08-JPA.pdf` – validation annotations on the Product entity: `@NotBlank`, `@Min`, `@DecimalMin` etc. (slides 14, 15); add `spring-boot-starter-validation` dependency to `pom.xml` (slide 16); use `BindingResult` immediately after `@Valid` in controller signature; if `result.hasErrors()` return the form view again (slides 19, 30).
 
-- [ ] **6.3 - Image upload.** Accept `MultipartFile`, save to disk (or DB), serve it; show on cards/detail.
+- [x] **6.3 - Image upload.** Accept `MultipartFile`, save to disk (or DB), serve it; show on cards/detail.
   > 📖 **Materials:** `07-SpringMVC.pdf` – upload files: `<input type="file">` on the form (slide 25); receive as `@RequestParam("myfile") MultipartFile file` (slide 25); save contents as `@Lob byte[]` in the entity (slides 25, 26); serve via `@GetMapping("/file/{id}")` returning `ResponseEntity<byte[]>` with `Content-Disposition` header (slide 26).
 
-- [ ] **6.4 - My Products page.** `/my-products` shows the user's active/sold items.
+- [x] **6.4 - My Products page.** `/my-products` shows the user's active/sold items.
   > 📖 **Materials:** `07-SpringMVC.pdf` – `@GetMapping` (slide 6); `Model.addAttribute(list)` (slide 14); Thymeleaf iteration (slide 13). `08-thymeleaf.pdf` – iterate with `th:each="product : ${myProducts}"` (slide 10); show status badge with `th:switch` / `th:case` (slide 9). `08-JPA.pdf` – use `findBySeller(User seller)` query method (slides 10, 11).
 
 - [ ] **6.5 - Edit / delete product.** Edit form + delete action from My Products.

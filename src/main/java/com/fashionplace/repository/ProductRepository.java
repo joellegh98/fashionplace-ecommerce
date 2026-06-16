@@ -27,15 +27,16 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      * @param title the keyword to search for within the product title
      * @return matching products
      */
-    List<Product> findByTitleContainingIgnoreCase(String title);
+    List<Product> findByTitleContainingIgnoreCaseAndDeletedFalse(String title);
 
     /**
-     * Returns products matching all supplied filters. A {@code null} or blank parameter
-     * is ignored (no restriction on that field).
+     * Returns non-deleted products matching all supplied filters. A {@code null} or blank
+     * parameter is ignored (no restriction on that field).
      */
     @Query("""
             SELECT p FROM Product p
-            WHERE (:keyword IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%')))
+            WHERE p.deleted = false
+              AND (:keyword IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%')))
               AND (:category IS NULL OR p.category = :category)
               AND (:condition IS NULL OR p.condition = :condition)
               AND (:minPrice IS NULL OR p.price >= :minPrice)
@@ -47,28 +48,37 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                          @Param("minPrice") BigDecimal minPrice,
                          @Param("maxPrice") BigDecimal maxPrice);
 
-    @Query("SELECT DISTINCT p.category FROM Product p WHERE p.category IS NOT NULL ORDER BY p.category")
+    @Query("SELECT DISTINCT p.category FROM Product p WHERE p.deleted = false AND p.category IS NOT NULL ORDER BY p.category")
     List<String> findDistinctCategories();
 
-    @Query("SELECT DISTINCT p.condition FROM Product p WHERE p.condition IS NOT NULL ORDER BY p.condition")
+    @Query("SELECT DISTINCT p.condition FROM Product p WHERE p.deleted = false AND p.condition IS NOT NULL ORDER BY p.condition")
     List<String> findDistinctConditions();
 
     /**
-     * Finds products whose category is in the given set and whose status matches. Used by
-     * the recommendation logic to suggest available items in categories the user likes.
+     * Finds non-deleted products whose category is in the given set and whose status matches.
+     * Used by the recommendation logic to suggest available items in categories the user likes.
      *
      * @param categories the categories to include
      * @param status     the required listing status (e.g. {@code ACTIVE})
      * @return matching products
      */
-    List<Product> findByCategoryInAndStatus(Collection<String> categories, String status);
+    List<Product> findByCategoryInAndStatusAndDeletedFalse(Collection<String> categories, String status);
 
     /**
-     * Finds products in one category with the given status (e.g. related products on a detail page).
+     * Finds non-deleted products in one category with the given status (e.g. related products
+     * on a detail page).
      *
      * @param category the category to match
      * @param status   the required listing status (e.g. {@code ACTIVE})
      * @return matching products
      */
-    List<Product> findByCategoryAndStatus(String category, String status);
+    List<Product> findByCategoryAndStatusAndDeletedFalse(String category, String status);
+
+    /**
+     * Finds all non-deleted products listed by the given seller, newest first.
+     *
+     * @param seller the user who listed the products
+     * @return that seller's products, ordered by id descending
+     */
+    List<Product> findBySellerAndDeletedFalseOrderByIdDesc(User seller);
 }

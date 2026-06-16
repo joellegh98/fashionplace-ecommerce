@@ -5,12 +5,15 @@ import com.fashionplace.service.CurrentUserProvider;
 import com.fashionplace.service.ProductService;
 import com.fashionplace.web.SellForm;
 import jakarta.validation.Valid;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -63,6 +66,79 @@ public class SellController {
         }
         Product product = productService.createListing(sellForm, currentUserProvider.getCurrentUser());
         return "redirect:/product/" + product.getId();
+    }
+
+    /**
+     * Lists the current user's products (active and sold), newest first.
+     *
+     * @param model holds {@code myProducts} for the view
+     * @return the {@code my-products} view name
+     */
+    @GetMapping("/my-products")
+    public String myProducts(Model model) {
+        model.addAttribute("myProducts",
+                productService.findBySeller(currentUserProvider.getCurrentUser()));
+        return "my-products";
+    }
+
+    /**
+     * Shows the edit form for an existing product, pre-filled with its current values.
+     *
+     * @param id    the product to edit
+     * @param model holds the {@code sellForm}, {@code productId}, {@code product}, and options
+     * @return the {@code edit-product} view name
+     */
+    @GetMapping("/product/{id}/edit")
+    public String editForm(@PathVariable Long id, Model model) {
+        Product product = productService.findById(id);
+        model.addAttribute("sellForm", productService.toForm(product));
+        model.addAttribute("product", product);
+        model.addAttribute("productId", id);
+        addFormOptions(model);
+        return "edit-product";
+    }
+
+    /**
+     * Saves edits to an existing product, then redirects to its detail page.
+     *
+     * @param id            the product being edited
+     * @param sellForm      the submitted edit details
+     * @param bindingResult validation errors, if any
+     * @param model         repopulated when validation fails
+     * @return redirect to the product detail page, or the edit form again on error
+     */
+    @PostMapping("/product/{id}/edit")
+    public String updateListing(@PathVariable Long id,
+                                @Valid @ModelAttribute("sellForm") SellForm sellForm,
+                                BindingResult bindingResult,
+                                Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("product", productService.findById(id));
+            model.addAttribute("productId", id);
+            addFormOptions(model);
+            return "edit-product";
+        }
+        productService.updateListing(id, sellForm);
+        return "redirect:/product/" + id;
+    }
+
+    /**
+     * Deletes a product and returns to My Products.
+     *
+     * @param id                 the product to delete
+     * @param redirectAttributes flash message shown after the redirect
+     * @return redirect to My Products
+     */
+    @PostMapping("/product/{id}/delete")
+    public String deleteListing(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            productService.deleteListing(id);
+            redirectAttributes.addFlashAttribute("productMessage", "Product deleted.");
+        } catch (DataIntegrityViolationException e) {
+            redirectAttributes.addFlashAttribute("productError",
+                    "This product could not be deleted due to a database constraint.");
+        }
+        return "redirect:/my-products";
     }
 
     /** Adds the category and condition options shown in the form dropdowns. */

@@ -6,7 +6,7 @@ import com.fashionplace.service.CurrentUserProvider;
 import com.fashionplace.service.OrderService;
 import com.fashionplace.service.ProductService;
 import com.fashionplace.session.CartBean;
-import com.fashionplace.web.CartLineItem;
+import com.fashionplace.web.CartSummary;
 import com.fashionplace.web.CheckoutForm;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
@@ -19,9 +19,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -53,15 +50,17 @@ public class CheckoutController {
      * @return the {@code checkout} view name, or a redirect to the cart when empty
      */
     @GetMapping("/checkout")
-    public String checkout(Model model) {
+    public String checkout(Model model, RedirectAttributes redirectAttributes) {
         if (cartBean.isEmpty()) {
+            return "redirect:/cart";
+        }
+        if (!addCartSummary(model, redirectAttributes)) {
             return "redirect:/cart";
         }
 
         CheckoutForm checkoutForm = new CheckoutForm();
         checkoutForm.setShippingAddress(currentUserProvider.getCurrentUser().getAddress());
         model.addAttribute("checkoutForm", checkoutForm);
-        addCartSummary(model);
         return "checkout";
     }
 
@@ -82,8 +81,18 @@ public class CheckoutController {
             return "redirect:/cart";
         }
         if (bindingResult.hasErrors()) {
-            addCartSummary(model);
+            addCartSummary(model, null);
             return "checkout";
+        }
+
+        String unavailable = removeUnavailableCartItems();
+        if (unavailable != null) {
+            redirectAttributes.addFlashAttribute("cartError", unavailable);
+            return "redirect:/cart";
+        }
+        if (cartBean.isEmpty()) {
+            redirectAttributes.addFlashAttribute("cartError", unavailableCartMessage());
+            return "redirect:/cart";
         }
 
         String stockProblem = findStockProblem();
@@ -107,7 +116,10 @@ public class CheckoutController {
      */
     private String findStockProblem() {
         for (Map.Entry<Long, Integer> entry : cartBean.getItems().entrySet()) {
-            Product product = productService.findById(entry.getKey());
+            Product product = productService.findByIdOptional(entry.getKey()).orElse(null);
+            if (product == null) {
+                return unavailableCartMessage();
+            }
             if (entry.getValue() > product.getQuantity()) {
                 return "Not enough stock for \"" + product.getTitle()
                         + "\" (only " + product.getQuantity() + " left). Please update your cart.";
@@ -129,18 +141,36 @@ public class CheckoutController {
         return "order-confirmation";
     }
 
-    /** Adds {@code cartItems} and {@code grandTotal} model attributes from the session cart. */
-    private void addCartSummary(Model model) {
-        List<CartLineItem> cartItems = new ArrayList<>();
-        BigDecimal grandTotal = BigDecimal.ZERO;
-        for (Map.Entry<Long, Integer> entry : cartBean.getItems().entrySet()) {
-            Product product = productService.findById(entry.getKey());
-            CartLineItem line = new CartLineItem(
-                    product.getId(), product.getTitle(), product.getPrice(), entry.getValue());
-            cartItems.add(line);
-            grandTotal = grandTotal.add(line.getLineTotal());
+    /**
+     * Adds {@code cartItems} and {@code grandTotal} to the model, pruning deleted products
+     * from the session cart.
+     *
+     * @return {@code false} when items were removed and the caller should redirect to the cart
+     */
+    private boolean addCartSummary(Model model, RedirectAttributes redirectAttributes) {
+        CartSummary summary = productService.summarizeCart(cartBean.getItems());
+        summary.getMissingProductIds().forEach(cartBean::removeItem);
+        if (summary.hadMissingProducts()) {
+            if (redirectAttributes != null) {
+                redirectAttributes.addFlashAttribute("cartError", unavailableCartMessage());
+            } else {
+                model.addAttribute("cartError", unavailableCartMessage());
+            }
+            return false;
         }
-        model.addAttribute("cartItems", cartItems);
-        model.addAttribute("grandTotal", grandTotal);
+        model.addAttribute("cartItems", summary.getLines());
+        model.addAttribute("grandTotal", summary.getGrandTotal());
+        return true;
+    }
+
+    /** Removes unavailable products from the cart; returns a message if any were removed. */
+    private String removeUnavailableCartItems() {
+        CartSummary summary = productService.summarizeCart(cartBean.getItems());
+        summary.getMissingProductIds().forEach(cartBean::removeItem);
+        return summary.hadMissingProducts() ? unavailableCartMessage() : null;
+    }
+
+    private static String unavailableCartMessage() {
+        return "One or more items were removed from your cart because they are no longer available.";
     }
 }

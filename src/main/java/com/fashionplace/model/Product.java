@@ -59,6 +59,14 @@ public class Product {
     /** Listing state, e.g. {@code ACTIVE} or {@code SOLD}. Defaults to {@code ACTIVE}. */
     private String status = "ACTIVE";
 
+    /**
+     * Soft-delete flag. A deleted product is hidden from Browse, search, recommendations,
+     * the wishlist, and the seller's My Products page, but is kept in the database so that
+     * past orders can still display the purchased item and its details.
+     */
+    @Column(nullable = false)
+    private boolean deleted = false;
+
     /** Units currently in stock. Becomes {@code SOLD} once this reaches zero. */
     @Column(nullable = false)
     private int quantity = 1;
@@ -257,6 +265,24 @@ public class Product {
      */
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    /**
+     * Whether this product has been soft-deleted (hidden everywhere except order history).
+     *
+     * @return {@code true} if deleted
+     */
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    /**
+     * Sets the soft-delete flag.
+     *
+     * @param deleted whether the product is deleted
+     */
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     /**
