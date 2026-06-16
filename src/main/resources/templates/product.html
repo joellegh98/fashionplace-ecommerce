@@ -16,8 +16,9 @@
 
         <h1 class="mb-3" th:text="${product.title}">Product title</h1>
 
-        <!-- Product image (shown only when an imageUrl is set) -->
-        <img th:if="${product.imageUrl}" th:src="${product.imageUrl}"
+        <!-- Product image: an uploaded image (served from the DB) or an external imageUrl -->
+        <img th:if="${product.hasUploadedImage or !#strings.isEmpty(product.imageUrl)}"
+             th:src="${product.hasUploadedImage} ? @{/product/{id}/image(id=${product.id})} : ${product.imageUrl}"
              class="img-fluid rounded mb-3" alt=""
              style="max-height: 360px; object-fit: cover;">
 

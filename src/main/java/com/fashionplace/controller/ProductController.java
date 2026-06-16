@@ -9,6 +9,8 @@ import com.fashionplace.service.WishlistService;
 import com.fashionplace.web.AddToCartForm;
 import com.fashionplace.web.ReviewForm;
 import jakarta.validation.Valid;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
@@ -53,6 +56,28 @@ public class ProductController {
     public String productDetail(@PathVariable Long id, Model model) {
         populateProductDetail(id, model, new ReviewForm());
         return "product";
+    }
+
+    /**
+     * Streams a product's uploaded image bytes from the database. Returns 404 when the
+     * product has no uploaded image (products using an external {@code imageUrl} are served
+     * directly by the browser from that URL instead).
+     *
+     * @param id the product id
+     * @return the image bytes with the stored content type, or 404 if none
+     */
+    @GetMapping("/product/{id}/image")
+    @ResponseBody
+    public ResponseEntity<byte[]> productImage(@PathVariable Long id) {
+        byte[] data = productService.getImageData(id);
+        if (data == null || data.length == 0) {
+            return ResponseEntity.notFound().build();
+        }
+        String contentType = productService.getImageContentType(id);
+        MediaType mediaType = contentType != null
+                ? MediaType.parseMediaType(contentType)
+                : MediaType.APPLICATION_OCTET_STREAM;
+        return ResponseEntity.ok().contentType(mediaType).body(data);
     }
 
     /**

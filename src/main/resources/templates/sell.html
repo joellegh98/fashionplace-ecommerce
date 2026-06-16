@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<!--
+  Sell page. Form to list a new product owned by the current user.
+  Server-side validation errors are shown inline (Phase 6.2). Image upload comes in Phase 6.3.
+-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title>FashionPlace - Sell an item</title>
+</head>
+<body>
+    <main>
+        <h1 class="mb-4">Sell an item</h1>
+
+        <div class="row">
+            <div class="col-lg-7">
+                <form th:action="@{/sell}" th:object="${sellForm}" method="post"
+                      enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <input type="text" id="title" class="form-control" th:field="*{title}"
+                               th:errorclass="is-invalid">
+                        <div class="text-danger small"
+                             th:if="${#fields.hasErrors('title')}"
+                             th:errors="*{title}"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea id="description" class="form-control" rows="4"
+                                  th:field="*{description}" th:errorclass="is-invalid"></textarea>
+                        <div class="text-danger small"
+                             th:if="${#fields.hasErrors('description')}"
+                             th:errors="*{description}"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 mb-3">
+                            <label for="price" class="form-label">Price ($)</label>
+                            <input type="number" step="0.01" id="price" class="form-control"
+                                   th:field="*{price}" th:errorclass="is-invalid">
+                            <div class="text-danger small"
+                                 th:if="${#fields.hasErrors('price')}"
+                                 th:errors="*{price}"></div>
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <label for="quantity" class="form-label">Quantity</label>
+                            <input type="number" id="quantity" class="form-control"
+                                   th:field="*{quantity}" th:errorclass="is-invalid">
+                            <div class="text-danger small"
+                                 th:if="${#fields.hasErrors('quantity')}"
+                                 th:errors="*{quantity}"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 mb-3">
+                            <label for="category" class="form-label">Category</label>
+                            <select id="category" class="form-select" th:field="*{category}"
+                                    th:errorclass="is-invalid">
+                                <option value="">Choose...</option>
+                                <option th:each="opt : ${categoryOptions}"
+                                        th:value="${opt}" th:text="${opt}">Category</option>
+                            </select>
+                            <div class="text-danger small"
+                                 th:if="${#fields.hasErrors('category')}"
+                                 th:errors="*{category}"></div>
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <label for="condition" class="form-label">Condition</label>
+                            <select id="condition" class="form-select" th:field="*{condition}"
+                                    th:errorclass="is-invalid">
+                                <option value="">Choose...</option>
+                                <option th:each="opt : ${conditionOptions}"
+                                        th:value="${opt}" th:text="${opt}">Condition</option>
+                            </select>
+                            <div class="text-danger small"
+                                 th:if="${#fields.hasErrors('condition')}"
+                                 th:errors="*{condition}"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Image <span class="text-muted">(optional)</span></label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="imageSourceUpload"
+                                   th:field="*{imageSource}" value="upload">
+                            <label class="form-check-label" for="imageSourceUpload">Upload from computer</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" id="imageSourceUrl"
+                                   th:field="*{imageSource}" value="url">
+                            <label class="form-check-label" for="imageSourceUrl">Use an image URL</label>
+                        </div>
+                        <input type="file" id="image" class="form-control mb-2" accept="image/*"
+                               th:field="*{image}" data-image-input="upload">
+                        <input type="url" id="imageUrl" class="form-control" placeholder="https://example.com/photo.jpg"
+                               th:field="*{imageUrl}" data-image-input="url">
+                    </div>
+                    <button type="submit" class="btn btn-primary">List item</button>
+                    <a th:href="@{/browse}" class="btn btn-link">Cancel</a>
+                </form>
+            </div>
+        </div>
+
+        <!-- Show only the input matching the selected image source -->
+        <script>
+            (function () {
+                const radios = document.querySelectorAll('input[name="imageSource"]');
+                const inputs = document.querySelectorAll('[data-image-input]');
+                function sync() {
+                    const selected = document.querySelector('input[name="imageSource"]:checked');
+                    const choice = selected ? selected.value : 'upload';
+                    inputs.forEach(function (el) {
+                        el.style.display = el.dataset.imageInput === choice ? '' : 'none';
+                    });
+                }
+                radios.forEach(function (r) { r.addEventListener('change', sync); });
+                sync();
+            })();
+        </script>
+    </main>
+</body>
+</html>

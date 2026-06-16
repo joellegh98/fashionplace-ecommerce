@@ -1,12 +1,17 @@
 package com.fashionplace.service;
 
 import com.fashionplace.model.Product;
+import com.fashionplace.model.User;
 import com.fashionplace.repository.ProductRepository;
+import com.fashionplace.web.SellForm;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * Business-logic layer for products. Sits between the controllers and the
@@ -123,6 +128,83 @@ public class ProductService {
      */
     public Product findById(Long id) {
         return productRepository.findById(id).orElseThrow();
+    }
+
+    /**
+     * Creates and persists a new {@code ACTIVE} product listing owned by the given seller.
+     *
+     * @param form   the submitted listing details
+     * @param seller the user listing the product
+     * @return the saved product (with its generated id)
+     */
+    public Product createListing(SellForm form, User seller) {
+        Product product = new Product();
+        product.setTitle(form.getTitle());
+        product.setDescription(form.getDescription());
+        product.setPrice(form.getPrice());
+        product.setCategory(form.getCategory());
+        product.setCondition(form.getCondition());
+        product.setQuantity(form.getQuantity() == null ? 1 : form.getQuantity());
+        product.setStatus("ACTIVE");
+        product.setSeller(seller);
+        applyImage(product, form);
+        return productRepository.save(product);
+    }
+
+    /**
+     * Attaches an image to the product from whichever source the user chose: an uploaded
+     * file or an external URL. Does nothing when the chosen source has no value (images
+     * are optional). An uploaded file and a URL are mutually exclusive.
+     *
+     * @param product the product to attach the image to
+     * @param form    the submitted form holding the image choice
+     * @throws IllegalStateException if the uploaded file cannot be read
+     */
+    private void applyImage(Product product, SellForm form) {
+        boolean useUrl = "url".equals(form.getImageSource());
+        if (useUrl) {
+            String url = form.getImageUrl();
+            if (url != null && !url.isBlank()) {
+                product.setImageUrl(url.trim());
+            }
+            return;
+        }
+
+        MultipartFile image = form.getImage();
+        if (image == null || image.isEmpty()) {
+            return;
+        }
+        try {
+            product.setImageData(image.getBytes());
+            product.setImageContentType(image.getContentType());
+        } catch (IOException e) {
+            throw new IllegalStateException("Could not read uploaded image", e);
+        }
+    }
+
+    /**
+     * Returns the raw image bytes stored for a product, or {@code null} if it has no
+     * uploaded image (e.g. it uses an external {@code imageUrl} or has no image at all).
+     *
+     * @param id the product id
+     * @return the image bytes, or {@code null}
+     * @throws NoSuchElementException if no product has the given id
+     */
+    public byte[] getImageData(Long id) {
+        Product product = productRepository.findById(id).orElseThrow();
+        return product.getImageData();
+    }
+
+    /**
+     * Returns the stored image content type for a product, or {@code null} if none.
+     *
+     * @param id the product id
+     * @return the MIME type, or {@code null}
+     * @throws NoSuchElementException if no product has the given id
+     */
+    public String getImageContentType(Long id) {
+        Product product = productRepository.findById(id).orElseThrow();
+        return product.getImageContentType();
     }
 
     /**

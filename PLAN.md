@@ -180,10 +180,10 @@ testable before moving on.
 
 **Goal:** Let a user create/edit/delete products, including image upload and validation.
 
-- [ ] **6.1 - Sell form (no image yet).** `/sell` form posts a new Product owned by the current user.
+- [x] **6.1 - Sell form (no image yet).** `/sell` form posts a new Product owned by the current user.
   > 📖 **Materials:** `07-SpringMVC.pdf` – `@PostMapping` (slide 6); `@RequestBody` or `@RequestParam` (slides 7, 8); redirect after successful POST (slide 9); `07-SpringBeans.pdf` – DTO bean for form data (slide 25); validation annotations on the DTO (slide 26). `08-thymeleaf.pdf` – build sell form: `th:action="@{/sell}"`, `th:object="${product}"`, `th:field="*{title}"`, `th:field="*{price}"` etc. (slides 13, 14). `08-JPA.pdf` – persist with `repository.save(product)` (slide 29).
 
-- [ ] **6.2 - Server-side validation.** Add `@Valid` + `BindingResult`; show field errors in the form.
+- [x] **6.2 - Server-side validation.** Add `@Valid` + `BindingResult`; show field errors in the form.
   > 📖 **Materials:** `07-SpringBeans.pdf` – validation with `@NotBlank`, `@Email`, `@Pattern`, `@Min`/`@Max` on the bean class (slide 26); `@Valid` on the controller parameter (slide 26); important remarks about validation even when client-side exists (slide 27); `07-SpringMVC.pdf` – `BindingResult` in controller method parameters (slide 17); Thymeleaf displaying validation errors (slide 31 — "More on thymeleaf"). `08-thymeleaf.pdf` – display per-field errors with `th:if="${#fields.hasErrors('price')}"` and `th:errors="*{price}"` (slide 15); display all errors as a list with `th:each="err : ${#fields.errors('product.*')}"` (slide 16); style error messages with a CSS class using `th:class="${#fields.hasErrors('price')}? error"` (slide 16). `08-JPA.pdf` – validation annotations on the Product entity: `@NotBlank`, `@Min`, `@DecimalMin` etc. (slides 14, 15); add `spring-boot-starter-validation` dependency to `pom.xml` (slide 16); use `BindingResult` immediately after `@Valid` in controller signature; if `result.hasErrors()` return the form view again (slides 19, 30).
 
 - [ ] **6.3 - Image upload.** Accept `MultipartFile`, save to disk (or DB), serve it; show on cards/detail.

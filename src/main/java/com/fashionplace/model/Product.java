@@ -1,11 +1,14 @@
 package com.fashionplace.model;
 
+import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 
 import java.math.BigDecimal;
@@ -60,8 +63,24 @@ public class Product {
     @Column(nullable = false)
     private int quantity = 1;
 
-    /** Optional URL of the product image shown on cards and the detail page. */
+    /** Optional URL of the product image shown on cards and the detail page (e.g. seed data). */
     private String imageUrl;
+
+    /**
+     * Raw bytes of an uploaded image, stored directly in the database as a BLOB.
+     *
+     * <p>Marked {@link FetchType#LAZY} so list/browse queries don't pull the binary
+     * payload unless the image is actually requested. {@link #imageContentType} stays
+     * eagerly loaded so views can tell whether an upload exists without reading the blob.</p>
+     */
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "image_data", columnDefinition = "LONGBLOB")
+    private byte[] imageData;
+
+    /** MIME type of the uploaded {@link #imageData} (e.g. {@code image/png}); {@code null} if none. */
+    @Column(name = "image_content_type")
+    private String imageContentType;
 
     /**
      * The user who listed this product. Many products can belong to one seller;
@@ -274,6 +293,52 @@ public class Product {
      */
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    /**
+     * Returns the raw bytes of the uploaded image, or {@code null} if none was uploaded.
+     *
+     * @return the image data
+     */
+    public byte[] getImageData() {
+        return imageData;
+    }
+
+    /**
+     * Sets the raw bytes of the uploaded image.
+     *
+     * @param imageData the image data to set
+     */
+    public void setImageData(byte[] imageData) {
+        this.imageData = imageData;
+    }
+
+    /**
+     * Returns the MIME type of the uploaded image, or {@code null} if none was uploaded.
+     *
+     * @return the image content type
+     */
+    public String getImageContentType() {
+        return imageContentType;
+    }
+
+    /**
+     * Sets the MIME type of the uploaded image.
+     *
+     * @param imageContentType the content type to set
+     */
+    public void setImageContentType(String imageContentType) {
+        this.imageContentType = imageContentType;
+    }
+
+    /**
+     * Whether this product has an uploaded image stored in the database (as opposed to
+     * an external {@link #imageUrl}). Checks the cheap content-type column, not the blob.
+     *
+     * @return {@code true} if an uploaded image is available
+     */
+    public boolean isHasUploadedImage() {
+        return imageContentType != null;
     }
 
     /**
