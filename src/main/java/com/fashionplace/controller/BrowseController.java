@@ -34,9 +34,9 @@ public class BrowseController {
     }
 
     /**
-     * Lists products as cards, applying optional title search and browse filters.
+     * Lists products as cards, applying optional keyword search (title or description) and browse filters.
      *
-     * @param q         optional title keyword
+     * @param q         optional keyword matched against title and description
      * @param category  optional category filter
      * @param condition optional condition filter
      * @param minPrice  optional minimum price

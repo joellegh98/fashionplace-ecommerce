@@ -1,6 +1,7 @@
 package com.fashionplace.controller;
 
 import com.fashionplace.model.Product;
+import com.fashionplace.model.ProductCategories;
 import com.fashionplace.service.CurrentUserProvider;
 import com.fashionplace.service.ProductService;
 import com.fashionplace.web.SellForm;
@@ -146,7 +147,7 @@ public class SellController {
 
     /** Adds the category and condition options shown in the form dropdowns. */
     private void addFormOptions(Model model) {
-        model.addAttribute("categoryOptions", List.of("Jewelry", "Clothing"));
+        model.addAttribute("categoryOptions", ProductCategories.ALL);
         model.addAttribute("conditionOptions", List.of("New", "Used"));
     }
 }

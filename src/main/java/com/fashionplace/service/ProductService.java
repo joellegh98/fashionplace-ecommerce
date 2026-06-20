@@ -1,6 +1,7 @@
 package com.fashionplace.service;
 
 import com.fashionplace.model.Product;
+import com.fashionplace.model.ProductCategories;
 import com.fashionplace.model.User;
 import com.fashionplace.repository.ProductRepository;
 import com.fashionplace.repository.ReviewRepository;
@@ -57,7 +58,7 @@ public class ProductService {
     /**
      * Returns products matching the optional keyword and browse filters.
      *
-     * @param keyword   optional title keyword
+     * @param keyword   optional keyword matched against title and description
      * @param category  optional category (exact match)
      * @param condition optional item condition (exact match)
      * @param minPrice  optional minimum price (inclusive)
@@ -96,10 +97,10 @@ public class ProductService {
     }
 
     /**
-     * Returns distinct category values present in the database (for filter dropdowns).
+     * Returns the fixed set of product categories (for filter and sell-form dropdowns).
      */
     public List<String> findDistinctCategories() {
-        return productRepository.findDistinctCategories();
+        return ProductCategories.ALL;
     }
 
     /**
@@ -117,10 +118,11 @@ public class ProductService {
     }
 
     /**
-     * Returns up to {@value #MAX_SUGGESTIONS} product titles matching the keyword, for the
-     * Browse search autocomplete. A blank or {@code null} keyword yields no suggestions.
+     * Returns up to {@value #MAX_SUGGESTIONS} product titles matching the keyword in the title
+     * or description, for the Browse search autocomplete. A blank or {@code null} keyword yields
+     * no suggestions.
      *
-     * @param keyword the partial title typed by the user
+     * @param keyword the partial keyword typed by the user
      * @return matching product titles (at most {@value #MAX_SUGGESTIONS})
      */
     public List<String> suggestTitles(String keyword) {

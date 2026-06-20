@@ -21,13 +21,20 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
     /**
-     * Finds products whose title contains the given text, ignoring case. Spring Data
-     * derives the SQL from the method name.
+     * Finds products whose title or description contains the given text, ignoring case.
      *
-     * @param title the keyword to search for within the product title
+     * @param title the keyword to search for within the product title or description
      * @return matching products
      */
-    List<Product> findByTitleContainingIgnoreCaseAndDeletedFalseAndStatusNot(String title, String status);
+    @Query("""
+            SELECT p FROM Product p
+            WHERE p.deleted = false
+              AND p.status <> :status
+              AND (LOWER(p.title) LIKE LOWER(CONCAT('%', :title, '%'))
+                   OR LOWER(p.description) LIKE LOWER(CONCAT('%', :title, '%')))
+            """)
+    List<Product> findByTitleContainingIgnoreCaseAndDeletedFalseAndStatusNot(@Param("title") String title,
+                                                                             @Param("status") String status);
 
     /**
      * Returns non-deleted products matching all supplied filters. A {@code null} or blank
@@ -37,7 +44,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             SELECT p FROM Product p
             WHERE p.deleted = false
               AND p.status <> 'FLAGGED'
-              AND (:keyword IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%')))
+              AND (:keyword IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                                   OR LOWER(p.description) LIKE LOWER(CONCAT('%', :keyword, '%')))
               AND (:category IS NULL OR p.category = :category)
               AND (:condition IS NULL OR p.condition = :condition)
               AND (:minPrice IS NULL OR p.price >= :minPrice)

@@ -10,9 +10,30 @@
 </head>
 <body>
     <main>
-        <h1 class="mb-4">FashionPlace</h1>
-
-        <div th:replace="~{fragments/productcards :: section('Recommended for you', ${recommendations})}"></div>
+        <section class="home-hero">
+            <div class="home-hero-glow"></div>
+            <div class="home-hero-inner">
+                <p class="home-hero-eyebrow mb-2">Your style, your marketplace</p>
+                <h1 class="home-hero-title mb-3">Welcome to FashionPlace!</h1>
+                <p class="home-hero-lead mb-4">
+                    Discover jewelry and clothing from sellers near you — vintage finds,
+                    everyday essentials, and one-of-a-kind pieces waiting for a new home.
+                </p>
+                <div class="d-flex flex-wrap gap-3 align-items-center">
+                    <a th:href="@{/browse}" class="btn btn-hero btn-lg">
+                        Let's explore the products
+                        <span class="home-hero-arrow" aria-hidden="true">→</span>
+                    </a>
+                </div>
+                <ul class="home-hero-tags list-unstyled d-flex flex-wrap gap-2 mt-4 mb-0">
+                    <li>Earrings</li>
+                    <li>Jeans</li>
+                    <li>Necklaces</li>
+                    <li>Shoes</li>
+                    <li>More</li>
+                </ul>
+            </div>
+        </section>
     </main>
 </body>
 </html>

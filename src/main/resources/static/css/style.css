@@ -60,3 +60,100 @@ footer {
     color: var(--pink);
     text-align: center;
 }
+
+/* Home page — guest welcome hero */
+.home-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1.25rem;
+    padding: 2.5rem 2rem;
+    background: linear-gradient(135deg, var(--brown-dark) 0%, var(--brown) 45%, #8b5a3c 100%);
+    color: #fff;
+    box-shadow: 0 12px 40px rgba(74, 44, 24, 0.35);
+}
+
+.home-hero-glow {
+    position: absolute;
+    top: -40%;
+    right: -10%;
+    width: 55%;
+    height: 140%;
+    background: radial-gradient(ellipse, rgba(247, 217, 227, 0.35) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.home-hero-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 36rem;
+}
+
+.home-hero-eyebrow {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--pink);
+    opacity: 0.95;
+}
+
+.home-hero-title {
+    font-size: clamp(1.85rem, 4vw, 2.75rem);
+    font-weight: 800;
+    line-height: 1.15;
+    color: #fff;
+    margin-bottom: 0.75rem;
+}
+
+.home-hero-lead {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.88);
+    max-width: 32rem;
+}
+
+.btn-hero {
+    background-color: var(--pink);
+    color: var(--brown-dark);
+    border: none;
+    font-weight: 700;
+    padding: 0.65rem 1.5rem;
+    border-radius: 2rem;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.btn-hero:hover,
+.btn-hero:focus {
+    background-color: #fff;
+    color: var(--brown-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.home-hero-arrow {
+    display: inline-block;
+    margin-left: 0.35rem;
+    transition: transform 0.2s ease;
+}
+
+.btn-hero:hover .home-hero-arrow {
+    transform: translateX(4px);
+}
+
+.home-hero-tags li {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.35rem 0.85rem;
+    border-radius: 2rem;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--pink-light);
+}
+
+@media (min-width: 768px) {
+    .home-hero {
+        padding: 3rem 3rem;
+    }
+}

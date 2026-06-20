@@ -1,6 +1,7 @@
 package com.fashionplace.config;
 
 import com.fashionplace.model.Product;
+import com.fashionplace.model.ProductCategories;
 import com.fashionplace.model.Review;
 import com.fashionplace.model.User;
 import com.fashionplace.repository.ProductRepository;
@@ -44,6 +45,7 @@ public class DataSeeder implements CommandLineRunner {
         seedUsers();
         seedProducts();
         seedReviews();
+        migrateLegacyCategories();
     }
 
     /** Inserts sample regular users with BCrypt-hashed passwords (admin is created by {@link AdminInitializer}). */
@@ -86,42 +88,42 @@ public class DataSeeder implements CommandLineRunner {
                 "Gold Hoop Earrings",
                 "Classic 14k gold-plated hoop earrings, lightweight and perfect for everyday wear.",
                 new BigDecimal("45.99"),
-                "Jewelry", "New", "ACTIVE", 5,
+                "Earrings", "New", "ACTIVE", 5,
                 "https://picsum.photos/seed/earrings/400/300"
         ), alice);
         save(new Product(
                 "Silver Chain Necklace",
                 "Delicate sterling silver chain with a minimalist pendant.",
                 new BigDecimal("62.50"),
-                "Jewelry", "New", "ACTIVE", 3,
+                "Necklace", "New", "ACTIVE", 3,
                 "https://picsum.photos/seed/necklace/400/300"
         ), alice);
         save(new Product(
                 "Leather Biker Jacket",
                 "Genuine black leather jacket with zip front and quilted shoulders.",
                 new BigDecimal("189.00"),
-                "Clothing", "Used", "ACTIVE", 1,
+                "Shirts", "Used", "ACTIVE", 1,
                 "https://picsum.photos/seed/jacket/400/300"
         ), bob);
         save(new Product(
                 "Vintage Denim Jeans",
                 "High-waisted straight-leg jeans in a faded blue wash.",
                 new BigDecimal("55.00"),
-                "Clothing", "Used", "ACTIVE", 4,
+                "Jeans", "Used", "ACTIVE", 4,
                 "https://picsum.photos/seed/jeans/400/300"
         ), bob);
         save(new Product(
                 "Pearl Bracelet",
                 "Freshwater pearl bracelet with a silver clasp, elegant and timeless.",
                 new BigDecimal("38.75"),
-                "Jewelry", "New", "ACTIVE", 2,
+                "Bracelet", "New", "ACTIVE", 2,
                 "https://picsum.photos/seed/bracelet/400/300"
         ), alice);
         save(new Product(
                 "Silk Evening Dress",
                 "Floor-length emerald silk dress, ideal for formal occasions.",
                 new BigDecimal("220.00"),
-                "Clothing", "New", "SOLD", 0,
+                "Bottoms", "New", "SOLD", 0,
                 "https://picsum.photos/seed/dress/400/300"
         ), bob);
     }
@@ -130,6 +132,47 @@ public class DataSeeder implements CommandLineRunner {
     private void save(Product product, User seller) {
         product.setSeller(seller);
         productRepository.save(product);
+    }
+
+    /** Maps old broad categories (Jewelry / Clothing) to the new category list. */
+    private void migrateLegacyCategories() {
+        for (Product product : productRepository.findAll()) {
+            String category = product.getCategory();
+            if (category == null || ProductCategories.ALL.contains(category)) {
+                continue;
+            }
+            String title = product.getTitle() == null ? "" : product.getTitle().toLowerCase();
+            if ("Jewelry".equals(category)) {
+                if (title.contains("earring")) {
+                    product.setCategory("Earrings");
+                } else if (title.contains("necklace")) {
+                    product.setCategory("Necklace");
+                } else if (title.contains("bracelet")) {
+                    product.setCategory("Bracelet");
+                } else if (title.contains("ring")) {
+                    product.setCategory("Ring");
+                } else if (title.contains("glasses")) {
+                    product.setCategory("Glasses");
+                } else {
+                    product.setCategory("Earrings");
+                }
+            } else if ("Clothing".equals(category)) {
+                if (title.contains("jean")) {
+                    product.setCategory("Jeans");
+                } else if (title.contains("shoe")) {
+                    product.setCategory("Shoes");
+                } else if (title.contains("underwear")) {
+                    product.setCategory("Underwear");
+                } else if (title.contains("dress") || title.contains("skirt")) {
+                    product.setCategory("Bottoms");
+                } else if (title.contains("shirt") || title.contains("jacket")) {
+                    product.setCategory("Shirts");
+                } else {
+                    product.setCategory("Shirts");
+                }
+            }
+            productRepository.save(product);
+        }
     }
 
     /** Inserts sample reviews when the {@code review} table is empty. */

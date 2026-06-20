@@ -46,7 +46,7 @@ public class Product {
     /** Selling price. {@link BigDecimal} is used to avoid floating-point rounding errors on money. */
     private BigDecimal price;
 
-    /** High-level grouping used for browsing/filtering (e.g. "Jewelry", "Clothing"). */
+    /** Product category (see {@link ProductCategories}). */
     private String category;
 
     /**
