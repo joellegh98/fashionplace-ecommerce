@@ -9,8 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
- * Spring Security configuration: form login, logout, and CSRF protection.
- * Route/role rules are added in Phase 9.6.
+ * Spring Security configuration: form login, logout, CSRF protection, and role-based access.
  */
 @Configuration
 @EnableWebSecurity
@@ -30,14 +29,27 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Public assets and error handling
                         .requestMatchers("/css/**", "/js/**", "/favicon.jpeg", "/error").permitAll()
-                        // Auth pages (Phase 9.4)
+                        // Auth pages
                         .requestMatchers("/login", "/logout", "/register").permitAll()
-                        // Full route/role lockdown in Phase 9.6
+                        // Admin area (includes /admin/support)
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        // Authenticated user areas
+                        .requestMatchers("/sell").authenticated()
+                        .requestMatchers("/orders", "/my-products").authenticated()
+                        .requestMatchers("/wishlist/**").authenticated()
+                        .requestMatchers("/support/**").authenticated()
+                        .requestMatchers("/checkout/**").authenticated()
+                        .requestMatchers("/product/*/edit", "/product/*/delete", "/product/*/review")
+                                .authenticated()
+                        // Public browsing, cart, and product detail
+                        .requestMatchers("/", "/browse", "/cart/**", "/api/**").permitAll()
+                        .requestMatchers("/product/*/image", "/product/*").permitAll()
                         .anyRequest().permitAll()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/", true)
+                        // false = after login, return to the page the user originally requested (e.g. /checkout)
+                        .defaultSuccessUrl("/", false)
                         .failureUrl("/login?error")
                         .permitAll()
                 )

@@ -261,10 +261,10 @@ testable before moving on.
 - [x] **9.5 - Swap the fake current user.** `CurrentUserProvider` now reads the authenticated principal everywhere (reviews, orders, products, wishlist, support messages).
   > 📖 **Materials:** `07-SpringMVC.pdf` – `Principal` as a controller method parameter (slide 17, "Other params"); `07-SpringBeans.pdf` – the `CurrentUserProvider` bean is `@Component` / `@Service` injected by constructor (slides 6, 9).
 
-- [ ] **9.6 - Role-based access.** `/admin/`** -> ADMIN only (including `/admin/support`); `/sell`, `/orders`, `/my-products`, `/wishlist`, `/support`, checkout -> authenticated. Home/Browse/Detail stay public.
+- [x] **9.6 - Role-based access.** `/admin/`** -> ADMIN only (including `/admin/support`); `/sell`, `/orders`, `/my-products`, `/wishlist`, `/support`, checkout -> authenticated. Home/Browse/Detail stay public.
   > 📖 **Materials:** `07-SpringMVC.pdf` – catching multiple URL patterns in one mapping (slide 6: `@GetMapping(value = {"/login","/logout"})`); `07-SpringBeans.pdf` – `@Configuration` SecurityConfig with role rules (slide 12, 14).
 
-- [ ] **9.7 - Ownership rules.** Users can only edit/delete **their own** products.
+- [x] **9.7 - Ownership rules.** Users can only edit/delete **their own** products.
   > 📖 **Materials:** `07-SpringMVC.pdf` – `Principal` parameter to get current user in the controller (slide 17); `07-SpringBeans.pdf` – `@Service` enforces the ownership check (slide 6).
 
 - [ ] **9.8 - Cart merge on login.** Merge the session cart into the user's DB cart after login.

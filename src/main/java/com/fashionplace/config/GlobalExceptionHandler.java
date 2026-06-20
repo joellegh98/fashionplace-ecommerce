@@ -3,6 +3,7 @@ package com.fashionplace.config;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -28,6 +29,18 @@ public class GlobalExceptionHandler {
     public Object handleNotFound(NoSuchElementException ex, HttpServletRequest request) {
         if (wantsJson(request)) {
             return jsonResponse(HttpStatus.NOT_FOUND, "The requested resource was not found.");
+        }
+        return "error";
+    }
+
+    /**
+     * Authenticated user tried to access or modify a resource they do not own.
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public Object handleAccessDenied(AccessDeniedException ex, HttpServletRequest request) {
+        if (wantsJson(request)) {
+            return jsonResponse(HttpStatus.FORBIDDEN, ex.getMessage());
         }
         return "error";
     }

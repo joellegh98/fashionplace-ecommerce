@@ -8,6 +8,7 @@ import com.fashionplace.repository.WishlistItemRepository;
 import com.fashionplace.web.CartLineItem;
 import com.fashionplace.web.CartSummary;
 import com.fashionplace.web.SellForm;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -216,18 +217,35 @@ public class ProductService {
     }
 
     /**
+     * Loads a product and verifies that the given user is its seller.
+     *
+     * @param id           the product id
+     * @param currentUser  the user attempting the action
+     * @return the product when the user owns it
+     * @throws NoSuchElementException  if no product has the given id
+     * @throws AccessDeniedException   if the user is not the seller
+     */
+    public Product findOwnedListing(Long id, User currentUser) {
+        Product product = productRepository.findById(id).orElseThrow();
+        assertOwner(product, currentUser);
+        return product;
+    }
+
+    /**
      * Updates an existing product's editable fields and persists it. The listing status is
      * recomputed from the quantity ({@code ACTIVE} when in stock, {@code SOLD} when zero).
      * The image is only changed when the edit supplies a new file or URL (see
      * {@link #applyImageOnUpdate}).
      *
-     * @param id   the product to update
-     * @param form the submitted edit details
+     * @param id          the product to update
+     * @param form        the submitted edit details
+     * @param currentUser the seller performing the edit
      * @return the saved product
      * @throws NoSuchElementException if no product has the given id
+     * @throws AccessDeniedException  if the user is not the seller
      */
-    public Product updateListing(Long id, SellForm form) {
-        Product product = productRepository.findById(id).orElseThrow();
+    public Product updateListing(Long id, SellForm form, User currentUser) {
+        Product product = findOwnedListing(id, currentUser);
         product.setTitle(form.getTitle());
         product.setDescription(form.getDescription());
         product.setPrice(form.getPrice());
@@ -241,11 +259,26 @@ public class ProductService {
     }
 
     /**
+     * Soft-deletes a product when the current user is its seller.
+     *
+     * @param id          the product to delete
+     * @param currentUser the seller performing the delete
+     * @throws NoSuchElementException if no product has the given id
+     * @throws AccessDeniedException  if the user is not the seller
+     */
+    @Transactional
+    public void deleteOwnedListing(Long id, User currentUser) {
+        softDelete(findOwnedListing(id, currentUser));
+    }
+
+    /**
      * Soft-deletes a product: marks it {@code deleted}, zeroes out any remaining stock, and
      * marks it {@code SOLD}. The product is kept in the database so past orders can still show
      * the purchased item, but it disappears from Browse, search, recommendations, My Products,
      * and the cart. Reviews are removed and the product is taken off every wishlist, since it
      * is no longer a live listing. Order line items are intentionally preserved for history.
+     *
+     * <p>Admin use only — does not check listing ownership.</p>
      *
      * @param id the product to delete
      * @throws NoSuchElementException if no product has the given id
@@ -253,12 +286,24 @@ public class ProductService {
     @Transactional
     public void deleteListing(Long id) {
         Product product = productRepository.findById(id).orElseThrow();
+        softDelete(product);
+    }
+
+    private void softDelete(Product product) {
         wishlistItemRepository.deleteByProduct(product);
         reviewRepository.deleteByProduct(product);
         product.setDeleted(true);
         product.setQuantity(0);
         product.setStatus("SOLD");
         productRepository.save(product);
+    }
+
+    private void assertOwner(Product product, User currentUser) {
+        if (product.getSeller() == null
+                || currentUser.getId() == null
+                || !product.getSeller().getId().equals(currentUser.getId())) {
+            throw new AccessDeniedException("You can only modify your own listings.");
+        }
     }
 
     /**

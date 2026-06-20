@@ -90,7 +90,7 @@ public class SellController {
      */
     @GetMapping("/product/{id}/edit")
     public String editForm(@PathVariable Long id, Model model) {
-        Product product = productService.findById(id);
+        Product product = productService.findOwnedListing(id, currentUserProvider.getCurrentUser());
         model.addAttribute("sellForm", productService.toForm(product));
         model.addAttribute("product", product);
         model.addAttribute("productId", id);
@@ -114,12 +114,13 @@ public class SellController {
                                 Model model,
                                 RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("product", productService.findById(id));
+            model.addAttribute("product",
+                    productService.findOwnedListing(id, currentUserProvider.getCurrentUser()));
             model.addAttribute("productId", id);
             addFormOptions(model);
             return "edit-product";
         }
-        productService.updateListing(id, sellForm);
+        productService.updateListing(id, sellForm, currentUserProvider.getCurrentUser());
         redirectAttributes.addFlashAttribute("successMessage", "Product updated.");
         return "redirect:/product/" + id;
     }
@@ -134,7 +135,7 @@ public class SellController {
     @PostMapping("/product/{id}/delete")
     public String deleteListing(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
-            productService.deleteListing(id);
+            productService.deleteOwnedListing(id, currentUserProvider.getCurrentUser());
             redirectAttributes.addFlashAttribute("successMessage", "Product deleted.");
         } catch (DataIntegrityViolationException e) {
             redirectAttributes.addFlashAttribute("errorMessage",
