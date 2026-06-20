@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<!--
+  Sign-in page. POST is processed by Spring Security (not a controller method).
+-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title>FashionPlace - Log in</title>
+</head>
+<body>
+    <main>
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <h1 class="mb-4">Log in</h1>
+
+                <div th:if="${loginError}" class="alert alert-danger" role="alert">
+                    Invalid username or password.
+                </div>
+
+                <form th:action="@{/login}" method="post">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" id="username" name="username" class="form-control"
+                               autocomplete="username" required autofocus>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" id="password" name="password" class="form-control"
+                               autocomplete="current-password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Log in</button>
+                </form>
+
+                <p class="mt-3 mb-0">
+                    Don't have an account?
+                    <a th:href="@{/register}">Create one</a>
+                </p>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

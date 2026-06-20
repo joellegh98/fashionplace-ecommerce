@@ -30,13 +30,15 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Public assets and error handling
                         .requestMatchers("/css/**", "/js/**", "/favicon.jpeg", "/error").permitAll()
-                        // Login/logout endpoints (custom pages in Phase 9.4)
-                        .requestMatchers("/login", "/logout").permitAll()
+                        // Auth pages (Phase 9.4)
+                        .requestMatchers("/login", "/logout", "/register").permitAll()
                         // Full route/role lockdown in Phase 9.6
                         .anyRequest().permitAll()
                 )
                 .formLogin(form -> form
+                        .loginPage("/login")
                         .defaultSuccessUrl("/", true)
+                        .failureUrl("/login?error")
                         .permitAll()
                 )
                 .logout(logout -> logout

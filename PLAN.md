@@ -255,7 +255,7 @@ testable before moving on.
 - [x] **9.3 - Real SecurityConfig.** Rewrite the Phase 0 placeholder: form login, logout, CSRF on (default).
   > 📖 **Materials:** `07-SpringBeans.pdf` – `@Configuration` + `@Bean` for explicit security bean declaration (slides 12, 14); `07-SpringMVC.pdf` – `application.properties` can hold security-related settings (slide 4).
 
-- [ ] **9.4 - Login & Registration pages.** Login form + a registration form (`@Valid`) that creates a USER.
+- [x] **9.4 - Login & Registration pages.** Login form + a registration form (`@Valid`) that creates a USER.
   > 📖 **Materials:** `07-SpringMVC.pdf` – `@PostMapping` (slide 6); `@RequestBody` / `@RequestParam` (slides 7, 8); redirect after successful registration (slide 9); `@GetMapping` for multiple URLs e.g. `{"/login","/logout"}` (slide 6); `07-SpringBeans.pdf` – DTO with `@NotBlank`, `@Email`, `@Pattern` for password complexity (slide 26); `@Valid` + `BindingResult` (slide 26). `08-thymeleaf.pdf` – build login and registration forms with `th:action`, `th:object`, `th:field` (slides 13, 14); show registration validation errors inline with `th:errors` (slide 15). `08-JPA.pdf` – validation annotations on the registration DTO: `@NotBlank`, `@Email`, `@Size` (slides 14, 15); Roadmap 6/6: `@Valid` + `BindingResult` pattern for form submission (slide 30).
 
 - [ ] **9.5 - Swap the fake current user.** `CurrentUserProvider` now reads the authenticated principal everywhere (reviews, orders, products, wishlist, support messages).

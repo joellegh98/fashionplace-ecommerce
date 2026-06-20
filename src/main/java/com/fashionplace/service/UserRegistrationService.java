@@ -1,0 +1,47 @@
+package com.fashionplace.service;
+
+import com.fashionplace.model.User;
+import com.fashionplace.repository.UserRepository;
+import com.fashionplace.web.RegistrationForm;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * Creates new {@code USER} accounts from the registration form.
+ */
+@Service
+public class UserRegistrationService {
+
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public UserRegistrationService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    /**
+     * Persists a new regular user with a BCrypt-hashed password.
+     *
+     * @param form validated registration input
+     */
+    @Transactional
+    public void register(RegistrationForm form) {
+        User user = new User(
+                form.getUsername().trim(),
+                form.getEmail().trim(),
+                passwordEncoder.encode(form.getPassword()),
+                "USER",
+                blankToNull(form.getAddress())
+        );
+        userRepository.save(user);
+    }
+
+    private static String blankToNull(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+        return value.trim();
+    }
+}
