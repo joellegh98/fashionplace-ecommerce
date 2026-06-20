@@ -46,13 +46,8 @@ public class AdminController {
      */
     @PostMapping("/admin/products/{id}/delete")
     public String deleteProduct(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        try {
-            adminService.deleteProduct(id);
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage",
-                    "Could not delete product: " + e.getMessage());
-        }
-        return "redirect:/admin";
+        return tryAction(() -> adminService.deleteProduct(id),
+                "Could not delete product: ", redirectAttributes, "/admin");
     }
 
     /**
@@ -64,13 +59,8 @@ public class AdminController {
      */
     @PostMapping("/admin/products/{id}/flag")
     public String flagProduct(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        try {
-            adminService.flagProduct(id);
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage",
-                    "Could not flag product: " + e.getMessage());
-        }
-        return "redirect:/admin";
+        return tryAction(() -> adminService.flagProduct(id),
+                "Could not flag product: ", redirectAttributes, "/admin");
     }
 
     /**
@@ -82,13 +72,8 @@ public class AdminController {
      */
     @PostMapping("/admin/products/{id}/unflag")
     public String unflagProduct(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        try {
-            adminService.unflagProduct(id);
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage",
-                    "Could not unflag product: " + e.getMessage());
-        }
-        return "redirect:/admin";
+        return tryAction(() -> adminService.unflagProduct(id),
+                "Could not unflag product: ", redirectAttributes, "/admin");
     }
 
     /**
@@ -100,13 +85,8 @@ public class AdminController {
      */
     @PostMapping("/admin/users/{id}/disable")
     public String disableUser(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        try {
-            adminService.disableUser(id);
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage",
-                    "Could not disable user: " + e.getMessage());
-        }
-        return "redirect:/admin";
+        return tryAction(() -> adminService.disableUser(id),
+                "Could not disable user: ", redirectAttributes, "/admin");
     }
 
     /**
@@ -118,13 +98,8 @@ public class AdminController {
      */
     @PostMapping("/admin/users/{id}/enable")
     public String enableUser(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        try {
-            adminService.enableUser(id);
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage",
-                    "Could not enable user: " + e.getMessage());
-        }
-        return "redirect:/admin";
+        return tryAction(() -> adminService.enableUser(id),
+                "Could not enable user: ", redirectAttributes, "/admin");
     }
 
     /**
@@ -151,13 +126,8 @@ public class AdminController {
     public String replySupport(@PathVariable Long id,
                                @RequestParam("body") String body,
                                RedirectAttributes redirectAttributes) {
-        try {
-            supportService.replyToThread(id, body);
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage",
-                    "Could not send reply: " + e.getMessage());
-        }
-        return "redirect:/admin/support";
+        return tryAction(() -> supportService.replyToThread(id, body),
+                "Could not send reply: ", redirectAttributes, "/admin/support");
     }
 
     /**
@@ -169,12 +139,26 @@ public class AdminController {
      */
     @PostMapping("/admin/support/{id}/close")
     public String closeSupport(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        return tryAction(() -> supportService.closeThread(id),
+                "Could not close conversation: ", redirectAttributes, "/admin/support");
+    }
+
+    /**
+     * Runs {@code action}, and on failure sets an {@code errorMessage} flash attribute.
+     *
+     * @param action             the admin operation to attempt
+     * @param errorPrefix        prefix prepended to the exception message
+     * @param redirectAttributes used to carry the error message across the redirect
+     * @param redirectPath       the path to redirect to (with or without error)
+     * @return a redirect string to {@code redirectPath}
+     */
+    private String tryAction(Runnable action, String errorPrefix,
+                             RedirectAttributes redirectAttributes, String redirectPath) {
         try {
-            supportService.closeThread(id);
+            action.run();
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage",
-                    "Could not close conversation: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", errorPrefix + e.getMessage());
         }
-        return "redirect:/admin/support";
+        return "redirect:" + redirectPath;
     }
 }

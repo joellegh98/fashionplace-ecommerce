@@ -1,6 +1,5 @@
 package com.fashionplace.controller;
 
-import com.fashionplace.repository.UserRepository;
 import com.fashionplace.service.UserRegistrationService;
 import com.fashionplace.web.RegistrationForm;
 import jakarta.validation.Valid;
@@ -20,12 +19,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class RegistrationController {
 
     private final UserRegistrationService userRegistrationService;
-    private final UserRepository userRepository;
 
-    public RegistrationController(UserRegistrationService userRegistrationService,
-                                  UserRepository userRepository) {
+    public RegistrationController(UserRegistrationService userRegistrationService) {
         this.userRegistrationService = userRegistrationService;
-        this.userRepository = userRepository;
     }
 
     /**
@@ -72,10 +68,10 @@ public class RegistrationController {
                 && !form.getPassword().equals(form.getConfirmPassword())) {
             bindingResult.rejectValue("confirmPassword", "mismatch", "Passwords do not match.");
         }
-        if (form.getUsername() != null && userRepository.existsByUsername(form.getUsername().trim())) {
+        if (form.getUsername() != null && userRegistrationService.usernameExists(form.getUsername().trim())) {
             bindingResult.rejectValue("username", "taken", "That username is already taken.");
         }
-        if (form.getEmail() != null && userRepository.existsByEmail(form.getEmail().trim())) {
+        if (form.getEmail() != null && userRegistrationService.emailExists(form.getEmail().trim())) {
             bindingResult.rejectValue("email", "taken", "That email is already registered.");
         }
     }

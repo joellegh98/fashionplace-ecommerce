@@ -21,6 +21,14 @@ public class UserRegistrationService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    public boolean usernameExists(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    public boolean emailExists(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
     /**
      * Persists a new regular user with a BCrypt-hashed password.
      *
