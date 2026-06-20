@@ -267,10 +267,8 @@ testable before moving on.
 - [x] **9.7 - Ownership rules.** Users can only edit/delete **their own** products.
   > 📖 **Materials:** `07-SpringMVC.pdf` – `Principal` parameter to get current user in the controller (slide 17); `07-SpringBeans.pdf` – `@Service` enforces the ownership check (slide 6).
 
-- [ ] **9.8 - Cart merge on login.** Merge the session cart into the user's DB cart after login.
-  > 📖 **Materials:** `07-SpringBeans.pdf` – `@SessionScope` CartBean (slide 21); session review / one session per user (slide 19); Spring sessions (slide 23); `07-LongPolling.pdf` – thread pool context: the merge happens in a single request thread (slide 2).
 
-- [ ] **9.9 - Startup admin init.** An `ApplicationListener`/runner creates the default admin **only if it doesn't exist** (works on an empty DB).
+- [x] **9.8 - Startup admin init.** An `ApplicationListener`/runner creates the default admin **only if it doesn't exist** (works on an empty DB).
   > 📖 **Materials:** `07-SpringBeans.pdf` – Bean lifecycle: `@PostConstruct` / `CommandLineRunner` for initialization logic (slide 28); `@Component` bean (slide 6). `08-JPA.pdf` – `CommandLineRunner`: `run()` is called after context loads; inject repository, check `repository.count() == 0` before inserting (slide 35).
 
 ---

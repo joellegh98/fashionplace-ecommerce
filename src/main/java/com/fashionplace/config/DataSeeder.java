@@ -7,6 +7,7 @@ import com.fashionplace.repository.ProductRepository;
 import com.fashionplace.repository.ReviewRepository;
 import com.fashionplace.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +18,7 @@ import java.math.BigDecimal;
  * (so restarts never duplicate data).
  */
 @Component
+@Order(1)
 public class DataSeeder implements CommandLineRunner {
 
     /** Plain-text dev password for every seeded account (hashed before persist). */
@@ -44,7 +46,7 @@ public class DataSeeder implements CommandLineRunner {
         seedReviews();
     }
 
-    /** Inserts one admin and two regular users with BCrypt-hashed passwords. */
+    /** Inserts sample regular users with BCrypt-hashed passwords (admin is created by {@link AdminInitializer}). */
     private void seedUsers() {
         if (userRepository.count() > 0) {
             return;
@@ -52,13 +54,6 @@ public class DataSeeder implements CommandLineRunner {
 
         String hashedPassword = passwordEncoder.encode(SEED_PASSWORD);
 
-        userRepository.save(new User(
-                "admin",
-                "admin@fashionplace.com",
-                hashedPassword,
-                "ADMIN",
-                "1 Market Street, Springfield"
-        ));
         userRepository.save(new User(
                 "alice",
                 "alice@example.com",
