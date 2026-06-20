@@ -4,6 +4,7 @@ import com.fashionplace.repository.UserRepository;
 import com.fashionplace.service.UserRegistrationService;
 import com.fashionplace.web.RegistrationForm;
 import jakarta.validation.Valid;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,13 +29,17 @@ public class RegistrationController {
     }
 
     /**
-     * Shows the empty registration form.
+     * Shows the empty registration form. Redirects already-authenticated users to the home page.
      *
-     * @param model holds the {@code registrationForm}
-     * @return the {@code register} view name
+     * @param model          holds the {@code registrationForm}
+     * @param authentication the current security context (null if not logged in)
+     * @return redirect to home if already logged in, otherwise the {@code register} view
      */
     @GetMapping("/register")
-    public String registerForm(Model model) {
+    public String registerForm(Model model, Authentication authentication) {
+        if (authentication != null && authentication.isAuthenticated()) {
+            return "redirect:/";
+        }
         model.addAttribute("registrationForm", new RegistrationForm());
         return "register";
     }
