@@ -3,7 +3,6 @@ package com.fashionplace.service;
 import com.fashionplace.model.Order;
 import com.fashionplace.model.OrderItem;
 import com.fashionplace.model.Product;
-import com.fashionplace.model.User;
 import com.fashionplace.model.WishlistItem;
 import com.fashionplace.repository.ProductRepository;
 import com.fashionplace.session.CartBean;
@@ -68,13 +67,9 @@ public class RecommendationService {
      */
     @Transactional(readOnly = true)
     public List<Product> recommendForCurrentUser() {
-        User user = currentUserProvider.getCurrentUser();
-
         Set<String> likedCategories = new HashSet<>();
-        // Preserves insertion order so interest items (added first) stay ahead of category fills.
         LinkedHashMap<Long, Product> recommendations = new LinkedHashMap<>();
 
-        // Items the user interacted with (cart/wishlist), most recent first. Kept after removal.
         for (Long productId : interestBean.getRecentProductIds()) {
             productRepository.findById(productId).ifPresent(product -> {
                 if (product.isDeleted()) {
@@ -89,16 +84,16 @@ public class RecommendationService {
             });
         }
 
-        // Categories from past orders broaden the suggestions.
-        for (Order order : orderService.findByBuyer(user)) {
-            for (OrderItem item : order.getOrderItems()) {
-                if (item.getProduct().getCategory() != null) {
-                    likedCategories.add(item.getProduct().getCategory());
+        currentUserProvider.getCurrentUserOptional().ifPresent(user -> {
+            for (Order order : orderService.findByBuyer(user)) {
+                for (OrderItem item : order.getOrderItems()) {
+                    if (item.getProduct().getCategory() != null) {
+                        likedCategories.add(item.getProduct().getCategory());
+                    }
                 }
             }
-        }
+        });
 
-        // Categories from the current wishlist and cart (covers items added before tracking).
         for (WishlistItem wishlistItem : wishlistService.findForCurrentUser()) {
             if (wishlistItem.getProduct().getCategory() != null) {
                 likedCategories.add(wishlistItem.getProduct().getCategory());

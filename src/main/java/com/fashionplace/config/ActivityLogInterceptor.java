@@ -1,5 +1,6 @@
 package com.fashionplace.config;
 
+import com.fashionplace.model.User;
 import com.fashionplace.service.ActivityLogService;
 import com.fashionplace.service.CurrentUserProvider;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,12 +42,10 @@ public class ActivityLogInterceptor implements HandlerInterceptor {
         activityLogService.record(currentUsername(), action, request.getMethod(), path);
     }
 
-    /** Resolves the current actor's username, defaulting to {@code anonymous} on any error. */
+    /** Resolves the signed-in user's username, or {@code anonymous} when not logged in. */
     private String currentUsername() {
-        try {
-            return currentUserProvider.getCurrentUser().getUsername();
-        } catch (RuntimeException e) {
-            return "anonymous";
-        }
+        return currentUserProvider.getCurrentUserOptional()
+                .map(User::getUsername)
+                .orElse("anonymous");
     }
 }

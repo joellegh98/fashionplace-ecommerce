@@ -15,8 +15,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
- * Business logic for customer support messaging. Uses {@link CurrentUserProvider} for the
- * (temporary, fake) current user until real authentication arrives in Phase 9.
+ * Business logic for customer support messaging.
  */
 @Service
 public class SupportService {

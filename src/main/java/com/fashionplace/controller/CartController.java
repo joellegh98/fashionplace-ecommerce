@@ -149,8 +149,10 @@ public class CartController {
 
     /** Whether the given product was listed by the current user. */
     private boolean isOwnProduct(Product product) {
-        return product.getSeller() != null
-                && product.getSeller().getId().equals(currentUserProvider.getCurrentUser().getId());
+        return currentUserProvider.getCurrentUserOptional()
+                .map(user -> product.getSeller() != null
+                        && product.getSeller().getId().equals(user.getId()))
+                .orElse(false);
     }
 
     private static String unavailableCartMessage() {

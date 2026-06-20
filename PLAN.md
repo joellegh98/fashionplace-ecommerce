@@ -258,7 +258,7 @@ testable before moving on.
 - [x] **9.4 - Login & Registration pages.** Login form + a registration form (`@Valid`) that creates a USER.
   > 📖 **Materials:** `07-SpringMVC.pdf` – `@PostMapping` (slide 6); `@RequestBody` / `@RequestParam` (slides 7, 8); redirect after successful registration (slide 9); `@GetMapping` for multiple URLs e.g. `{"/login","/logout"}` (slide 6); `07-SpringBeans.pdf` – DTO with `@NotBlank`, `@Email`, `@Pattern` for password complexity (slide 26); `@Valid` + `BindingResult` (slide 26). `08-thymeleaf.pdf` – build login and registration forms with `th:action`, `th:object`, `th:field` (slides 13, 14); show registration validation errors inline with `th:errors` (slide 15). `08-JPA.pdf` – validation annotations on the registration DTO: `@NotBlank`, `@Email`, `@Size` (slides 14, 15); Roadmap 6/6: `@Valid` + `BindingResult` pattern for form submission (slide 30).
 
-- [ ] **9.5 - Swap the fake current user.** `CurrentUserProvider` now reads the authenticated principal everywhere (reviews, orders, products, wishlist, support messages).
+- [x] **9.5 - Swap the fake current user.** `CurrentUserProvider` now reads the authenticated principal everywhere (reviews, orders, products, wishlist, support messages).
   > 📖 **Materials:** `07-SpringMVC.pdf` – `Principal` as a controller method parameter (slide 17, "Other params"); `07-SpringBeans.pdf` – the `CurrentUserProvider` bean is `@Component` / `@Service` injected by constructor (slides 6, 9).
 
 - [ ] **9.6 - Role-based access.** `/admin/`** -> ADMIN only (including `/admin/support`); `/sell`, `/orders`, `/my-products`, `/wishlist`, `/support`, checkout -> authenticated. Home/Browse/Detail stay public.

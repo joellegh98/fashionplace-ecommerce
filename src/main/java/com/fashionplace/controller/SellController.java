@@ -18,7 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
 /**
- * Lets the current (fake) user list a new product for sale.
+ * Lets the signed-in user list and manage their products for sale.
  *
  * <p>The created product is owned by the current user. Server-side validation on
  * {@link SellForm} rejects invalid submissions before persisting.</p>

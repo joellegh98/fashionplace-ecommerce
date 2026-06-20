@@ -83,7 +83,7 @@ public class ProductController {
     }
 
     /**
-     * Saves a review submitted from the product detail page (attributed to the fake current user).
+     * Saves a review submitted from the product detail page.
      *
      * @param id                 the product id from the URL
      * @param review             rating and comment from the form
@@ -117,10 +117,15 @@ public class ProductController {
         model.addAttribute("reviews", reviewService.findByProduct(product));
         model.addAttribute("averageRating", reviewService.averageRating(product));
         model.addAttribute("review", reviewForm);
-        model.addAttribute("currentUsername", currentUserProvider.getCurrentUser().getUsername());
-        boolean ownProduct = product.getSeller() != null
-                && product.getSeller().getId().equals(currentUserProvider.getCurrentUser().getId());
-        model.addAttribute("ownProduct", ownProduct);
+        currentUserProvider.getCurrentUserOptional().ifPresent(user -> {
+            model.addAttribute("currentUsername", user.getUsername());
+            boolean ownProduct = product.getSeller() != null
+                    && product.getSeller().getId().equals(user.getId());
+            model.addAttribute("ownProduct", ownProduct);
+        });
+        if (!model.containsAttribute("ownProduct")) {
+            model.addAttribute("ownProduct", false);
+        }
         model.addAttribute("onWishlist", wishlistService.isOnCurrentUserWishlist(product));
         model.addAttribute("relatedProducts", recommendationService.relatedProducts(product));
 

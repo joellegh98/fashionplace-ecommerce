@@ -2,19 +2,18 @@ package com.fashionplace.service;
 
 import com.fashionplace.model.User;
 import com.fashionplace.repository.UserRepository;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 /**
- * Stand-in for the logged-in user until Phase 9 adds real Spring Security.
- *
- * <p>Always returns the seeded user {@code alice}. Phase 9 replaces this with
- * the authenticated principal from the security context.</p>
+ * Resolves the logged-in {@link User} from the Spring Security context.
  */
 @Component
 public class CurrentUserProvider {
-
-    /** Seeded regular user used as the fake "logged-in" account. */
-    private static final String DEFAULT_USERNAME = "bob";
 
     private final UserRepository userRepository;
 
@@ -23,14 +22,29 @@ public class CurrentUserProvider {
     }
 
     /**
-     * Returns the current user (always {@code alice} for now).
+     * Returns the authenticated user loaded from the database.
      *
-     * @return the seeded user
-     * @throws IllegalStateException if the seeded user is missing from the database
+     * @return the current user
+     * @throws IllegalStateException if nobody is signed in
      */
     public User getCurrentUser() {
-        return userRepository.findByUsername(DEFAULT_USERNAME)
-                .orElseThrow(() -> new IllegalStateException(
-                        "Seeded user '" + DEFAULT_USERNAME + "' not found — check DataSeeder"));
+        return getCurrentUserOptional()
+                .orElseThrow(() -> new IllegalStateException("No authenticated user"));
+    }
+
+    /**
+     * Returns the authenticated user when a session exists, otherwise empty (e.g. public pages
+     * before Phase 9.6 route lockdown).
+     *
+     * @return the current user, or empty when anonymous
+     */
+    public Optional<User> getCurrentUserOptional() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || authentication instanceof AnonymousAuthenticationToken) {
+            return Optional.empty();
+        }
+        return userRepository.findByUsername(authentication.getName());
     }
 }

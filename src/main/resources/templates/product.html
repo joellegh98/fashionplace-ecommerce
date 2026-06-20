@@ -73,7 +73,7 @@
             </div>
         </section>
 
-        <section class="mt-4">
+        <section class="mt-4" th:if="${currentUsername != null}">
             <h2 class="h5 mb-3">Write a review</h2>
             <p class="text-muted small">Posting as <span th:text="${currentUsername}">alice</span></p>
             <form th:action="@{/product/{id}/review(id=${product.id})}" th:object="${review}" method="post">

@@ -12,8 +12,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Business logic for the per-user wishlist. Uses {@link CurrentUserProvider} for the
- * (temporary, fake) current user until real authentication arrives in Phase 9.
+ * Business logic for the per-user wishlist.
  */
 @Service
 public class WishlistService {
@@ -36,7 +35,9 @@ public class WishlistService {
      * @return the current user's wishlist items
      */
     public List<WishlistItem> findForCurrentUser() {
-        return wishlistItemRepository.findByOwner(currentUserProvider.getCurrentUser());
+        return currentUserProvider.getCurrentUserOptional()
+                .map(wishlistItemRepository::findByOwner)
+                .orElse(List.of());
     }
 
     /**
@@ -77,8 +78,9 @@ public class WishlistService {
      * @return {@code true} if it is on the current user's wishlist
      */
     public boolean isOnCurrentUserWishlist(Product product) {
-        return wishlistItemRepository.existsByOwnerAndProduct(
-                currentUserProvider.getCurrentUser(), product);
+        return currentUserProvider.getCurrentUserOptional()
+                .map(user -> wishlistItemRepository.existsByOwnerAndProduct(user, product))
+                .orElse(false);
     }
 
     /**

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 /**
  * Exposes current-user info needed by the shared layout (e.g. whether to show the
- * Admin nav link). Backed by the temporary {@link CurrentUserProvider} until Phase 9.
+ * Admin nav link).
  */
 @ControllerAdvice
 public class CurrentUserModelAdvice {
@@ -18,10 +18,12 @@ public class CurrentUserModelAdvice {
     }
 
     /**
-     * @return {@code true} if the current user has the {@code ADMIN} role
+     * @return {@code true} if the signed-in user has the {@code ADMIN} role
      */
     @ModelAttribute("isAdmin")
     public boolean isAdmin() {
-        return "ADMIN".equals(currentUserProvider.getCurrentUser().getRole());
+        return currentUserProvider.getCurrentUserOptional()
+                .map(user -> "ADMIN".equals(user.getRole()))
+                .orElse(false);
     }
 }
