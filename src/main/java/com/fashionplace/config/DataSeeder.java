@@ -7,6 +7,7 @@ import com.fashionplace.repository.ProductRepository;
 import com.fashionplace.repository.ReviewRepository;
 import com.fashionplace.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -18,16 +19,22 @@ import java.math.BigDecimal;
 @Component
 public class DataSeeder implements CommandLineRunner {
 
+    /** Plain-text dev password for every seeded account (hashed before persist). */
+    private static final String SEED_PASSWORD = "password";
+
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public DataSeeder(ProductRepository productRepository,
                       UserRepository userRepository,
-                      ReviewRepository reviewRepository) {
+                      ReviewRepository reviewRepository,
+                      PasswordEncoder passwordEncoder) {
         this.productRepository = productRepository;
         this.userRepository = userRepository;
         this.reviewRepository = reviewRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -37,30 +44,32 @@ public class DataSeeder implements CommandLineRunner {
         seedReviews();
     }
 
-    /** Inserts one admin and two regular users (placeholder passwords until Phase 9). */
+    /** Inserts one admin and two regular users with BCrypt-hashed passwords. */
     private void seedUsers() {
         if (userRepository.count() > 0) {
             return;
         }
 
+        String hashedPassword = passwordEncoder.encode(SEED_PASSWORD);
+
         userRepository.save(new User(
                 "admin",
                 "admin@fashionplace.com",
-                "placeholder-hash",
+                hashedPassword,
                 "ADMIN",
                 "1 Market Street, Springfield"
         ));
         userRepository.save(new User(
                 "alice",
                 "alice@example.com",
-                "placeholder-hash",
+                hashedPassword,
                 "ADMIN",
                 "42 Maple Avenue, Rivertown"
         ));
         userRepository.save(new User(
                 "bob",
                 "bob@example.com",
-                "placeholder-hash",
+                hashedPassword,
                 "USER",
                 "7 Oak Lane, Hillside"
         ));

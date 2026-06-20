@@ -246,13 +246,13 @@ testable before moving on.
 
 **Goal:** Replace the "open everything" config and the fake current user with real Spring Security.
 
-- [ ] **9.1 - Password hashing.** Add `BCryptPasswordEncoder` bean; hash seeded users' passwords.
+- [x] **9.1 - Password hashing.** Add `BCryptPasswordEncoder` bean; hash seeded users' passwords.
   > 📖 **Materials:** `07-SpringBeans.pdf` – `@Bean` inside a `@Configuration` class to explicitly declare the encoder (slides 12, 14); `@Autowired` / constructor injection wherever the encoder is used (slides 8, 9).
 
-- [ ] **9.2 - UserDetailsService.** Load users from `UserRepository` for authentication.
+- [x] **9.2 - UserDetailsService.** Load users from `UserRepository` for authentication.
   > 📖 **Materials:** `07-SpringBeans.pdf` – `@Service` (slide 6); constructor injection of `UserRepository` (slides 9, 10); `@Autowired` (slide 8). `08-JPA.pdf` – use `findByUsername(String username)` query method on the `UserRepository` (slides 10, 11); Roadmap 2/6 for repository setup (slide 26).
 
-- [ ] **9.3 - Real SecurityConfig.** Rewrite the Phase 0 placeholder: form login, logout, CSRF on (default).
+- [x] **9.3 - Real SecurityConfig.** Rewrite the Phase 0 placeholder: form login, logout, CSRF on (default).
   > 📖 **Materials:** `07-SpringBeans.pdf` – `@Configuration` + `@Bean` for explicit security bean declaration (slides 12, 14); `07-SpringMVC.pdf` – `application.properties` can hold security-related settings (slide 4).
 
 - [ ] **9.4 - Login & Registration pages.** Login form + a registration form (`@Valid`) that creates a USER.

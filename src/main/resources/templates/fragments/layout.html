@@ -8,6 +8,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSRF tokens for JavaScript POST requests (e.g. wishlist toggle) -->
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <!-- Site-wide favicon; served from src/main/resources/static/ -->
     <link rel="icon" type="image/jpeg" th:href="@{/favicon.jpeg}">
     <!-- Bootstrap 5 (CDN) for base styling/layout; our style.css overrides the theme colors -->

@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
  * A registered account (admin, seller or buyer).
  *
  * <p>Mapped to {@code app_user} because {@code USER} is a reserved SQL word.
- * {@code passwordHash} holds a placeholder until real security in Phase 9.</p>
+ * {@code passwordHash} stores a BCrypt hash (never plain text).</p>
  */
 @Entity
 @Table(name = "app_user")
@@ -33,7 +33,7 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    /** Hashed password (placeholder until Phase 9). */
+    /** BCrypt-hashed password. */
     @Column(nullable = false)
     private String passwordHash;
 

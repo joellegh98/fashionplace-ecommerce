@@ -10,9 +10,17 @@
 
         const productId = button.getAttribute('data-wishlist-add');
         button.disabled = true;
+
+        const csrfToken = document.querySelector('meta[name="_csrf"]');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]');
+        const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
+        if (csrfToken && csrfHeader) {
+            headers[csrfHeader.content] = csrfToken.content;
+        }
+
         fetch('/wishlist/toggle', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            headers: headers,
             body: 'productId=' + encodeURIComponent(productId)
         }).then(function (response) {
             if (!response.ok) {
