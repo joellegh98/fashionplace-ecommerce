@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 /**
  * Form backing object for submitting a product review.
@@ -16,6 +17,7 @@ public class ReviewFormDto {
     private Integer rating;
 
     @NotBlank(message = "Please enter a comment.")
+    @Size(min = 1, max = 2000, message = "Comment must be between 1 and 2000 characters.")
     private String comment;
 
     public Integer getRating() {

@@ -2,6 +2,10 @@ package com.fashionplace.dto;
 
 import com.fashionplace.model.SupportMessage;
 import com.fashionplace.model.User;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,7 +18,12 @@ import java.util.List;
  */
 public class SupportThreadDto {
 
+    @NotBlank(message = "Subject cannot be empty.")
+    @Size(max = 150, message = "Subject must be at most 150 characters.")
     private final String subject;
+
+    @NotNull(message = "Messages list is required.")
+    @NotEmpty(message = "A support thread must contain at least one message.")
     private final List<SupportMessage> messages;
 
     /**

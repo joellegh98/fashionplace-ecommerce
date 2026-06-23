@@ -2,6 +2,7 @@ package com.fashionplace.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 /**
  * Form backing object for the "Add to Cart" POST on the product detail page.
@@ -9,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 public class AddToCartFormDto {
 
     @NotNull(message = "Please choose a product.")
+    @Positive(message = "Product id must be positive.")
     private Long productId;
 
     @Min(value = 1, message = "Quantity must be at least 1.")

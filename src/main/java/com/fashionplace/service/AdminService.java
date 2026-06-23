@@ -5,6 +5,7 @@ import com.fashionplace.repository.OrderRepository;
 import com.fashionplace.repository.ProductRepository;
 import com.fashionplace.repository.UserRepository;
 import com.fashionplace.dto.AdminDashboardDto;
+import com.fashionplace.dto.DtoValidator;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -20,17 +21,20 @@ public class AdminService {
     private final OrderRepository orderRepository;
     private final ProductService productService;
     private final ActivityLogService activityLogService;
+    private final DtoValidator dtoValidator;
 
     public AdminService(UserRepository userRepository,
                         ProductRepository productRepository,
                         OrderRepository orderRepository,
                         ProductService productService,
-                        ActivityLogService activityLogService) {
+                        ActivityLogService activityLogService,
+                        DtoValidator dtoValidator) {
         this.userRepository = userRepository;
         this.productRepository = productRepository;
         this.orderRepository = orderRepository;
         this.productService = productService;
         this.activityLogService = activityLogService;
+        this.dtoValidator = dtoValidator;
     }
 
     /**
@@ -41,14 +45,14 @@ public class AdminService {
      */
     public AdminDashboardDto loadDashboard() {
         Sort newestFirst = Sort.by(Sort.Direction.DESC, "id");
-        return new AdminDashboardDto(
+        return dtoValidator.requireValid(new AdminDashboardDto(
                 userRepository.count(),
                 productRepository.count(),
                 orderRepository.count(),
                 userRepository.findAll(newestFirst),
                 productRepository.findAll(newestFirst),
                 orderRepository.findAll(newestFirst),
-                activityLogService.recentActivity());
+                activityLogService.recentActivity()));
     }
 
     /** Soft-deletes any product, regardless of who listed it. */

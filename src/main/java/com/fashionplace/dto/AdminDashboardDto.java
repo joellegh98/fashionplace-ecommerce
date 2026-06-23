@@ -4,6 +4,8 @@ import com.fashionplace.model.ActivityLog;
 import com.fashionplace.model.Order;
 import com.fashionplace.model.Product;
 import com.fashionplace.model.User;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
@@ -13,12 +15,25 @@ import java.util.List;
  */
 public class AdminDashboardDto {
 
+    @Min(value = 0, message = "User count cannot be negative.")
     private final long userCount;
+
+    @Min(value = 0, message = "Product count cannot be negative.")
     private final long productCount;
+
+    @Min(value = 0, message = "Order count cannot be negative.")
     private final long orderCount;
+
+    @NotNull(message = "Users list is required.")
     private final List<User> users;
+
+    @NotNull(message = "Products list is required.")
     private final List<Product> products;
+
+    @NotNull(message = "Orders list is required.")
     private final List<Order> orders;
+
+    @NotNull(message = "Activity list is required.")
     private final List<ActivityLog> activity;
 
     public AdminDashboardDto(long userCount, long productCount, long orderCount,

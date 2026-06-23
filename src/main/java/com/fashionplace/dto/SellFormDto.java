@@ -4,6 +4,8 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
@@ -15,9 +17,11 @@ import java.math.BigDecimal;
 public class SellFormDto {
 
     @NotBlank(message = "Please enter a title.")
+    @Size(max = 255, message = "Title must be at most 255 characters.")
     private String title;
 
     @NotBlank(message = "Please enter a description.")
+    @Size(max = 5000, message = "Description must be at most 5000 characters.")
     private String description;
 
     @NotNull(message = "Please enter a price.")
@@ -35,12 +39,14 @@ public class SellFormDto {
     private Integer quantity = 1;
 
     /** Which image source the user chose: {@code "upload"} (default) or {@code "url"}. */
+    @Pattern(regexp = "upload|url", message = "Image source must be upload or url.")
     private String imageSource = "upload";
 
     /** Optional uploaded image file for the listing (used when {@code imageSource == "upload"}). */
     private MultipartFile image;
 
     /** Optional external image URL for the listing (used when {@code imageSource == "url"}). */
+    @Size(max = 2048, message = "Image URL must be at most 2048 characters.")
     private String imageUrl;
 
     public String getTitle() {

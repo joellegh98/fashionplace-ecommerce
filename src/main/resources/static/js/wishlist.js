@@ -9,6 +9,12 @@
         event.preventDefault();
 
         const productId = button.getAttribute('data-wishlist-add');
+
+        if (!isAuthenticated()) {
+            showLoginModal(productId);
+            return;
+        }
+
         button.disabled = true;
 
         const csrfToken = document.querySelector('meta[name="_csrf"]');
@@ -23,18 +29,44 @@
             headers: headers,
             body: 'productId=' + encodeURIComponent(productId)
         }).then(function (response) {
+            if (response.status === 401 || response.status === 403) {
+                showLoginModal(productId);
+                throw new Error('auth');
+            }
             if (!response.ok) {
-                throw new Error('Toggle failed');
+                throw new Error('toggle-failed');
             }
             return response.json();
         }).then(function (data) {
             setButtonState(button, data.saved);
             button.disabled = false;
-        }).catch(function () {
+        }).catch(function (error) {
             button.disabled = false;
+            if (error && error.message === 'auth') {
+                return;
+            }
             button.textContent = 'Try again';
         });
     });
+
+    function isAuthenticated() {
+        const authMeta = document.querySelector('meta[name="user-authenticated"]');
+        return authMeta && authMeta.content === 'true';
+    }
+
+    function showLoginModal(productId) {
+        const modalEl = document.getElementById('wishlistLoginModal');
+        if (!modalEl || typeof bootstrap === 'undefined') {
+            return;
+        }
+        const loginLink = modalEl.querySelector('[data-wishlist-login]');
+        if (loginLink) {
+            loginLink.href = productId
+                ? '/login?wishlistProductId=' + encodeURIComponent(productId)
+                : '/login';
+        }
+        bootstrap.Modal.getOrCreateInstance(modalEl).show();
+    }
 
     function setButtonState(button, saved) {
         const labelUnsaved = button.getAttribute('data-label-unsaved') || 'Save';

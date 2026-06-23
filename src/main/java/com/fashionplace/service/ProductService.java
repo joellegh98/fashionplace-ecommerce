@@ -8,6 +8,7 @@ import com.fashionplace.repository.ReviewRepository;
 import com.fashionplace.repository.WishlistItemRepository;
 import com.fashionplace.dto.CartLineItemDto;
 import com.fashionplace.dto.CartSummaryDto;
+import com.fashionplace.dto.DtoValidator;
 import com.fashionplace.dto.SellFormDto;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -37,13 +38,16 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ReviewRepository reviewRepository;
     private final WishlistItemRepository wishlistItemRepository;
+    private final DtoValidator dtoValidator;
 
     public ProductService(ProductRepository productRepository,
                           ReviewRepository reviewRepository,
-                          WishlistItemRepository wishlistItemRepository) {
+                          WishlistItemRepository wishlistItemRepository,
+                          DtoValidator dtoValidator) {
         this.productRepository = productRepository;
         this.reviewRepository = reviewRepository;
         this.wishlistItemRepository = wishlistItemRepository;
+        this.dtoValidator = dtoValidator;
     }
 
     /**
@@ -179,12 +183,12 @@ public class ProductService {
                 missing.add(entry.getKey());
                 continue;
             }
-            CartLineItemDto line = new CartLineItemDto(
-                    product.getId(), product.getTitle(), product.getPrice(), entry.getValue());
+            CartLineItemDto line = dtoValidator.requireValid(new CartLineItemDto(
+                    product.getId(), product.getTitle(), product.getPrice(), entry.getValue()));
             lines.add(line);
             grandTotal = grandTotal.add(line.getLineTotal());
         }
-        return new CartSummaryDto(lines, grandTotal, missing);
+        return dtoValidator.requireValid(new CartSummaryDto(lines, grandTotal, missing));
     }
 
     /**

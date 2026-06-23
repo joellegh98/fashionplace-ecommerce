@@ -24,7 +24,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+                                                   WishlistAuthenticationSuccessHandler wishlistLoginSuccessHandler)
+            throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
                         // Public assets and error handling
@@ -48,8 +50,7 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        // false = after login, return to the page the user originally requested (e.g. /checkout)
-                        .defaultSuccessUrl("/", false)
+                        .successHandler(wishlistLoginSuccessHandler)
                         .failureUrl("/login?error")
                         .permitAll()
                 )

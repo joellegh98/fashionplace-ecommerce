@@ -3,6 +3,7 @@ package com.fashionplace.service;
 import com.fashionplace.model.SupportMessage;
 import com.fashionplace.model.User;
 import com.fashionplace.repository.SupportMessageRepository;
+import com.fashionplace.dto.DtoValidator;
 import com.fashionplace.dto.SupportFormDto;
 import com.fashionplace.dto.SupportThreadDto;
 import org.springframework.stereotype.Service;
@@ -22,11 +23,14 @@ public class SupportService {
 
     private final SupportMessageRepository supportMessageRepository;
     private final CurrentUserProvider currentUserProvider;
+    private final DtoValidator dtoValidator;
 
     public SupportService(SupportMessageRepository supportMessageRepository,
-                          CurrentUserProvider currentUserProvider) {
+                          CurrentUserProvider currentUserProvider,
+                          DtoValidator dtoValidator) {
         this.supportMessageRepository = supportMessageRepository;
         this.currentUserProvider = currentUserProvider;
+        this.dtoValidator = dtoValidator;
     }
 
     /**
@@ -169,7 +173,8 @@ public class SupportService {
 
         List<SupportThreadDto> threads = new ArrayList<>();
         for (List<SupportMessage> group : byKey.values()) {
-            threads.add(new SupportThreadDto(group.get(0).getSubject(), group));
+            threads.add(dtoValidator.requireValid(
+                    new SupportThreadDto(group.get(0).getSubject(), group)));
         }
         threads.sort((a, b) -> Long.compare(lastId(b), lastId(a)));
         return threads;

@@ -30,6 +30,7 @@ public class RegistrationFormDto {
     @NotBlank(message = "Please confirm your password.")
     private String confirmPassword;
 
+    @Size(max = 500, message = "Address must be at most 500 characters.")
     private String address;
 
     public String getUsername() {

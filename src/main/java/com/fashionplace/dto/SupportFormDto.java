@@ -13,6 +13,7 @@ public class SupportFormDto {
     private String subject;
 
     @NotBlank(message = "Please enter a message.")
+    @Size(min = 1, max = 5000, message = "Message must be between 1 and 5000 characters.")
     private String body;
 
     public String getSubject() {
