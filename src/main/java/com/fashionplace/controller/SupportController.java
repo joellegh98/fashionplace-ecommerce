@@ -1,7 +1,7 @@
 package com.fashionplace.controller;
 
 import com.fashionplace.service.SupportService;
-import com.fashionplace.web.SupportForm;
+import com.fashionplace.dto.SupportFormDto;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,7 +34,7 @@ public class SupportController {
     @GetMapping("/support")
     public String support(Model model) {
         if (!model.containsAttribute("supportForm")) {
-            model.addAttribute("supportForm", new SupportForm());
+            model.addAttribute("supportForm", new SupportFormDto());
         }
         model.addAttribute("threads", supportService.threadsForCurrentUser());
         return "support";
@@ -50,7 +50,7 @@ public class SupportController {
      * @return the support view on error, or a redirect to {@code /support} on success
      */
     @PostMapping("/support")
-    public String submit(@Valid @ModelAttribute("supportForm") SupportForm supportForm,
+    public String submit(@Valid @ModelAttribute("supportForm") SupportFormDto supportForm,
                          BindingResult bindingResult,
                          Model model) {
         if (bindingResult.hasErrors()) {

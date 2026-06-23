@@ -1,11 +1,11 @@
-package com.fashionplace.web;
+package com.fashionplace.dto;
 
 import java.math.BigDecimal;
 
 /**
  * One row on the cart page: product details plus quantity and line total.
  */
-public class CartLineItem {
+public class CartLineItemDto {
 
     private final Long id;
     private final String title;
@@ -13,7 +13,7 @@ public class CartLineItem {
     private final int quantity;
     private final BigDecimal lineTotal;
 
-    public CartLineItem(Long id, String title, BigDecimal price, int quantity) {
+    public CartLineItemDto(Long id, String title, BigDecimal price, int quantity) {
         this.id = id;
         this.title = title;
         this.price = price;

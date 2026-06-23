@@ -1,7 +1,7 @@
 package com.fashionplace.controller;
 
 import com.fashionplace.service.UserRegistrationService;
-import com.fashionplace.web.RegistrationForm;
+import com.fashionplace.dto.RegistrationFormDto;
 import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -36,7 +36,7 @@ public class RegistrationController {
         if (authentication != null && authentication.isAuthenticated()) {
             return "redirect:/";
         }
-        model.addAttribute("registrationForm", new RegistrationForm());
+        model.addAttribute("registrationForm", new RegistrationFormDto());
         return "register";
     }
 
@@ -49,7 +49,7 @@ public class RegistrationController {
      * @return redirect to login on success, or the form again on error
      */
     @PostMapping("/register")
-    public String register(@Valid @ModelAttribute("registrationForm") RegistrationForm form,
+    public String register(@Valid @ModelAttribute("registrationForm") RegistrationFormDto form,
                            BindingResult bindingResult,
                            RedirectAttributes redirectAttributes) {
         validateBusinessRules(form, bindingResult);
@@ -63,7 +63,7 @@ public class RegistrationController {
         return "redirect:/login";
     }
 
-    private void validateBusinessRules(RegistrationForm form, BindingResult bindingResult) {
+    private void validateBusinessRules(RegistrationFormDto form, BindingResult bindingResult) {
         if (form.getPassword() != null && form.getConfirmPassword() != null
                 && !form.getPassword().equals(form.getConfirmPassword())) {
             bindingResult.rejectValue("confirmPassword", "mismatch", "Passwords do not match.");

@@ -2,7 +2,7 @@ package com.fashionplace.service;
 
 import com.fashionplace.model.User;
 import com.fashionplace.repository.UserRepository;
-import com.fashionplace.web.RegistrationForm;
+import com.fashionplace.dto.RegistrationFormDto;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +35,7 @@ public class UserRegistrationService {
      * @param form validated registration input
      */
     @Transactional
-    public void register(RegistrationForm form) {
+    public void register(RegistrationFormDto form) {
         User user = new User(
                 form.getUsername().trim(),
                 form.getEmail().trim(),

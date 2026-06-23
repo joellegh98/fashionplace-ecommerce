@@ -3,8 +3,8 @@ package com.fashionplace.service;
 import com.fashionplace.model.SupportMessage;
 import com.fashionplace.model.User;
 import com.fashionplace.repository.SupportMessageRepository;
-import com.fashionplace.web.SupportForm;
-import com.fashionplace.web.SupportThread;
+import com.fashionplace.dto.SupportFormDto;
+import com.fashionplace.dto.SupportThreadDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +36,7 @@ public class SupportService {
      * @param form the submitted subject and body
      * @return the saved message
      */
-    public SupportMessage submitForCurrentUser(SupportForm form) {
+    public SupportMessage submitForCurrentUser(SupportFormDto form) {
         User user = currentUserProvider.getCurrentUser();
         SupportMessage message = new SupportMessage(
                 user,
@@ -88,7 +88,7 @@ public class SupportService {
      *
      * @return the current user's support threads
      */
-    public List<SupportThread> threadsForCurrentUser() {
+    public List<SupportThreadDto> threadsForCurrentUser() {
         List<SupportMessage> messages =
                 supportMessageRepository.findByUserOrderByIdAsc(currentUserProvider.getCurrentUser());
         // Single user, so group by subject alone.
@@ -101,7 +101,7 @@ public class SupportService {
      *
      * @return all support threads
      */
-    public List<SupportThread> allThreads() {
+    public List<SupportThreadDto> allThreads() {
         List<SupportMessage> messages = supportMessageRepository.findAllByOrderByIdAsc();
         // Different users may share a subject, so the grouping key includes the user id.
         return groupIntoThreads(messages,
@@ -160,23 +160,23 @@ public class SupportService {
      * Groups messages into threads using the given key, preserving encounter order within each
      * thread (oldest first) and sorting threads by most recent activity first.
      */
-    private List<SupportThread> groupIntoThreads(List<SupportMessage> messages,
+    private List<SupportThreadDto> groupIntoThreads(List<SupportMessage> messages,
                                                  Function<SupportMessage, String> keyFn) {
         Map<String, List<SupportMessage>> byKey = new LinkedHashMap<>();
         for (SupportMessage message : messages) {
             byKey.computeIfAbsent(keyFn.apply(message), key -> new ArrayList<>()).add(message);
         }
 
-        List<SupportThread> threads = new ArrayList<>();
+        List<SupportThreadDto> threads = new ArrayList<>();
         for (List<SupportMessage> group : byKey.values()) {
-            threads.add(new SupportThread(group.get(0).getSubject(), group));
+            threads.add(new SupportThreadDto(group.get(0).getSubject(), group));
         }
         threads.sort((a, b) -> Long.compare(lastId(b), lastId(a)));
         return threads;
     }
 
     /** @return the id of the most recent message in a thread (0 when empty) */
-    private long lastId(SupportThread thread) {
+    private long lastId(SupportThreadDto thread) {
         List<SupportMessage> messages = thread.getMessages();
         if (messages.isEmpty()) {
             return 0L;

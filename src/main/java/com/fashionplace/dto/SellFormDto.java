@@ -1,4 +1,4 @@
-package com.fashionplace.web;
+package com.fashionplace.dto;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
@@ -12,7 +12,7 @@ import java.math.BigDecimal;
  * Form backing object for the Sell page: captures the details of a new product
  * listing before it is persisted.
  */
-public class SellForm {
+public class SellFormDto {
 
     @NotBlank(message = "Please enter a title.")
     private String title;

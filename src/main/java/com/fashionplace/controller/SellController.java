@@ -4,7 +4,7 @@ import com.fashionplace.model.Product;
 import com.fashionplace.model.ProductCategories;
 import com.fashionplace.service.CurrentUserProvider;
 import com.fashionplace.service.ProductService;
-import com.fashionplace.web.SellForm;
+import com.fashionplace.dto.SellFormDto;
 import jakarta.validation.Valid;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
@@ -22,7 +22,7 @@ import java.util.List;
  * Lets the signed-in user list and manage their products for sale.
  *
  * <p>The created product is owned by the current user. Server-side validation on
- * {@link SellForm} rejects invalid submissions before persisting.</p>
+ * {@link SellFormDto} rejects invalid submissions before persisting.</p>
  */
 @Controller
 public class SellController {
@@ -44,7 +44,7 @@ public class SellController {
      */
     @GetMapping("/sell")
     public String sellForm(Model model) {
-        model.addAttribute("sellForm", new SellForm());
+        model.addAttribute("sellForm", new SellFormDto());
         addFormOptions(model);
         return "sell";
     }
@@ -58,7 +58,7 @@ public class SellController {
      * @return redirect to the new product's detail page, or the form again on error
      */
     @PostMapping("/sell")
-    public String createListing(@Valid @ModelAttribute("sellForm") SellForm sellForm,
+    public String createListing(@Valid @ModelAttribute("sellForm") SellFormDto sellForm,
                                 BindingResult bindingResult,
                                 Model model) {
         if (bindingResult.hasErrors()) {
@@ -110,7 +110,7 @@ public class SellController {
      */
     @PostMapping("/product/{id}/edit")
     public String updateListing(@PathVariable Long id,
-                                @Valid @ModelAttribute("sellForm") SellForm sellForm,
+                                @Valid @ModelAttribute("sellForm") SellFormDto sellForm,
                                 BindingResult bindingResult,
                                 Model model,
                                 RedirectAttributes redirectAttributes) {

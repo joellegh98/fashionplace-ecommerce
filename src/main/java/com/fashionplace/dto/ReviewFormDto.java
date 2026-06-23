@@ -1,4 +1,4 @@
-package com.fashionplace.web;
+package com.fashionplace.dto;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 /**
  * Form backing object for submitting a product review.
  */
-public class ReviewForm {
+public class ReviewFormDto {
 
     @NotNull(message = "Please choose a rating.")
     @Min(value = 1, message = "Rating must be at least 1.")

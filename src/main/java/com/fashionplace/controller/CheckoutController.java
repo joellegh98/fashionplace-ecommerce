@@ -7,8 +7,8 @@ import com.fashionplace.service.CurrentUserProvider;
 import com.fashionplace.service.OrderService;
 import com.fashionplace.service.ProductService;
 import com.fashionplace.session.CartBean;
-import com.fashionplace.web.CartSummary;
-import com.fashionplace.web.CheckoutForm;
+import com.fashionplace.dto.CartSummaryDto;
+import com.fashionplace.dto.CheckoutFormDto;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -55,11 +55,11 @@ public class CheckoutController {
         if (cartBean.isEmpty()) {
             return "redirect:/cart";
         }
-        if (!addCartSummary(model, redirectAttributes)) {
+        if (!addCartSummaryDto(model, redirectAttributes)) {
             return "redirect:/cart";
         }
 
-        CheckoutForm checkoutForm = new CheckoutForm();
+        CheckoutFormDto checkoutForm = new CheckoutFormDto();
         checkoutForm.setShippingAddress(currentUserProvider.getCurrentUser().getAddress());
         model.addAttribute("checkoutForm", checkoutForm);
         return "checkout";
@@ -74,7 +74,7 @@ public class CheckoutController {
      * @return redirect to the confirmation page, or the checkout form again on error
      */
     @PostMapping("/checkout")
-    public String placeOrder(@Valid @ModelAttribute("checkoutForm") CheckoutForm checkoutForm,
+    public String placeOrder(@Valid @ModelAttribute("checkoutForm") CheckoutFormDto checkoutForm,
                              BindingResult bindingResult,
                              Model model,
                              RedirectAttributes redirectAttributes) {
@@ -82,7 +82,7 @@ public class CheckoutController {
             return "redirect:/cart";
         }
         if (bindingResult.hasErrors()) {
-            addCartSummary(model, null);
+            addCartSummaryDto(model, null);
             return "checkout";
         }
 
@@ -154,8 +154,8 @@ public class CheckoutController {
      *
      * @return {@code false} when items were removed and the caller should redirect to the cart
      */
-    private boolean addCartSummary(Model model, RedirectAttributes redirectAttributes) {
-        CartSummary summary = productService.summarizeCart(cartBean.getItems());
+    private boolean addCartSummaryDto(Model model, RedirectAttributes redirectAttributes) {
+        CartSummaryDto summary = productService.summarizeCart(cartBean.getItems());
         summary.getMissingProductIds().forEach(cartBean::removeItem);
         if (summary.hadMissingProducts()) {
             if (redirectAttributes != null) {
@@ -172,7 +172,7 @@ public class CheckoutController {
 
     /** Removes unavailable products from the cart; returns a message if any were removed. */
     private String removeUnavailableCartItems() {
-        CartSummary summary = productService.summarizeCart(cartBean.getItems());
+        CartSummaryDto summary = productService.summarizeCart(cartBean.getItems());
         summary.getMissingProductIds().forEach(cartBean::removeItem);
         return summary.hadMissingProducts() ? unavailableCartMessage() : null;
     }

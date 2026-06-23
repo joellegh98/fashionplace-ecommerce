@@ -1,4 +1,4 @@
-package com.fashionplace.web;
+package com.fashionplace.dto;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -7,19 +7,19 @@ import java.util.List;
  * Resolved cart contents for display: line items, grand total, and any product ids
  * that were in the session cart but no longer exist in the database.
  */
-public class CartSummary {
+public class CartSummaryDto {
 
-    private final List<CartLineItem> lines;
+    private final List<CartLineItemDto> lines;
     private final BigDecimal grandTotal;
     private final List<Long> missingProductIds;
 
-    public CartSummary(List<CartLineItem> lines, BigDecimal grandTotal, List<Long> missingProductIds) {
+    public CartSummaryDto(List<CartLineItemDto> lines, BigDecimal grandTotal, List<Long> missingProductIds) {
         this.lines = lines;
         this.grandTotal = grandTotal;
         this.missingProductIds = missingProductIds;
     }
 
-    public List<CartLineItem> getLines() {
+    public List<CartLineItemDto> getLines() {
         return lines;
     }
 

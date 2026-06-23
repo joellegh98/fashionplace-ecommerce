@@ -1,4 +1,4 @@
-package com.fashionplace.web;
+package com.fashionplace.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 /**
  * Form backing object for the "Add to Cart" POST on the product detail page.
  */
-public class AddToCartForm {
+public class AddToCartFormDto {
 
     @NotNull(message = "Please choose a product.")
     private Long productId;

@@ -1,4 +1,4 @@
-package com.fashionplace.web;
+package com.fashionplace.dto;
 
 import com.fashionplace.model.ActivityLog;
 import com.fashionplace.model.Order;
@@ -11,7 +11,7 @@ import java.util.List;
  * Read-only snapshot for the admin dashboard: total counts plus recent rows
  * for the users, products and orders tables, and the latest activity log entries.
  */
-public class AdminDashboard {
+public class AdminDashboardDto {
 
     private final long userCount;
     private final long productCount;
@@ -21,9 +21,9 @@ public class AdminDashboard {
     private final List<Order> orders;
     private final List<ActivityLog> activity;
 
-    public AdminDashboard(long userCount, long productCount, long orderCount,
-                          List<User> users, List<Product> products, List<Order> orders,
-                          List<ActivityLog> activity) {
+    public AdminDashboardDto(long userCount, long productCount, long orderCount,
+                             List<User> users, List<Product> products, List<Order> orders,
+                             List<ActivityLog> activity) {
         this.userCount = userCount;
         this.productCount = productCount;
         this.orderCount = orderCount;

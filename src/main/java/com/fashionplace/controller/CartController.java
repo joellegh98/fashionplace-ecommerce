@@ -5,8 +5,8 @@ import com.fashionplace.service.CurrentUserProvider;
 import com.fashionplace.service.ProductService;
 import com.fashionplace.session.CartBean;
 import com.fashionplace.session.InterestBean;
-import com.fashionplace.web.AddToCartForm;
-import com.fashionplace.web.CartSummary;
+import com.fashionplace.dto.AddToCartFormDto;
+import com.fashionplace.dto.CartSummaryDto;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -61,7 +61,7 @@ public class CartController {
      * @return redirect to the product detail page
      */
     @PostMapping("/cart/add")
-    public String addToCart(@Valid @ModelAttribute AddToCartForm form,
+    public String addToCart(@Valid @ModelAttribute AddToCartFormDto form,
                             BindingResult bindingResult,
                             RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
@@ -100,7 +100,7 @@ public class CartController {
      * @return redirect back to the cart page
      */
     @PostMapping("/cart/update")
-    public String updateQuantity(@Valid @ModelAttribute AddToCartForm form,
+    public String updateQuantity(@Valid @ModelAttribute AddToCartFormDto form,
                                  BindingResult bindingResult,
                                  RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
@@ -138,7 +138,7 @@ public class CartController {
 
     /** Resolves cart lines, drops deleted products from the session cart, and fills the model. */
     private void addCartToModel(Model model) {
-        CartSummary summary = productService.summarizeCart(cartBean.getItems());
+        CartSummaryDto summary = productService.summarizeCart(cartBean.getItems());
         summary.getMissingProductIds().forEach(cartBean::removeItem);
         if (summary.hadMissingProducts()) {
             model.addAttribute("errorMessage", unavailableCartMessage());

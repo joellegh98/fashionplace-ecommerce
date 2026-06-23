@@ -1,4 +1,4 @@
-package com.fashionplace.web;
+package com.fashionplace.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size;
 /**
  * Form backing object for the registration page.
  */
-public class RegistrationForm {
+public class RegistrationFormDto {
 
     @NotBlank(message = "Please choose a username.")
     @Size(min = 3, max = 30, message = "Username must be between 3 and 30 characters.")

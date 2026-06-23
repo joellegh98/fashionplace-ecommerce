@@ -4,7 +4,7 @@ import com.fashionplace.model.User;
 import com.fashionplace.repository.OrderRepository;
 import com.fashionplace.repository.ProductRepository;
 import com.fashionplace.repository.UserRepository;
-import com.fashionplace.web.AdminDashboard;
+import com.fashionplace.dto.AdminDashboardDto;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -37,11 +37,11 @@ public class AdminService {
      * Builds a dashboard snapshot: total counts plus every user, product and order
      * (newest first where an id ordering applies).
      *
-     * @return the populated {@link AdminDashboard}
+     * @return the populated {@link AdminDashboardDto}
      */
-    public AdminDashboard loadDashboard() {
+    public AdminDashboardDto loadDashboard() {
         Sort newestFirst = Sort.by(Sort.Direction.DESC, "id");
-        return new AdminDashboard(
+        return new AdminDashboardDto(
                 userRepository.count(),
                 productRepository.count(),
                 orderRepository.count(),

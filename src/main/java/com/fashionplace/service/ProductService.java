@@ -6,9 +6,9 @@ import com.fashionplace.model.User;
 import com.fashionplace.repository.ProductRepository;
 import com.fashionplace.repository.ReviewRepository;
 import com.fashionplace.repository.WishlistItemRepository;
-import com.fashionplace.web.CartLineItem;
-import com.fashionplace.web.CartSummary;
-import com.fashionplace.web.SellForm;
+import com.fashionplace.dto.CartLineItemDto;
+import com.fashionplace.dto.CartSummaryDto;
+import com.fashionplace.dto.SellFormDto;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -162,14 +162,14 @@ public class ProductService {
 
     /**
      * Builds cart line items from a session cart map. Products that were deleted from the
-     * catalogue are skipped and their ids are returned in {@link CartSummary#getMissingProductIds()}
+     * catalogue are skipped and their ids are returned in {@link CartSummaryDto#getMissingProductIds()}
      * so the caller can remove them from the session cart.
      *
      * @param cartItems product id → quantity from the session cart
      * @return resolved lines, grand total, and any missing product ids
      */
-    public CartSummary summarizeCart(Map<Long, Integer> cartItems) {
-        List<CartLineItem> lines = new ArrayList<>();
+    public CartSummaryDto summarizeCart(Map<Long, Integer> cartItems) {
+        List<CartLineItemDto> lines = new ArrayList<>();
         List<Long> missing = new ArrayList<>();
         BigDecimal grandTotal = BigDecimal.ZERO;
 
@@ -179,12 +179,12 @@ public class ProductService {
                 missing.add(entry.getKey());
                 continue;
             }
-            CartLineItem line = new CartLineItem(
+            CartLineItemDto line = new CartLineItemDto(
                     product.getId(), product.getTitle(), product.getPrice(), entry.getValue());
             lines.add(line);
             grandTotal = grandTotal.add(line.getLineTotal());
         }
-        return new CartSummary(lines, grandTotal, missing);
+        return new CartSummaryDto(lines, grandTotal, missing);
     }
 
     /**
@@ -194,7 +194,7 @@ public class ProductService {
      * @param seller the user listing the product
      * @return the saved product (with its generated id)
      */
-    public Product createListing(SellForm form, User seller) {
+    public Product createListing(SellFormDto form, User seller) {
         Product product = new Product();
         product.setTitle(form.getTitle());
         product.setDescription(form.getDescription());
@@ -246,7 +246,7 @@ public class ProductService {
      * @throws NoSuchElementException if no product has the given id
      * @throws AccessDeniedException  if the user is not the seller
      */
-    public Product updateListing(Long id, SellForm form, User currentUser) {
+    public Product updateListing(Long id, SellFormDto form, User currentUser) {
         Product product = findOwnedListing(id, currentUser);
         product.setTitle(form.getTitle());
         product.setDescription(form.getDescription());
@@ -348,15 +348,15 @@ public class ProductService {
     }
 
     /**
-     * Builds a {@link SellForm} pre-filled with an existing product's editable fields, so the
+     * Builds a {@link SellFormDto} pre-filled with an existing product's editable fields, so the
      * edit page can render the current values. The image source defaults to the kind the
      * product currently uses.
      *
      * @param product the product to copy values from
      * @return a form populated for editing
      */
-    public SellForm toForm(Product product) {
-        SellForm form = new SellForm();
+    public SellFormDto toForm(Product product) {
+        SellFormDto form = new SellFormDto();
         form.setTitle(product.getTitle());
         form.setDescription(product.getDescription());
         form.setPrice(product.getPrice());
@@ -377,7 +377,7 @@ public class ProductService {
      * @param form    the submitted form holding the image choice
      * @throws IllegalStateException if the uploaded file cannot be read
      */
-    private void applyImage(Product product, SellForm form) {
+    private void applyImage(Product product, SellFormDto form) {
         boolean useUrl = "url".equals(form.getImageSource());
         if (useUrl) {
             String url = form.getImageUrl();
@@ -409,7 +409,7 @@ public class ProductService {
      * @param form    the submitted edit form
      * @throws IllegalStateException if the uploaded file cannot be read
      */
-    private void applyImageOnUpdate(Product product, SellForm form) {
+    private void applyImageOnUpdate(Product product, SellFormDto form) {
         if ("url".equals(form.getImageSource())) {
             String url = form.getImageUrl();
             if (url != null && !url.isBlank()) {

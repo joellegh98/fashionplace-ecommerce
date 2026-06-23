@@ -1,11 +1,11 @@
-package com.fashionplace.web;
+package com.fashionplace.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
 /**
  * Form backing object for the checkout page: captures where the order ships.
  */
-public class CheckoutForm {
+public class CheckoutFormDto {
 
     @NotBlank(message = "Please enter a shipping address.")
     private String shippingAddress;

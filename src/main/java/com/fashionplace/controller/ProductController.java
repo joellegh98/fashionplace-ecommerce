@@ -6,8 +6,8 @@ import com.fashionplace.service.ProductService;
 import com.fashionplace.service.RecommendationService;
 import com.fashionplace.service.ReviewService;
 import com.fashionplace.service.WishlistService;
-import com.fashionplace.web.AddToCartForm;
-import com.fashionplace.web.ReviewForm;
+import com.fashionplace.dto.AddToCartFormDto;
+import com.fashionplace.dto.ReviewFormDto;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -56,7 +56,7 @@ public class ProductController {
         if (product.isDeleted() || "FLAGGED".equals(product.getStatus())) {
             return "redirect:/browse";
         }
-        populateProductDetail(id, model, new ReviewForm());
+        populateProductDetail(id, model, new ReviewFormDto());
         return "product";
     }
 
@@ -93,7 +93,7 @@ public class ProductController {
      */
     @PostMapping("/product/{id}/review")
     public String submitReview(@PathVariable Long id,
-                               @Valid @ModelAttribute("review") ReviewForm review,
+                               @Valid @ModelAttribute("review") ReviewFormDto review,
                                BindingResult bindingResult,
                                Model model) {
         if (bindingResult.hasErrors()) {
@@ -111,7 +111,7 @@ public class ProductController {
         return "redirect:/product/" + id;
     }
 
-    private void populateProductDetail(Long id, Model model, ReviewForm reviewForm) {
+    private void populateProductDetail(Long id, Model model, ReviewFormDto reviewForm) {
         Product product = productService.findById(id);
         model.addAttribute("product", product);
         model.addAttribute("reviews", reviewService.findByProduct(product));
@@ -129,7 +129,7 @@ public class ProductController {
         model.addAttribute("onWishlist", wishlistService.isOnCurrentUserWishlist(product));
         model.addAttribute("relatedProducts", recommendationService.relatedProducts(product));
 
-        AddToCartForm addToCart = new AddToCartForm();
+        AddToCartFormDto addToCart = new AddToCartFormDto();
         addToCart.setProductId(id);
         model.addAttribute("addToCart", addToCart);
     }

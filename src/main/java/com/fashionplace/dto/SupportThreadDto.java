@@ -1,4 +1,4 @@
-package com.fashionplace.web;
+package com.fashionplace.dto;
 
 import com.fashionplace.model.SupportMessage;
 import com.fashionplace.model.User;
@@ -12,7 +12,7 @@ import java.util.List;
  * <p>A thread is "a message and its replies": the user's opening message followed by any
  * support replies. Its status is taken from the most recent message.</p>
  */
-public class SupportThread {
+public class SupportThreadDto {
 
     private final String subject;
     private final List<SupportMessage> messages;
@@ -21,7 +21,7 @@ public class SupportThread {
      * @param subject  the shared subject line
      * @param messages the conversation's messages, oldest first
      */
-    public SupportThread(String subject, List<SupportMessage> messages) {
+    public SupportThreadDto(String subject, List<SupportMessage> messages) {
         this.subject = subject;
         this.messages = messages;
     }

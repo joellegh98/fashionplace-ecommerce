@@ -1,4 +1,4 @@
-package com.fashionplace.web;
+package com.fashionplace.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 /**
  * Form backing object for submitting a customer-support message from the {@code /support} page.
  */
-public class SupportForm {
+public class SupportFormDto {
 
     @NotBlank(message = "Please enter a subject.")
     @Size(max = 150, message = "Subject must be at most 150 characters.")
