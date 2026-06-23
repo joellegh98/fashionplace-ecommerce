@@ -92,42 +92,42 @@ public class DataSeeder implements CommandLineRunner {
                 "Classic 14k gold-plated hoop earrings, lightweight and perfect for everyday wear.",
                 new BigDecimal("45.99"),
                 "Earrings", "New", "ACTIVE", 5,
-                "https://picsum.photos/seed/earrings/400/300"
+                "https://www.longsjewelers.com/cdn/shop/products/GEH2588A.jpg?v=1715249533"
         ), alice);
         save(new Product(
                 "Silver Chain Necklace",
                 "Delicate sterling silver chain with a minimalist pendant.",
                 new BigDecimal("62.50"),
                 "Necklace", "New", "ACTIVE", 3,
-                "https://picsum.photos/seed/necklace/400/300"
+                "https://prya.co.uk/cdn/shop/products/IMG_92992-PRYA-Necklaces.jpg?v=1619772139"
         ), alice);
         save(new Product(
                 "Leather Biker Jacket",
                 "Genuine black leather jacket with zip front and quilted shoulders.",
                 new BigDecimal("189.00"),
                 "Shirts", "Used", "ACTIVE", 1,
-                "https://picsum.photos/seed/jacket/400/300"
+                "https://cdn-images.farfetch-contents.com/17/81/19/24/17811924_37690679_600.jpg"
         ), bob);
         save(new Product(
                 "Vintage Denim Jeans",
                 "High-waisted straight-leg jeans in a faded blue wash.",
                 new BigDecimal("55.00"),
                 "Jeans", "Used", "ACTIVE", 4,
-                "https://picsum.photos/seed/jeans/400/300"
+                "https://www.bigw.com.au/medias/sys_master/images/images/h85/ha0/116332415582238.jpg"
         ), bob);
         save(new Product(
                 "Pearl Bracelet",
                 "Freshwater pearl bracelet with a silver clasp, elegant and timeless.",
                 new BigDecimal("38.75"),
                 "Bracelet", "New", "ACTIVE", 2,
-                "https://picsum.photos/seed/bracelet/400/300"
+                "https://www.jerseypearl.com/wp-content/uploads/2023/07/Zara-Freshwater-Pearl-Multi-Natural-Bracelet.jpg"
         ), alice);
         save(new Product(
                 "Silk Evening Dress",
                 "Floor-length emerald silk dress, ideal for formal occasions.",
                 new BigDecimal("220.00"),
                 "Bottoms", "New", "SOLD", 0,
-                "https://picsum.photos/seed/dress/400/300"
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXa7eixb7OwHn5k8EXd7pUGDlSBk-do_q0drqZG6QfmMw-FXohQmFVNnN1&s=10"
         ), bob);
     }
 
