@@ -50,51 +50,6 @@
             <dd class="col-sm-10" th:text="${product.quantity}">0</dd>
         </dl>
 
-        <section class="mt-4">
-            <h2 class="h4 mb-3">Reviews</h2>
-
-            <p th:if="${averageRating != null}" class="mb-3">
-                Average rating:
-                <strong th:text="|${#numbers.formatDecimal(averageRating, 1, 1)} / 5|">4.5 / 5</strong>
-            </p>
-
-            <p th:if="${#lists.isEmpty(reviews)}" class="text-muted">No reviews yet.</p>
-
-            <div th:each="review : ${reviews}" class="border rounded p-3 mb-2">
-                <div class="fw-semibold">
-                    <span th:text="${review.reviewer.username}">reviewer</span>
-                    &middot;
-                    <span th:text="|${review.rating}/5|">5/5</span>
-                    <span class="text-muted small fw-normal ms-2"
-                          th:if="${review.createdAt != null}"
-                          th:text="${#temporals.format(review.createdAt, 'dd MMM yyyy')}">01 Jan 2026</span>
-                </div>
-                <p class="mb-0 mt-1" th:text="${review.comment}">Review comment</p>
-            </div>
-        </section>
-
-        <section class="mt-4" th:if="${currentUsername != null}">
-            <h2 class="h5 mb-3">Write a review</h2>
-            <p class="text-muted small">Posting as <span th:text="${currentUsername}">alice</span></p>
-            <form th:action="@{/product/{id}/review(id=${product.id})}" th:object="${review}" method="post">
-                <div class="mb-3">
-                    <label for="rating" class="form-label">Rating</label>
-                    <select id="rating" class="form-select" th:field="*{rating}" style="width: auto;">
-                        <option value="">Choose...</option>
-                        <option th:each="star : ${#numbers.sequence(1, 5)}"
-                                th:value="${star}" th:text="${star}">1</option>
-                    </select>
-                    <div class="text-danger small" th:if="${#fields.hasErrors('rating')}" th:errors="*{rating}"></div>
-                </div>
-                <div class="mb-3">
-                    <label for="comment" class="form-label">Comment</label>
-                    <textarea id="comment" class="form-control" th:field="*{comment}" rows="3"></textarea>
-                    <div class="text-danger small" th:if="${#fields.hasErrors('comment')}" th:errors="*{comment}"></div>
-                </div>
-                <button type="submit" class="btn btn-primary">Submit review</button>
-            </form>
-        </section>
-
         <p th:if="${ownProduct}" class="text-muted mt-3">
             This is your own listing, so you can't buy it.
         </p>
@@ -130,6 +85,59 @@
 
         <hr class="my-4">
         <div th:replace="~{fragments/productcards :: section('Related products', ${relatedProducts})}"></div>
+
+        <section class="product-reviews mt-4">
+            <h2 class="h4 mb-3">Reviews</h2>
+
+            <p th:if="${averageRating != null}" class="mb-3 d-flex align-items-center gap-2 flex-wrap">
+                <span>Average rating:</span>
+                <span th:replace="~{fragments/stars :: display(${averageRating})}"></span>
+            </p>
+
+            <p th:if="${#lists.isEmpty(reviews)}" class="text-muted">No reviews yet.</p>
+
+            <div th:each="review : ${reviews}" class="product-review-item border rounded p-2 mb-2">
+                <div class="fw-semibold small d-flex align-items-center gap-2 flex-wrap">
+                    <span th:text="${review.reviewer.username}">reviewer</span>
+                    <span class="text-muted">&middot;</span>
+                    <span th:replace="~{fragments/stars :: display(${review.rating})}"></span>
+                    <span class="text-muted fw-normal"
+                          th:if="${review.createdAt != null}"
+                          th:text="${#temporals.format(review.createdAt, 'dd MMM yyyy')}">01 Jan 2026</span>
+                </div>
+                <p class="mb-0 mt-1 small" th:text="${review.comment}">Review comment</p>
+            </div>
+        </section>
+
+        <section class="product-review-form mt-4" th:if="${currentUsername != null}">
+            <h2 class="h5 mb-3">Write a review</h2>
+            <form th:action="@{/product/{id}/review(id=${product.id})}" th:object="${review}" method="post"
+                  class="product-review-form-card card border-0 shadow-sm">
+                <div class="card-body p-3">
+                    <div class="mb-2">
+                        <span class="form-label small mb-1 d-block">Rating</span>
+                        <div class="star-rating-input" role="radiogroup" aria-label="Rating">
+                            <th:block th:each="star : ${#numbers.sequence(5, 1)}">
+                                <input type="radio" class="star-rating-radio"
+                                       th:id="|rating-${star}|"
+                                       th:value="${star}"
+                                       th:field="*{rating}">
+                                <label th:for="|rating-${star}|"
+                                       class="star-rating-label"
+                                       th:attr="title=|${star} star|,aria-label=|${star} star|">&#9733;</label>
+                            </th:block>
+                        </div>
+                        <div class="text-danger small" th:if="${#fields.hasErrors('rating')}" th:errors="*{rating}"></div>
+                    </div>
+                    <div class="mb-2">
+                        <label for="comment" class="form-label small mb-1">Comment</label>
+                        <textarea id="comment" class="form-control form-control-sm" th:field="*{comment}" rows="2"></textarea>
+                        <div class="text-danger small" th:if="${#fields.hasErrors('comment')}" th:errors="*{comment}"></div>
+                    </div>
+                    <button type="submit" class="btn btn-brown btn-sm">Submit review</button>
+                </div>
+            </form>
+        </section>
     </main>
 </body>
 </html>

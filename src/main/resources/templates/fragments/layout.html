@@ -25,7 +25,7 @@
 <body>
     <!-- Responsive top bar: collapses into a toggler on small screens -->
     <header>
-        <nav class="navbar navbar-expand-lg">
+        <nav class="navbar navbar-expand-lg navbar-dark">
             <div class="container-fluid">
                 <!-- Logo + brand name, top-left, links back to home -->
                 <a class="navbar-brand brand" th:href="@{/}">
@@ -71,14 +71,14 @@
                             <a class="nav-link" th:href="@{/admin}">Admin</a>
                         </li>
                         <li class="nav-item" sec:authorize="!isAuthenticated()">
-                            <a class="nav-link" th:href="@{/login}">Log in</a>
+                            <a class="nav-link nav-btn nav-btn-outline" th:href="@{/login}">Log in</a>
                         </li>
                         <li class="nav-item" sec:authorize="!isAuthenticated()">
-                            <a class="nav-link" th:href="@{/register}">Register</a>
+                            <a class="nav-link nav-btn nav-btn-primary" th:href="@{/register}">Register</a>
                         </li>
-                        <li class="nav-item" sec:authorize="isAuthenticated()">
-                            <form th:action="@{/logout}" method="post" class="d-inline">
-                                <button type="submit" class="btn btn-link nav-link px-2">Log out</button>
+                        <li class="nav-item d-flex align-items-center" sec:authorize="isAuthenticated()">
+                            <form th:action="@{/logout}" method="post" class="nav-logout-form">
+                                <button type="submit" class="nav-btn nav-btn-outline">Log out</button>
                             </form>
                         </li>
                     </ul>

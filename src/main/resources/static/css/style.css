@@ -27,6 +27,91 @@ header .navbar {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
+header .navbar .nav-link {
+    color: var(--pink-light);
+    font-weight: 500;
+    padding: 0.45rem 0.85rem;
+    border-radius: 0.5rem;
+    transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+header .navbar .nav-link:hover,
+header .navbar .nav-link:focus {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+header .navbar .navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.45);
+}
+
+/* Auth actions in the nav — styled as real buttons */
+header .navbar .nav-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    line-height: 1.25;
+    text-decoration: none;
+    border: 2px solid transparent;
+    border-radius: 0.5rem;
+    padding: 0.45rem 1rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease,
+        box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+header .navbar a.nav-btn:hover,
+header .navbar a.nav-btn:focus {
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+header .navbar .nav-btn-outline {
+    color: var(--pink-light);
+    background-color: transparent;
+    border-color: var(--pink);
+}
+
+header .navbar .nav-btn-outline:hover,
+header .navbar .nav-btn-outline:focus {
+    color: var(--brown-dark);
+    background-color: var(--pink);
+    border-color: var(--pink);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+header .navbar .nav-btn-primary {
+    color: var(--brown-dark);
+    background-color: var(--pink);
+    border-color: var(--pink);
+}
+
+header .navbar .nav-btn-primary:hover,
+header .navbar .nav-btn-primary:focus {
+    color: var(--brown-dark);
+    background-color: #fff;
+    border-color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+header .navbar .nav-logout-form {
+    margin: 0;
+    padding: 0;
+}
+
+@media (max-width: 991.98px) {
+    header .navbar .nav-item {
+        margin-top: 0.15rem;
+    }
+
+    header .navbar .nav-btn {
+        width: 100%;
+    }
+}
+
 /* Logo + brand name grouped on the left */
 .brand {
     display: flex;
@@ -155,5 +240,126 @@ footer {
 @media (min-width: 768px) {
     .home-hero {
         padding: 3rem 3rem;
+    }
+}
+
+/* Brown theme button (product page, etc.) */
+.btn-brown {
+    background-color: var(--brown);
+    border-color: var(--brown);
+    color: #fff;
+    font-weight: 600;
+}
+
+.btn-brown:hover,
+.btn-brown:focus {
+    background-color: var(--brown-dark);
+    border-color: var(--brown-dark);
+    color: #fff;
+}
+
+/* Product page — reviews at the bottom, compact form */
+.product-reviews,
+.product-review-form {
+    max-width: 28rem;
+}
+
+.product-review-item {
+    background-color: #fff;
+}
+
+.product-review-form-card {
+    background-color: #fff;
+    max-width: 22rem;
+}
+
+/* Star ratings (display) */
+.star-rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.1rem;
+    line-height: 1;
+    vertical-align: middle;
+}
+
+.star-rating .star {
+    font-size: 1.15rem;
+    line-height: 1;
+}
+
+.star-rating .star-full {
+    color: #f5b301;
+}
+
+.star-rating .star-empty {
+    color: #d1d5db;
+}
+
+.star-rating .star-half {
+    position: relative;
+    display: inline-block;
+    width: 1.15rem;
+    height: 1.15rem;
+}
+
+.star-rating .star-half-empty {
+    color: #d1d5db;
+}
+
+.star-rating .star-half-full {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 50%;
+    overflow: hidden;
+    color: #f5b301;
+}
+
+/* Star ratings (review form input) */
+.star-rating-input {
+    display: inline-flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 0.15rem;
+}
+
+.star-rating-radio {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+
+.star-rating-label {
+    font-size: 1.35rem;
+    line-height: 1;
+    color: #d1d5db;
+    cursor: pointer;
+    margin: 0;
+    transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.star-rating-label:hover,
+.star-rating-label:hover ~ .star-rating-label,
+.star-rating-radio:checked + .star-rating-label,
+.star-rating-radio:checked ~ .star-rating-label,
+.star-rating-radio:focus-visible + .star-rating-label {
+    color: #f5b301;
+}
+
+.star-rating-label:hover {
+    transform: scale(1.08);
+}
+
+/* Browse page — compact search */
+.browse-search-field {
+    width: 100%;
+    max-width: 20rem;
+}
+
+@media (min-width: 576px) {
+    .browse-search-field {
+        max-width: 22rem;
     }
 }

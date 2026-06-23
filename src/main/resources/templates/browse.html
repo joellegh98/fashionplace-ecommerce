@@ -18,11 +18,11 @@
              GET keeps every criterion in the URL -->
         <form method="get" th:action="@{/browse}" id="browseForm">
 
-            <!-- Search box: stays at the top, full width -->
-            <div class="row g-2 mb-3">
-                <div class="col">
+            <!-- Search box: compact width at the top -->
+            <div class="row g-2 mb-3 align-items-center browse-search-row">
+                <div class="col-auto browse-search-field">
                     <div class="position-relative">
-                        <input type="text" class="form-control" name="q" th:value="${q}"
+                        <input type="text" class="form-control form-control-sm" name="q" th:value="${q}"
                                id="searchInput" autocomplete="off"
                                placeholder="Search title or description...">
                         <ul id="titleSuggestions"
@@ -32,7 +32,7 @@
                     </div>
                 </div>
                 <div class="col-auto">
-                    <button type="submit" class="btn btn-primary">Search</button>
+                    <button type="submit" class="btn btn-brown btn-sm">Search</button>
                 </div>
             </div>
 
@@ -166,7 +166,7 @@
                                 </select>
                             </div>
                             <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary">Apply</button>
+                                <button type="submit" class="btn btn-brown">Apply</button>
                                 <a class="btn btn-outline-secondary" th:href="@{/browse}"
                                    th:if="${(q != null and !q.isEmpty()) or (category != null and !category.isEmpty()) or (condition != null and !condition.isEmpty()) or minPrice != null or maxPrice != null or (sort != null and sort != 'newest')}">
                                     Clear all
