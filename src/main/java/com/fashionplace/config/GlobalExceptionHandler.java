@@ -23,6 +23,10 @@ public class GlobalExceptionHandler {
 
     /**
      * Missing entity (e.g. {@code findById(...).orElseThrow()}).
+     *
+     * @param ex      the exception thrown when an optional was empty
+     * @param request the current HTTP request
+     * @return JSON error body for API requests, or the {@code error} view name for HTML
      */
     @ExceptionHandler(NoSuchElementException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -35,6 +39,10 @@ public class GlobalExceptionHandler {
 
     /**
      * Authenticated user tried to access or modify a resource they do not own.
+     *
+     * @param ex      the access-denied exception
+     * @param request the current HTTP request
+     * @return JSON error body for API requests, or the {@code error} view name for HTML
      */
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
@@ -47,6 +55,10 @@ public class GlobalExceptionHandler {
 
     /**
      * Invalid input or business-rule violation (e.g. blank reply, closed conversation).
+     *
+     * @param ex      the illegal-argument or illegal-state exception
+     * @param request the current HTTP request
+     * @return JSON error body for API requests, or the {@code error} view name for HTML
      */
     @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -59,6 +71,9 @@ public class GlobalExceptionHandler {
 
     /**
      * Validation failures on {@code @RequestBody @Valid} payloads (REST-style endpoints).
+     *
+     * @param ex the binding validation exception
+     * @return a JSON map with {@code error} and per-field {@code fields} messages
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
@@ -72,6 +87,10 @@ public class GlobalExceptionHandler {
 
     /**
      * Fallback for anything not handled elsewhere.
+     *
+     * @param ex      the unexpected exception
+     * @param request the current HTTP request
+     * @return JSON error body for API requests, or the {@code error} view name for HTML
      */
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

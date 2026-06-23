@@ -19,6 +19,14 @@ public class DtoValidator {
         this.validator = validator;
     }
 
+    /**
+     * Validates the given DTO and returns it when valid.
+     *
+     * @param <T> the DTO type
+     * @param dto the instance to validate
+     * @return the same {@code dto} when validation succeeds
+     * @throws IllegalStateException when Bean Validation reports constraint violations
+     */
     public <T> T requireValid(T dto) {
         Set<ConstraintViolation<T>> violations = validator.validate(dto);
         if (!violations.isEmpty()) {

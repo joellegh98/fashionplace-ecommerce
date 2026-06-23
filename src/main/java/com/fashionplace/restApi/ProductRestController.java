@@ -39,7 +39,7 @@ public class ProductRestController {
      * Streams a product's uploaded image bytes from the database.
      *
      * @param id the product id
-     * @return the image bytes with the stored content type, or 404 if none
+     * @return the image bytes with the stored content type, or {@link ResponseEntity#notFound()} if none
      */
     @GetMapping("/{id}/image")
     public ResponseEntity<byte[]> productImage(@PathVariable Long id) {

@@ -17,12 +17,22 @@ public class SecurityConfig {
 
     /**
      * Hashes and verifies passwords (used by the data seeder and authentication).
+     *
+     * @return a BCrypt {@link PasswordEncoder} bean
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Configures HTTP security: URL authorization, form login, logout, and CSRF.
+     *
+     * @param http                          the {@link HttpSecurity} to customize
+     * @param wishlistLoginSuccessHandler   handles post-login wishlist pending actions
+     * @return the configured security filter chain
+     * @throws Exception when the security configuration cannot be applied
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
                                                    WishlistAuthenticationSuccessHandler wishlistLoginSuccessHandler)

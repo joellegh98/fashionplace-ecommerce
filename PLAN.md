@@ -275,17 +275,14 @@ testable before moving on.
 
 ## Phase 10 - Submission prep
 
-- [ ] **10.1 - README.md.** Functionality overview, build/run instructions (`mvnw clean package`, `mvnw spring-boot:run`), admin credentials, notes.
+- [x] **10.1 - README.md.** Functionality overview, build/run instructions (`mvnw clean package`, `mvnw spring-boot:run`), admin credentials, notes.
   > 📖 **Materials:** `07-SpringMVC.pdf` – Spring Boot project structure overview (slides 3, 5, 18, 24). `08-JPA.pdf` – include DB configuration details from `application.properties` (slide 28).
 
-- [ ] **10.2 - SQL dump.** Export `ex4` (with sample data) via phpMyAdmin into the repo.
+- [x] **10.2 - SQL dump.** Export `ex4` (with sample data) via phpMyAdmin into the repo.
   > 📖 **Materials:** `07-SpringMVC.pdf` – session store type JDBC / `spring.session.jdbc.initialize-schema=always` as reference (slide 24).
 
 - [ ] **10.3 - Empty-DB test.** Drop `ex4`, restart app, confirm it self-initializes and runs.
   > 📖 **Materials:** `07-SpringBeans.pdf` – `@PostConstruct` in DataSeeder: "inserts only if table is empty" pattern (slide 28); Bean lifecycle ensures init runs after injection (slide 28). `08-JPA.pdf` – `ddl-auto=create` recreates tables on each run; `ddl-auto=update` keeps existing data — use `create` for clean test, `update` for production (slide 28); `CommandLineRunner.run()` for seeding (slide 35).
-
-- [ ] **10.4 - Demo recording.** Short continuous video (<=12 min), both members present; link in README.
-  > 📖 **Materials:** *(No specific slide material — this is a submission step.)*
 
 ---
 

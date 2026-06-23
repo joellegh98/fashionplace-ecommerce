@@ -55,17 +55,31 @@ public class AdminService {
                 activityLogService.recentActivity()));
     }
 
-    /** Soft-deletes any product, regardless of who listed it. */
+    /** Soft-deletes any product, regardless of who listed it.
+     *
+     * @param id the product id to delete
+     * @throws java.util.NoSuchElementException when no product has the given id
+     */
     public void deleteProduct(Long id) {
         productService.deleteListing(id);
     }
 
-    /** Flags a product so it is hidden from the public catalogue. */
+    /** Flags a product so it is hidden from the public catalogue.
+     *
+     * @param id the product id to flag
+     * @throws java.util.NoSuchElementException when no product has the given id
+     * @throws IllegalStateException when the product is deleted
+     */
     public void flagProduct(Long id) {
         productService.flagListing(id);
     }
 
-    /** Clears an admin flag and restores the listing status. */
+    /** Clears an admin flag and restores the listing status.
+     *
+     * @param id the product id to unflag
+     * @throws java.util.NoSuchElementException when no product has the given id
+     * @throws IllegalStateException when the product is not flagged or is deleted
+     */
     public void unflagProduct(Long id) {
         productService.unflagListing(id);
     }

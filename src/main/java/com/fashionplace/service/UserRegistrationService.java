@@ -21,10 +21,22 @@ public class UserRegistrationService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * Checks whether a username is already taken.
+     *
+     * @param username the username to look up (trimmed by the caller)
+     * @return {@code true} if a user with that username exists
+     */
     public boolean usernameExists(String username) {
         return userRepository.existsByUsername(username);
     }
 
+    /**
+     * Checks whether an email is already registered.
+     *
+     * @param email the email to look up (trimmed by the caller)
+     * @return {@code true} if a user with that email exists
+     */
     public boolean emailExists(String email) {
         return userRepository.existsByEmail(email);
     }

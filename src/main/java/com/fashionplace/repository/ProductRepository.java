@@ -39,6 +39,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     /**
      * Returns non-deleted products matching all supplied filters. A {@code null} or blank
      * parameter is ignored (no restriction on that field).
+     *
+     * @param keyword   optional text matched against title and description
+     * @param category  optional exact category filter
+     * @param condition optional exact condition filter
+     * @param minPrice  optional minimum price (inclusive)
+     * @param maxPrice  optional maximum price (inclusive)
+     * @return products matching every non-null filter
      */
     @Query("""
             SELECT p FROM Product p
@@ -57,9 +64,19 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                          @Param("minPrice") BigDecimal minPrice,
                          @Param("maxPrice") BigDecimal maxPrice);
 
+    /**
+     * Returns every distinct category used by non-deleted products, sorted alphabetically.
+     *
+     * @return category names for the Browse filter dropdown
+     */
     @Query("SELECT DISTINCT p.category FROM Product p WHERE p.deleted = false AND p.category IS NOT NULL ORDER BY p.category")
     List<String> findDistinctCategories();
 
+    /**
+     * Returns every distinct condition used by non-deleted products, sorted alphabetically.
+     *
+     * @return condition values for the Browse filter dropdown
+     */
     @Query("SELECT DISTINCT p.condition FROM Product p WHERE p.deleted = false AND p.condition IS NOT NULL ORDER BY p.condition")
     List<String> findDistinctConditions();
 

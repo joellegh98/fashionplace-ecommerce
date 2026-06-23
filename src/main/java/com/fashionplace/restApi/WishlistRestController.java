@@ -31,6 +31,8 @@ public class WishlistRestController {
      *
      * @param productId the product to toggle
      * @return {@code {"saved": true}} if now saved, {@code {"saved": false}} if removed
+     * @throws org.springframework.security.authentication.AuthenticationCredentialsNotFoundException when the caller is not authenticated
+     * @throws java.util.NoSuchElementException when no product exists for {@code productId}
      */
     @PostMapping("/toggle")
     public Map<String, Object> toggle(@RequestParam Long productId) {
