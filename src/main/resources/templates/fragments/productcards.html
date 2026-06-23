@@ -14,7 +14,7 @@
                 <a th:href="@{/product/{id}(id=${product.id})}"
                    class="card h-100 text-decoration-none text-dark">
                     <img th:if="${product.hasUploadedImage or !#strings.isEmpty(product.imageUrl)}"
-                         th:src="${product.hasUploadedImage} ? @{/product/{id}/image(id=${product.id})} : ${product.imageUrl}"
+                         th:src="${product.hasUploadedImage} ? @{/api/products/{id}/image(id=${product.id})} : ${product.imageUrl}"
                          class="card-img-top" alt="" style="height: 100px; object-fit: cover;">
                     <div class="card-body p-2">
                         <h6 class="card-title mb-1 small" th:text="${product.title}">Product title</h6>

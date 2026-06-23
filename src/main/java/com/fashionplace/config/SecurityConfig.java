@@ -38,14 +38,15 @@ public class SecurityConfig {
                         // Authenticated user areas
                         .requestMatchers("/sell").authenticated()
                         .requestMatchers("/orders", "/my-products").authenticated()
-                        .requestMatchers("/wishlist/**").authenticated()
+                        .requestMatchers("/wishlist", "/wishlist/remove/**").authenticated()
+                        .requestMatchers("/api/wishlist/**").authenticated()
                         .requestMatchers("/support/**").authenticated()
                         .requestMatchers("/checkout/**").authenticated()
                         .requestMatchers("/product/*/edit", "/product/*/delete", "/product/*/review")
                                 .authenticated()
                         // Public browsing, cart, and product detail
                         .requestMatchers("/", "/browse", "/cart/**", "/api/**").permitAll()
-                        .requestMatchers("/product/*/image", "/product/*").permitAll()
+                        .requestMatchers("/product/*").permitAll()
                         .anyRequest().permitAll()
                 )
                 .formLogin(form -> form

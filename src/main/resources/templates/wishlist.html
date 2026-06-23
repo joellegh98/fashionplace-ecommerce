@@ -22,7 +22,7 @@
                 <div class="card h-100">
                     <a th:href="@{/product/{id}(id=${item.product.id})}">
                         <img th:if="${item.product.hasUploadedImage or !#strings.isEmpty(item.product.imageUrl)}"
-                             th:src="${item.product.hasUploadedImage} ? @{/product/{id}/image(id=${item.product.id})} : ${item.product.imageUrl}"
+                             th:src="${item.product.hasUploadedImage} ? @{/api/products/{id}/image(id=${item.product.id})} : ${item.product.imageUrl}"
                              class="card-img-top" alt="" style="height: 180px; object-fit: cover;">
                     </a>
                     <div class="card-body d-flex flex-column">

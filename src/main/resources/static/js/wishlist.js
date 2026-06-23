@@ -24,7 +24,7 @@
             headers[csrfHeader.content] = csrfToken.content;
         }
 
-        fetch('/wishlist/toggle', {
+        fetch('/api/wishlist/toggle', {
             method: 'POST',
             headers: headers,
             body: 'productId=' + encodeURIComponent(productId)

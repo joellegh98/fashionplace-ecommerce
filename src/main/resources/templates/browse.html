@@ -92,7 +92,7 @@
                                 <!-- Product image: an uploaded image (served from the DB) or an external imageUrl -->
                                 <a th:href="@{/product/{id}(id=${product.id})}">
                                     <img th:if="${product.hasUploadedImage or !#strings.isEmpty(product.imageUrl)}"
-                                         th:src="${product.hasUploadedImage} ? @{/product/{id}/image(id=${product.id})} : ${product.imageUrl}"
+                                         th:src="${product.hasUploadedImage} ? @{/api/products/{id}/image(id=${product.id})} : ${product.imageUrl}"
                                          class="card-img-top" alt="" style="height: 120px; object-fit: cover;">
                                 </a>
                                 <div class="card-body d-flex flex-column p-2">

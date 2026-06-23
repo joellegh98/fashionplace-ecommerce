@@ -1,27 +1,20 @@
 package com.fashionplace.controller;
 
 import com.fashionplace.service.WishlistService;
-import com.fashionplace.session.InterestBean;
-import jakarta.annotation.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import java.util.Map;
 
 /**
- * Handles the wishlist page and its add/remove actions (attributed to the fake current user).
+ * Serves the wishlist page and form-based remove actions.
  */
 @Controller
 public class WishlistController {
 
     private final WishlistService wishlistService;
-
-    @Resource
-    private InterestBean interestBean;
 
     public WishlistController(WishlistService wishlistService) {
         this.wishlistService = wishlistService;
@@ -37,22 +30,6 @@ public class WishlistController {
     public String wishlist(Model model) {
         model.addAttribute("wishlistItems", wishlistService.findForCurrentUser());
         return "wishlist";
-    }
-
-    /**
-     * Toggles a product on the current user's wishlist (save if absent, remove if present).
-     * Returns JSON so the page can update the button in place (via fetch) without a full
-     * reload. Works for sold products too.
-     *
-     * @param productId the product to toggle
-     * @return {@code {"saved": true}} if now saved, {@code {"saved": false}} if removed
-     */
-    @PostMapping("/wishlist/toggle")
-    @ResponseBody
-    public Map<String, Object> toggle(@RequestParam Long productId) {
-        boolean saved = wishlistService.toggleForCurrentUser(productId);
-        interestBean.record(productId);
-        return Map.of("saved", saved);
     }
 
     /**
