@@ -1,7 +1,6 @@
 package com.fashionplace.session;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -24,7 +23,7 @@ public class CartBean implements Serializable {
      * @param productId the product to add
      * @param quantity  how many to add (ignored if less than 1)
      */
-    public void addItem(Long productId, int quantity) {
+    public synchronized void addItem(Long productId, int quantity) {
         if (productId == null || quantity < 1) {
             return;
         }
@@ -37,7 +36,7 @@ public class CartBean implements Serializable {
      * @param productId the product
      * @param quantity  the new quantity
      */
-    public void setQuantity(Long productId, int quantity) {
+    public synchronized void setQuantity(Long productId, int quantity) {
         if (productId == null) {
             return;
         }
@@ -53,44 +52,74 @@ public class CartBean implements Serializable {
      *
      * @param productId the product to remove
      */
-    public void removeItem(Long productId) {
+    public synchronized void removeItem(Long productId) {
         if (productId != null) {
             items.remove(productId);
         }
     }
 
     /**
-     * Returns all cart lines as an unmodifiable map (product id → quantity).
+     * Returns a snapshot of all cart lines (product id → quantity). Callers can safely
+     * iterate without holding the cart lock.
      */
-    public Map<Long, Integer> getItems() {
-        return Collections.unmodifiableMap(items);
+    public synchronized Map<Long, Integer> getItems() {
+        return Map.copyOf(items);
+    }
+
+    /**
+     * Atomically copies and clears the cart. Used at checkout to prevent duplicate orders
+     * when the user double-submits or opens parallel requests in the same session.
+     *
+     * @return the cart contents before clearing, or an empty map if the cart was already empty
+     */
+    public synchronized Map<Long, Integer> drainItems() {
+        if (items.isEmpty()) {
+            return Map.of();
+        }
+        Map<Long, Integer> snapshot = Map.copyOf(items);
+        items.clear();
+        return snapshot;
+    }
+
+    /**
+     * Restores cart lines after a failed checkout attempt.
+     *
+     * @param snapshot lines to put back; merged with any items added while checkout was in flight
+     */
+    public synchronized void restoreItems(Map<Long, Integer> snapshot) {
+        if (snapshot == null || snapshot.isEmpty()) {
+            return;
+        }
+        for (Map.Entry<Long, Integer> entry : snapshot.entrySet()) {
+            items.merge(entry.getKey(), entry.getValue(), Integer::sum);
+        }
     }
 
     /**
      * Total number of units across all lines (sum of quantities).
      */
-    public int getTotalItemCount() {
+    public synchronized int getTotalItemCount() {
         return items.values().stream().mapToInt(Integer::intValue).sum();
     }
 
     /**
      * Number of distinct products in the cart.
      */
-    public int getDistinctItemCount() {
+    public synchronized int getDistinctItemCount() {
         return items.size();
     }
 
     /**
      * Whether the cart has no items.
      */
-    public boolean isEmpty() {
+    public synchronized boolean isEmpty() {
         return items.isEmpty();
     }
 
     /**
      * Removes every item from the cart.
      */
-    public void clear() {
+    public synchronized void clear() {
         items.clear();
     }
 }

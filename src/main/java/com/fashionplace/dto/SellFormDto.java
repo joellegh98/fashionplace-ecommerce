@@ -38,6 +38,12 @@ public class SellFormDto {
     @Min(value = 1, message = "Quantity must be at least 1.")
     private Integer quantity = 1;
 
+    /**
+     * Quantity shown when the edit form was loaded. Used to apply seller edits relative to
+     * purchases that happened while the form was open, instead of overwriting current stock.
+     */
+    private Integer originalQuantity;
+
     /** Which image source the user chose: {@code "upload"} (default) or {@code "url"}. */
     @Pattern(regexp = "upload|url", message = "Image source must be upload or url.")
     private String imageSource = "upload";
@@ -95,6 +101,14 @@ public class SellFormDto {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public Integer getOriginalQuantity() {
+        return originalQuantity;
+    }
+
+    public void setOriginalQuantity(Integer originalQuantity) {
+        this.originalQuantity = originalQuantity;
     }
 
     public String getImageSource() {

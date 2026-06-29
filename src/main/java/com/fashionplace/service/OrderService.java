@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -43,12 +45,12 @@ public class OrderService {
         Order order = new Order(buyer, BigDecimal.ZERO, "PLACED", shippingAddress);
 
         BigDecimal total = BigDecimal.ZERO;
-        for (Map.Entry<Long, Integer> entry : items.entrySet()) {
-            Product product = productService.findById(entry.getKey());
-            int quantity = entry.getValue();
-            if (quantity > product.getQuantity()) {
-                throw new IllegalStateException("Not enough stock for \"" + product.getTitle() + "\".");
-            }
+        List<Long> productIds = new ArrayList<>(items.keySet());
+        productIds.sort(Comparator.naturalOrder());
+        for (Long productId : productIds) {
+            Product product = productService.findByIdForUpdate(productId);
+            int quantity = items.get(productId);
+            assertPurchasable(product, buyer, quantity);
             BigDecimal unitPrice = product.getPrice();
 
             order.addItem(new OrderItem(product, quantity, unitPrice));
@@ -59,6 +61,27 @@ public class OrderService {
 
         order.setTotalPrice(total);
         return orderRepository.save(order);
+    }
+
+    private static void assertPurchasable(Product product, User buyer, int quantity) {
+        if (product.isDeleted()) {
+            throw new IllegalStateException(
+                    "\"" + product.getTitle() + "\" is no longer available.");
+        }
+        if ("FLAGGED".equals(product.getStatus())) {
+            throw new IllegalStateException(
+                    "\"" + product.getTitle() + "\" is no longer available.");
+        }
+        if (product.getSeller() != null
+                && product.getSeller().getId() != null
+                && product.getSeller().getId().equals(buyer.getId())) {
+            throw new IllegalStateException(
+                    "You can't buy your own listing (\"" + product.getTitle() + "\").");
+        }
+        if (quantity > product.getQuantity()) {
+            throw new IllegalStateException(
+                    "Not enough stock for \"" + product.getTitle() + "\".");
+        }
     }
 
     /**

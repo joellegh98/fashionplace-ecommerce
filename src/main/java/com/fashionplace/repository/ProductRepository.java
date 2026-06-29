@@ -2,7 +2,9 @@ package com.fashionplace.repository;
 
 import com.fashionplace.model.Product;
 import com.fashionplace.model.User;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Spring Data JPA repository for {@link Product} entities (primary key type {@link Long}).
@@ -107,4 +110,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      * @return that seller's products, ordered by id descending
      */
     List<Product> findBySellerAndDeletedFalseOrderByIdDesc(User seller);
+
+    /**
+     * Finds a product by id and acquires a pessimistic write lock on the row.
+     * Must be called inside an active {@code @Transactional} context.
+     * Used during order placement to prevent concurrent stock depletion.
+     */
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT p FROM Product p WHERE p.id = :id")
+    Optional<Product> findByIdWithLock(@Param("id") Long id);
 }

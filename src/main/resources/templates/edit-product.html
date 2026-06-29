@@ -16,6 +16,7 @@
             <div class="col-lg-7">
                 <form th:action="@{/product/{id}/edit(id=${productId})}" th:object="${sellForm}"
                       method="post" enctype="multipart/form-data">
+                    <input type="hidden" th:field="*{originalQuantity}">
                     <div class="mb-3">
                         <label for="title" class="form-label">Title</label>
                         <input type="text" id="title" class="form-control" th:field="*{title}"

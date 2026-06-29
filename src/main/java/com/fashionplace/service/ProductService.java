@@ -153,6 +153,19 @@ public class ProductService {
     }
 
     /**
+     * Finds a product by id with a pessimistic write lock. Must be called within an active
+     * transaction. Used by order placement to prevent two concurrent purchases from both
+     * passing the stock check on the same row (TOCTOU race condition).
+     *
+     * @param id the product id
+     * @return the product
+     * @throws java.util.NoSuchElementException if no product has the given id
+     */
+    public Product findByIdForUpdate(Long id) {
+        return productRepository.findByIdWithLock(id).orElseThrow();
+    }
+
+    /**
      * Looks up an available (non-deleted) product, returning empty when it is missing or has
      * been soft-deleted. Used by cart/checkout, where a deleted product counts as unavailable.
      *
@@ -238,6 +251,16 @@ public class ProductService {
     }
 
     /**
+     * Loads a seller-owned listing with a pessimistic write lock. Must be called within an
+     * active transaction when concurrent purchases may change stock during an edit.
+     */
+    public Product findOwnedListingForUpdate(Long id, User currentUser) {
+        Product product = productRepository.findByIdWithLock(id).orElseThrow();
+        assertOwner(product, currentUser);
+        return product;
+    }
+
+    /**
      * Updates an existing product's editable fields and persists it. The listing status is
      * recomputed from the quantity ({@code ACTIVE} when in stock, {@code SOLD} when zero).
      * The image is only changed when the edit supplies a new file or URL (see
@@ -250,14 +273,15 @@ public class ProductService {
      * @throws NoSuchElementException if no product has the given id
      * @throws AccessDeniedException  if the user is not the seller
      */
+    @Transactional
     public Product updateListing(Long id, SellFormDto form, User currentUser) {
-        Product product = findOwnedListing(id, currentUser);
+        Product product = findOwnedListingForUpdate(id, currentUser);
         product.setTitle(form.getTitle());
         product.setDescription(form.getDescription());
         product.setPrice(form.getPrice());
         product.setCategory(form.getCategory());
         product.setCondition(form.getCondition());
-        int quantity = form.getQuantity() == null ? 0 : form.getQuantity();
+        int quantity = resolveQuantityOnUpdate(product, form);
         product.setQuantity(quantity);
         product.setStatus(quantity > 0 ? "ACTIVE" : "SOLD");
         applyImageOnUpdate(product, form);
@@ -367,6 +391,7 @@ public class ProductService {
         form.setCategory(product.getCategory());
         form.setCondition(product.getCondition());
         form.setQuantity(product.getQuantity());
+        form.setOriginalQuantity(product.getQuantity());
         form.setImageSource(product.isHasUploadedImage() ? "upload" : "url");
         form.setImageUrl(product.getImageUrl());
         return form;
@@ -470,11 +495,33 @@ public class ProductService {
      * @return the saved product
      */
     public Product reduceStock(Product product, int quantity) {
-        int remaining = Math.max(product.getQuantity() - quantity, 0);
+        if (quantity > product.getQuantity()) {
+            throw new IllegalStateException(
+                    "Not enough stock for \"" + product.getTitle() + "\".");
+        }
+        int remaining = product.getQuantity() - quantity;
         product.setQuantity(remaining);
         if (remaining == 0) {
             product.setStatus("SOLD");
         }
         return productRepository.save(product);
+    }
+
+    /**
+     * Computes the quantity to persist on edit. When the seller did not change the quantity
+     * field but purchases happened while the form was open, the current stock is kept instead
+     * of restoring a stale absolute value. Otherwise the seller's delta is applied to current stock.
+     */
+    private static int resolveQuantityOnUpdate(Product product, SellFormDto form) {
+        int formQty = form.getQuantity() == null ? 0 : form.getQuantity();
+        Integer originalQty = form.getOriginalQuantity();
+        if (originalQty == null) {
+            return formQty;
+        }
+        int currentQty = product.getQuantity();
+        if (originalQty.equals(formQty)) {
+            return currentQty;
+        }
+        return Math.max(0, currentQty + (formQty - originalQty));
     }
 }

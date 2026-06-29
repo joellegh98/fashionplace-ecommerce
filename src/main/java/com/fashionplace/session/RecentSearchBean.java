@@ -2,7 +2,6 @@ package com.fashionplace.session;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -26,7 +25,7 @@ public class RecentSearchBean implements Serializable {
      *
      * @param keyword the search text the user submitted
      */
-    public void addSearch(String keyword) {
+    public synchronized void addSearch(String keyword) {
         if (keyword == null || keyword.isBlank()) {
             return;
         }
@@ -41,9 +40,9 @@ public class RecentSearchBean implements Serializable {
     /**
      * Returns the recent search terms, most recent first.
      *
-     * @return an unmodifiable view of recent searches
+     * @return a snapshot of recent searches
      */
-    public List<String> getRecentSearches() {
-        return Collections.unmodifiableList(recentSearches);
+    public synchronized List<String> getRecentSearches() {
+        return List.copyOf(recentSearches);
     }
 }

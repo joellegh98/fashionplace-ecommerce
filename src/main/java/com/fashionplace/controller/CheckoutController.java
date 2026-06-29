@@ -102,11 +102,24 @@ public class CheckoutController {
             return "redirect:/cart";
         }
 
-        Order order = orderService.placeOrder(
-                currentUserProvider.getCurrentUser(),
-                cartBean.getItems(),
-                checkoutForm.getShippingAddress());
-        cartBean.clear();
+        Map<Long, Integer> checkoutItems = cartBean.drainItems();
+        if (checkoutItems.isEmpty()) {
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Your order is already being processed. Please check your order history.");
+            return "redirect:/cart";
+        }
+
+        Order order;
+        try {
+            order = orderService.placeOrder(
+                    currentUserProvider.getCurrentUser(),
+                    checkoutItems,
+                    checkoutForm.getShippingAddress());
+        } catch (IllegalStateException e) {
+            cartBean.restoreItems(checkoutItems);
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/cart";
+        }
         return "redirect:/checkout/confirmation/" + order.getId();
     }
 

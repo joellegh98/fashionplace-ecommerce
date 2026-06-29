@@ -26,7 +26,7 @@ public class InterestBean implements Serializable {
      *
      * @param productId the product the user interacted with
      */
-    public void record(Long productId) {
+    public synchronized void record(Long productId) {
         if (productId == null) {
             return;
         }
@@ -39,7 +39,7 @@ public class InterestBean implements Serializable {
      *
      * @return recent product ids (newest interaction first)
      */
-    public List<Long> getRecentProductIds() {
+    public synchronized List<Long> getRecentProductIds() {
         List<Long> ordered = new ArrayList<>(productIds);
         Collections.reverse(ordered);
         return ordered;

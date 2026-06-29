@@ -4,6 +4,7 @@ import com.fashionplace.model.Product;
 import com.fashionplace.model.User;
 import com.fashionplace.model.WishlistItem;
 import com.fashionplace.repository.WishlistItemRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,7 +56,12 @@ public class WishlistService {
             wishlistItemRepository.deleteByOwnerAndProduct(owner, product);
             return false;
         }
-        wishlistItemRepository.save(new WishlistItem(owner, product));
+        try {
+            wishlistItemRepository.save(new WishlistItem(owner, product));
+        } catch (DataIntegrityViolationException e) {
+            wishlistItemRepository.deleteByOwnerAndProduct(owner, product);
+            return false;
+        }
         return true;
     }
 
